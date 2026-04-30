@@ -156,14 +156,15 @@ public class RegistarBDLocal extends javax.swing.JFrame {
         String nombreimg= jTextField7.getText();
          
         try{
-            per = new Persona(uid, nombre, apellido, cedula, direccion, producto, nombreimg);
+            per = new Persona(uid, nombre, apellido, cedula, direccion, producto, nombreimg,'0');
             PersonaDAO dao= new PersonaDAO();
             dao.add(per);
             
         //String consulta="INSERT INTO `persona`(`Uid`, `Nombre`, `Apellido`, `Direccion`, `Cedula`, `Producto`, `Nom_img`) VALUES ('"+uid+"','"+nombre+"','"+apellido+"','"+direccion+"','"+cedula+"','"+producto+"','"+nombreimg+"')";
         
-          JOptionPane.showMessageDialog(null, "Registro Exitoso");
-        }catch(Exception e)
+            JOptionPane.showMessageDialog(null, "Registro Exitoso");
+        }
+        catch(Exception e)
         {
             System.out.println("Excepcion"+ e);
         }

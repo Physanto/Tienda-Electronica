@@ -4,6 +4,7 @@
  */
 package GUI_Admin;
 
+import Helpers.HelperGestorBD;
 import Helpers.HelperImpresion;
 import Helpers.HelperTiempo;
 import Logica_Conexion.Conexion;
@@ -124,24 +125,19 @@ public class EliminarPersonaAdministrador extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         String uid = jTextField1.getText();
-        
-        res = PersonaProvider.EliminarPersona("Persona", uid);
-        if(res==true)
-        {
+        //se cambio el metodo para funcionar el linea
+        if(HelperGestorBD.EliminarPersonaGeneral("Persona", uid)) {
             jTextPane1.setText("Cliente eliminado");
-        }else
-        {
+        }
+        else {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado");
         }
-        
-      
-
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        MenuAdministrador menu = new MenuAdministrador();
-        menu.setVisible(true);
-        dispose();
+//        MenuAdministrador menu = new MenuAdministrador();
+//        menu.setVisible(true);
+//        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void establecerImagenBack() {

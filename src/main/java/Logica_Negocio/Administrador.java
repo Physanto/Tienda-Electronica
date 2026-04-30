@@ -31,7 +31,5 @@ public class Administrador extends Usuario {
 
             return !res;
         }
-
     }
-
 }

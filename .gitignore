@@ -1,6 +1,6 @@
 #----
 .vim
-.git
+.idea
 
 # Credenciales de Firebase
 tienda-electronica.json

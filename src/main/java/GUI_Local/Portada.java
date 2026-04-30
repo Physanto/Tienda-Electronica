@@ -4,6 +4,9 @@
  */
 package GUI_Local;
 
+import GUI_Admin.InicioSesionAdministrador;
+import Helpers.HelperMonitorRed;
+import Helpers.HelperRed;
 import Logica_Conexion.Conexion;
 import java.awt.Image;
 import java.io.File;
@@ -12,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,8 +31,11 @@ public class Portada extends javax.swing.JFrame {
     
     public Portada() {
         initComponents();
+        HelperMonitorRed monitor = new HelperMonitorRed();
+        monitor.setDaemon(true);
+        monitor.start();
         Conexion.Conectar();
-         Path currentRelativePath = Paths.get("");
+        Path currentRelativePath = Paths.get("");
         s = currentRelativePath.toAbsolutePath().toString();
         pathc = s + "\\Images\\" + "Background2" + ".jpg";
         establecerImagen();
@@ -84,9 +91,30 @@ public class Portada extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        EscogerBD esco= new EscogerBD();
-        esco.setVisible(true);
-        dispose();
+		
+		// 1. Mostramos un mensaje de que estamos verificando (opcional)
+		System.out.println("Verificando estado de la red...");
+
+		// 2. Usamos nuestro helper para decidir
+		boolean usarNube = HelperRed.verificarConexion();
+
+		if (usarNube) {
+			// Hay internet rápido -> Vamos a la Nube
+			JOptionPane.showMessageDialog(this, "Conexión óptima. Iniciando servicios en la Nube.");
+			InicioSesionAdministrador admin = new InicioSesionAdministrador();
+			admin.setVisible(true);
+		} else {
+			// No hay internet o es muy lento -> Vamos al modo Local
+			JOptionPane.showMessageDialog(this, "Conexión inestable o sin red. Iniciando modo Local.");
+			MenuLocal local = new MenuLocal();
+			local.setVisible(true);
+		}
+
+		dispose();
+		
+		EscogerBD esco= new EscogerBD();
+//      esco.setVisible(true);
+//      dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

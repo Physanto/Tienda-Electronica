@@ -144,18 +144,15 @@ public class EliminarPersona extends javax.swing.JFrame {
         String id = jTextField1.getText();
         try {
              if (id!=null) {
-                int n=per.delete(id);
-                if(n==0)
-                {
-                    JOptionPane.showMessageDialog(null, "No se ha encontrado persona");
-                }else{
-                jTextPane1.setText("Persona Eliminada con uid"+id);
-                }
-            }else
-             {
+                 if (per.delete(id)) {
+                     JOptionPane.showMessageDialog(null, "No se ha encontrado persona");
+                 } else {
+                     jTextPane1.setText("Persona Eliminada con uid" + id);
+                 }
+             }
+             else {
                 JOptionPane.showMessageDialog(null, "No se ha encontrado persona");
              }
-
         } catch (Exception e) {
             System.out.println("Excepcion" + e);
         }

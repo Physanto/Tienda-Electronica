@@ -13,4 +13,6 @@ import Logica_Negocio.Persona;
 public interface IHelperRegistro {
   
     public void RegistrarPersonaNube(Persona objper, int id, String producto);
+
+    public void RegistrarPersonaLocal(Persona persona);
 }

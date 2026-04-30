@@ -75,10 +75,11 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
 
             if (usuario.equals("Admin")) {
                 usuAdmin = new Administrador("Admin", "12345");
-            } else if (usuario.equals("Cliente")) {
+            } 
+			else if (usuario.equals("Cliente")) {
                 usuCliente = new Cliente("Cliente", "12345");
-            }else
-            {
+            }
+			else{
                 JOptionPane.showMessageDialog(null, "Usuario o contraseña invalida");
                 jTextField1.setBorder(new LineBorder(Color.RED, 2));
                 jPasswordField1.setBorder(new LineBorder(Color.RED, 2));

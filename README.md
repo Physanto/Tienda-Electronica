@@ -37,7 +37,7 @@ El proyecto está organizado bajo una arquitectura de capas:
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://github.com/Physanto/Tienda-Electronica.git](https://github.com/Physanto/Tienda-Electronica.git)
+    git clone https://github.com/Physanto/Tienda-Electronica.git
     ```
 2.  **Configurar Base de Datos Local (MySQL):**
     *   Crear una base de datos llamada `prueba` (o el nombre configurado en `Logica_Conexion/Conexion.java`).

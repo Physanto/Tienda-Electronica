@@ -4,6 +4,7 @@
  */
 package GUI_Admin;
 
+import Helpers.HelperGestorBD;
 import Helpers.HelperImpresion;
 import Helpers.HelperTiempo;
 import Logica_Conexion.Conexion;
@@ -118,11 +119,13 @@ public class BuscarPersonaAdministrador extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         long inicio = System.currentTimeMillis();
-        lspersonasnube = PersonaProvider.CargarInfoPersona();
+        lspersonasnube = HelperGestorBD.CargarPersonaGeneral();
+        //se cambia el metodo por el general, haciendo cambios
+        //lspersonasnube = PersonaProvider.CargarInfoPersona();
         long fin = System.currentTimeMillis();
         HelperTiempo.RetornarTiempo(fin, inicio);
         String codigo = jTextField1.getText();
-        objper = PersonaProvider.CargarInfoPersonaCodigo(codigo);
+        objper = HelperGestorBD.CargarPersonaGeneral(codigo);
 
         if (objper == null) {
             jTextField1.setBorder(new LineBorder(Color.RED, 2));

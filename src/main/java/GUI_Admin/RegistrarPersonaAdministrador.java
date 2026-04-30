@@ -4,6 +4,7 @@
  */
 package GUI_Admin;
 
+import Helpers.HelperGestorBD;
 import Helpers.HelperRegistro;
 import Helpers.HelperValidacion;
 import Logica_Conexion.Conexion;
@@ -36,8 +37,8 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
     String producto = "";
     int numglobal = 0;
     int band = 0;
-      public String pathc;
-     public String s;
+    public String pathc;
+    public String s;
 
     public RegistrarPersonaAdministrador() {
         initComponents();
@@ -53,8 +54,8 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         jLabel12.setVisible(false);
         
         Path currentRelativePath = Paths.get("");
-         s = currentRelativePath.toAbsolutePath().toString();
-         pathc = s + "\\Images\\"+"Background"+".jpg";
+        s = currentRelativePath.toAbsolutePath().toString();
+        pathc = s + "\\Images\\"+"Background"+".jpg";
         establecerImagen();
 
     }
@@ -66,36 +67,39 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         int band=0;
         
         if(res1==0){
-        try {
-            numero = Integer.parseInt(num_pro);
-        } catch (NumberFormatException e) {
-            jTextField4.setBorder(new LineBorder(Color.RED, 2));
-            System.out.println("Digite un numero valido" + e.getMessage());
-            band = 1;
+			
+			try {
+				numero = Integer.parseInt(num_pro);
+			} 
+			catch (NumberFormatException e) {
+				jTextField4.setBorder(new LineBorder(Color.RED, 2));
+				System.out.println("Digite un numero valido" + e.getMessage());
+				band = 1;
+			}
         }
-        }else
-        {
+		else {
          JOptionPane.showMessageDialog(null, "Campo Vacio!");
          jTextField4.setBorder(new LineBorder(Color.RED, 2));
           band=1;
         }
         
         if(band==0){
-        int res = HelperValidacion.ValidarCantidadRango(numero);
-        
+			int res = HelperValidacion.ValidarCantidadRango(numero);
 
-        if (res == 1 && band == 0) {
-            numglobal = numero;
-            numero = 0;
-             jTextField4.setBorder(new LineBorder(Color.BLACK, 1));
-            return 1;
-        } else {
-            jTextField4.setBorder(new LineBorder(Color.RED, 2));
-            JOptionPane.showMessageDialog(null, "El numero no se encuentra en el rango");
-            return 0;
-        }
-        }
-    return 0;
+
+			if (res == 1 && band == 0) {
+				numglobal = numero;
+				numero = 0;
+				jTextField4.setBorder(new LineBorder(Color.BLACK, 1));
+				return 1;
+			} 
+			else {
+				jTextField4.setBorder(new LineBorder(Color.RED, 2));
+				JOptionPane.showMessageDialog(null, "El numero no se encuentra en el rango");
+				return 0;
+			}
+		}
+		return 0;
     }
 
     public void RegistarProducto() {
@@ -137,7 +141,8 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
                 jButton2.setVisible(false);
 
             }
-        } else {
+        } 
+		else {
             if (res >= 1) {
                 jTextField1.setBorder(new LineBorder(Color.RED, 2));
                 JOptionPane.showMessageDialog(null, "Revise el campo nombre");
@@ -158,11 +163,11 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
 
         String nombre = jTextField5.getText();
         String apellido = jTextField6.getText();
-         String cedula = jTextField7.getText();
+        String cedula = jTextField7.getText();
         String direccion = jTextField8.getText();
         String nom_img = jTextField9.getText();
         
-              int res, res1, res2, res3, res4;
+        int res, res1, res2, res3, res4;
 
         res = Helpers.HelperValidacion.ValidarTodo(nombre);
         res1 = Helpers.HelperValidacion.ValidarTodo(apellido);
@@ -174,15 +179,16 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
 
         for (int i = 0; i < lsproductos.size(); i++) {
             producto += lsproductos.get(i).getNombre() + "," + lsproductos.get(i).getMarca() + "," + lsproductos.get(i).getSerial() + ";";
-
         }
 
         int id = (int) (Math.random() * 100000);
 
-        objper = new Persona(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img);
+        objper = new Persona(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
         lspersona.add(objper);
         objper.setProductos(lsproductos);
-        HelperRegistro.RegistrarPersonaNubeI(objper, id, producto);
+        HelperGestorBD.GuardarPersonaGeneral(objper, id, producto);
+        // ya no es necesario ya que ahora depende de la conexion a internet
+        //HelperRegistro.RegistrarPersonaNubeI(objper, id, producto);
         producto = "";
 
         jTextField5.setVisible(false);

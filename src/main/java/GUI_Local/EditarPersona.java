@@ -167,7 +167,7 @@ public class EditarPersona extends javax.swing.JFrame {
         String nombreimg = jTextField7.getText();
         
         try {
-            per = new Persona(uid, nombre, apellido, cedula, direccion, producto, nombreimg);
+            per = new Persona(uid, nombre, apellido, cedula, direccion, producto, nombreimg,'0');
             PersonaDAO dao = new PersonaDAO();
             dao.update(per);
             JOptionPane.showMessageDialog(null, "Actualizar Exitoso");

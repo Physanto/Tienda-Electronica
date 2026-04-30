@@ -63,16 +63,23 @@ public class Main {
   
             switch (opc) {
                 case 1:
-                    //Empieza Nombre
-                    System.out.println("Digite el nombre de la persona");
-                    nombre = scan.nextLine();
-                    rta = HelperValidacion.ValidarVacio(nombre);
-
-                    while (rta > 0) {
+                    // codigo refactorizado
+                    do{
                         System.out.println("Digite el nombre de la persona");
                         nombre = scan.nextLine();
                         rta = HelperValidacion.ValidarVacio(nombre);
                     }
+                    while(rta > 0);
+//                    //Empieza Nombre
+//                    System.out.println("Digite el nombre de la persona");
+//                    nombre = scan.nextLine();
+//                    rta = HelperValidacion.ValidarVacio(nombre);
+//
+//                    while (rta > 0) {
+//                        System.out.println("Digite el nombre de la persona");
+//                        nombre = scan.nextLine();
+//                        rta = HelperValidacion.ValidarVacio(nombre);
+//                    }
 
                     conteo = HelperValidacion.ValidarTodo(nombre);
 
@@ -259,7 +266,7 @@ public class Main {
 
                     int id = (int) (Math.random() * 100000);
 
-                    objper = new Persona(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img);
+                    objper = new Persona(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
                     objper.setProductos(lsproduglobal);
                     lspersonalocal.add(objper);
                     HelperRegistro.RegistrarPersonaNubeI(objper, id, producto);

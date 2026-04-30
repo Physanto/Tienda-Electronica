@@ -35,17 +35,6 @@ public abstract class Usuario {
     public void setContra(String contra) {
         this.contra = contra;
     }
-    
-    
-    
-    
+
     public abstract boolean  LogOn(String usuario, String contraseña);
-    
-      
-    
-    
-    
-
-
-
 }

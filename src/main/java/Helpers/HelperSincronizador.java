@@ -1,0 +1,47 @@
+package Helpers;
+
+import Logica_Conexion.PersonaDAO;
+import Logica_Conexion.PersonaProvider;
+import Logica_Negocio.Persona;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+public class HelperSincronizador {
+
+    public static void SincronizarLocalANube(){
+        System.out.println("Iniciando vaciado de cola local hacia la nube...");
+
+        try{
+            PersonaDAO personaDAO = new PersonaDAO();
+            ArrayList<Persona> pendientes = personaDAO.getNoSincronizados();
+
+            if(pendientes.isEmpty()){
+                System.out.println("No hay datos pendientes por subir");
+                return;
+            }
+
+            for (Persona p : pendientes) {
+                Map<String, Object> datos = new HashMap<>();
+                datos.put("uid", p.getUid());
+                datos.put("Nombre", p.getNombre());
+                datos.put("Apellido", p.getApellido());
+                datos.put("Direccion", p.getDireccion());
+                datos.put("Cedula", p.getCedula());
+                datos.put("Productos", p.getProducto());
+                datos.put("Nom_img", p.getNom_img());
+
+                boolean exito = PersonaProvider.GuardarPersona("Persona", p.getUid(), datos);
+
+                if (exito) {
+                    personaDAO.marcarSincronizado(p.getUid());
+                    System.out.println("Persona " + p.getUid() + " sincronizada con exito.");
+                }
+            }
+        }
+        catch (Exception e){
+            System.out.println("Error durante la sincronizacion: " + e.getMessage());
+        }
+    }
+}

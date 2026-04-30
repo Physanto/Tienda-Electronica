@@ -41,7 +41,7 @@ public class PersonaProvider {
         return false;
     }
 
-    public static ArrayList CargarInfoPersona() {
+    public static ArrayList<Persona> CargarInfoPersona() {
 
         Persona objper;
         Producto produ;
@@ -64,9 +64,7 @@ public class PersonaProvider {
                         document.getString("Nom_img")
                 );
                 lspersona.add(objper);
-
             }
-
         } catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
         }
@@ -155,7 +153,6 @@ public class PersonaProvider {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado");
         }
-
         return false;
     }
 

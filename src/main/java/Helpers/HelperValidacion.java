@@ -11,30 +11,27 @@ import java.util.ArrayList;
  * @author Santiago Lopez
  */
 public class HelperValidacion {
-    
-    
-      public static int RetornarValor(String nombre)
-    {
-        int numero=0;
-        int letra=0;
 
-        
+    // codigo refactorizado: no es necesario el else.
+    public static int RetornarValor(String nombre) {
+        int numero=0;
+        //int letra=0;
+
         for (int j = 0; j < nombre.length(); j++) {
-             boolean flag = Character.isDigit(nombre.charAt(j));
-             if(flag) {
+
+            if (Character.isDigit(nombre.charAt(j))) {
                 //System.out.println("'"+ nombre.charAt(j)+"' is a number");
                 numero++;
-             }
-             else {
-                //System.out.println("'"+ nombre.charAt(j)+"' is a letter");
-                letra++;
-             }
-
+            }
+//             else {
+//                //System.out.println("'"+ nombre.charAt(j)+"' is a letter");
+//                letra++;
+//             }
         }
         return numero;
     }
-     
-      public static int RetornarCEV2(String nombre)
+
+    public static int RetornarCEV2(String nombre)
     {
         int ce=0;
         
@@ -64,7 +61,7 @@ public class HelperValidacion {
         return ce;
     }
       
-      public static int ValidarVacio(String cadena) {
+    public static int ValidarVacio(String cadena) {
         if (cadena.equals("")) {
             return 1;
         } else {
@@ -72,46 +69,48 @@ public class HelperValidacion {
         }
 
     }
-      
-      
-       public static int RetornarLetra(String nombre)
+
+    // codigo refactorizado: no es necesario el else, este metodo junto con el de retornarValor se puede hacer 1 solo generico.
+    public static int RetornarLetra(String nombre)
     {
-        int numero=0;
+        //int numero=0;
         int letra=0;
 
-        
         for (int j = 0; j < nombre.length(); j++) {
-             boolean flag = Character.isDigit(nombre.charAt(j));
-             if(flag) {
+             if(Character.isLetter(nombre.charAt(j))) {
                 //System.out.println("'"+ nombre.charAt(j)+"' is a number");
-                numero++;
-             }
-             else {
-                //System.out.println("'"+ nombre.charAt(j)+"' is a letter");
                 letra++;
              }
+//             else {
+//                //System.out.println("'"+ nombre.charAt(j)+"' is a letter");
+//                letra++;
+//             }
 
         }
         return letra;
     }
-       
-   public static int ValidarCantidadRango(int cantidad)
-   {
-       if(cantidad>0 && cantidad<1000){
-           return 1;
-       }
-      else
-       {
-           return 0;
-       }
+
+    // codigo refactorizado: se puede emplear un operador ternario.
+    public static int ValidarCantidadRango(int cantidad)
+    {
+
+       return (cantidad > 0 && cantidad < 1000) ? 1 : 0;
+
+//       if(cantidad > 0 && cantidad < 1000){
+//           return 1;
+//       }
+//      else
+//       {
+//           return 0;
+//       }
    }
-   
+
      public static int RetornarCEDireccionV2(String nombre)
     {
         int ce=0;
         
         ArrayList<Character> lscaracteres = new ArrayList<>();
-        
+
         lscaracteres.add('@');
         lscaracteres.add('/');
         lscaracteres.add(';');
@@ -120,10 +119,9 @@ public class HelperValidacion {
         lscaracteres.add('!');
 
         for (int j = 0; j < nombre.length(); j++) {
-             boolean flag = Character.isLetter(nombre.charAt(j));
+             boolean flag = Character.isDigit(nombre.charAt(j));
              if(!flag) {
                  for (int i = 0; i < lscaracteres.size(); i++) {
-                      
                      if(lscaracteres.get(i).compareTo(nombre.charAt(j))==0)
                      {
                         ce++;

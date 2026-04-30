@@ -146,7 +146,7 @@ public class MenuAdministrador extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       BuscarPersonaAdministrador busper = new BuscarPersonaAdministrador();
+		BuscarPersonaAdministrador busper = new BuscarPersonaAdministrador();
         busper.setVisible(true);
         dispose(); 
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -158,9 +158,10 @@ public class MenuAdministrador extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        EscogerBD por = new EscogerBD();
-        por.setVisible(true);
-        dispose();
+
+//        EscogerBD por = new EscogerBD();
+//        por.setVisible(true);
+//        dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     /**

@@ -15,10 +15,12 @@ import java.util.ArrayList;
 public class Persona{
 
     public String uid, nombre, apellido, direccion,cedula, producto,Nom_img;
+    public char estado;
     public ArrayList<Producto> productos;
 
-   
-    public Persona(String uid,String nombre, String apellido, String cedula, String direccion, String producto, String Nom_img) {
+    public Persona(){}
+
+	public Persona(String uid,String nombre, String apellido, String cedula, String direccion, String producto, String Nom_img) {
         this.uid= uid;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -26,6 +28,17 @@ public class Persona{
         this.direccion = direccion;
         this.producto= producto;
         this.Nom_img=Nom_img;
+    }
+   
+    public Persona(String uid,String nombre, String apellido, String cedula, String direccion, String producto, String Nom_img, char estado) {
+        this.uid= uid;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.direccion = direccion;
+        this.producto= producto;
+        this.Nom_img=Nom_img;
+        this.estado = estado;
     }
     
    
@@ -94,5 +107,8 @@ public class Persona{
         this.Nom_img = Nom_img;
     }
 
-   
+    public char getEstado(){ return estado; }
+
+    public void setEstado(char estado) { this.estado = estado; }
+
 }

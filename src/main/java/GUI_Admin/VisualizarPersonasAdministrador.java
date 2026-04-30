@@ -4,6 +4,7 @@
  */
 package GUI_Admin;
 
+import Helpers.HelperGestorBD;
 import Helpers.HelperImpresion;
 import Logica_Conexion.Conexion;
 import Logica_Conexion.PersonaProvider;
@@ -29,8 +30,8 @@ public class VisualizarPersonasAdministrador extends javax.swing.JFrame {
      */
     
     ArrayList<Persona> lspersonasnube;
-      public String pathc;
-     public String s;
+    public String pathc;
+    public String s;
     
     public VisualizarPersonasAdministrador() {
         initComponents();
@@ -111,19 +112,21 @@ public class VisualizarPersonasAdministrador extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         lspersonasnube = PersonaProvider.CargarInfoPersona();
-         if(!lspersonasnube.isEmpty())
-         {
-         String info=HelperImpresion.ImprimirInfoInterfaz(lspersonasnube);
-         jTextPane1.setText(info);
-         }else
-         {
+        lspersonasnube = HelperGestorBD.CargarPersonaGeneral();
+        //se cambia el metodo por el general, haciendo cambios
+        //lspersonasnube = PersonaProvider.CargarInfoPersona();
+
+         if(!lspersonasnube.isEmpty()) {
+            String info=HelperImpresion.ImprimirInfoInterfaz(lspersonasnube);
+            jTextPane1.setText(info);
+         }
+         else {
              JOptionPane.showMessageDialog(null, "La lista se encuentra vacia!");
          }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       MenuAdministrador menu = new MenuAdministrador();
+        MenuAdministrador menu = new MenuAdministrador();
         menu.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
