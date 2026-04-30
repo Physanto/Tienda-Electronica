@@ -60,7 +60,7 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
         String contraseña = String.valueOf(jPasswordField1.getPassword());
 
         res = Helpers.HelperValidacion.ValidarTodo(usuario);
-        res1 = Helpers.HelperValidacion.ValidarTodoContraseña(contraseña);
+        res1 = Helpers.HelperValidacion.ValidarTodoContrasenha(contraseña);
 
         if (res == 0 && res1 == 0) {
 

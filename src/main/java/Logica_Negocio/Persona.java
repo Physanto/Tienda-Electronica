@@ -1,20 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Logica_Negocio;
 
 import java.util.ArrayList;
-
-
-
 /**
  *
  * @author Santiago Lopez
  */
+
+/**
+ * Clase que moldea a una Persona en el sistema
+ */
 public class Persona{
 
-    public String uid, nombre, apellido, direccion,cedula, producto,Nom_img;
+    public String uid, nombre, apellido, direccion,cedula, producto, Nom_img;
     public char estado;
     public ArrayList<Producto> productos;
 
@@ -40,8 +37,6 @@ public class Persona{
         this.Nom_img=Nom_img;
         this.estado = estado;
     }
-    
-   
 
     public String getNombre() {
         return nombre;
@@ -110,5 +105,4 @@ public class Persona{
     public char getEstado(){ return estado; }
 
     public void setEstado(char estado) { this.estado = estado; }
-
 }

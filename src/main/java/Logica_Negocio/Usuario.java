@@ -1,40 +1,45 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Logica_Negocio;
 
 import Helpers.HelperCifrado;
-
 /**
  *
  * @author Santiago Lopez Patron Template Method
  */
+
+/**
+ * Clase que moldea a un Usuario geneal en el sistema, esta sirve como base para implementaciones concretas.
+ */
 public abstract class Usuario {
     
-    private String usu;
-    private String contra;
+    private String usuario;
+    private String contrasenha;
 
-    public Usuario(String usu, String contra) {
-        this.usu = usu;
-        this.contra = contra;
+    public Usuario(String usuario, String contrasenha) {
+        this.usuario = usuario;
+        this.contrasenha = contrasenha;
     }
 
-    public String getUsu() {
-        return usu;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setUsu(String usu) {
-        this.usu = usu;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public String getContra() {
-        return contra;
+    public String getContrasenha() {
+        return contrasenha;
     }
 
-    public void setContra(String contra) {
-        this.contra = contra;
+    public void setContrasenha(String contrasenha) {
+        this.contrasenha = contrasenha;
     }
 
-    public abstract boolean  LogOn(String usuario, String contraseña);
+    /**
+     * Verifica si las credenciales ingresadas coinciden con las almacenadas, este es un metodo abstracto comun.
+     * @param usuario usuarioa cifrado que se recibe para validacion
+     * @param contrasenha contrasenha cifrada que se recibe
+     * @return true si coinciden, false si no.
+     */
+    public abstract boolean  LogOn(String usuario, String contrasenha);
 }

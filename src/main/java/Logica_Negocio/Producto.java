@@ -1,26 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Logica_Negocio;
-
 /**
  *
  * @author Santiago Lopez
  */
+
+/**
+ * Clase que moldea un Producto en el sistema
+ */
 public class Producto {
 
-    public String nombre,marca, serial;
+    public String nombre, marca, serial;
 
-    public Producto() {
-
-    }
+    public Producto() { }
 
     public Producto(String nombre, String marca, String serial) {
         this.nombre= nombre;
         this.marca = marca;
         this.serial = serial;
-       
     }
 
     public String getNombre() {
@@ -31,8 +27,6 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    
-    
     public String getMarca() {
         return marca;
     }
@@ -48,7 +42,4 @@ public class Producto {
     public void setSerial(String serial) {
         this.serial = serial;
     }
-
-  
-
 }
