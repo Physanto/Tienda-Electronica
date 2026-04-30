@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Helpers;
 
 import Logica_Conexion.PersonaProvider;
@@ -13,7 +9,19 @@ import java.util.Map;
  *
  * @author Santiago Lopez Patron Adapter
  */
+
+
+/**
+ * Clase encargada de Registrar las personas a la base de datos en la nube
+ */
 public class HelperRegistro implements IHelperRegistro{
+
+    /**
+     * Metodo que registra a una persona en la base de datos de la nube
+     * @param objper es la persona que se quiere registrar
+     * @param id es el id que se quiere dar a ese usuario
+     * @param producto es el producto asignado a esa persona
+     */
     @Override
     public void RegistrarPersonaNube(Persona objper, int id, String producto)
     {
@@ -41,14 +49,15 @@ public class HelperRegistro implements IHelperRegistro{
             System.out.println("El uid ya existe");
         }
     }
-    
+
+    /**
+     * Metodo statico que se encarga de usar el metodo para registrar una persona en la nube
+     * @param objper es la persona que se quiere registrar
+     * @param id es el id que se quiere dar a ese usuario
+     * @param producto es el producto asignado a esa persona
+     */
     public static void RegistrarPersonaNubeI(Persona objper, int id, String producto) {
         HelperRegistro objHelperRegistro= new HelperRegistro();
         objHelperRegistro.RegistrarPersonaNube(objper, id, producto);
-    }
-
-    @Override
-    public void RegistrarPersonaLocal(Persona persona){
-
     }
 }

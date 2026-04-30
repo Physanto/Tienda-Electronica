@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Helpers;
 
 import Logica_Negocio.Persona;
@@ -9,18 +5,22 @@ import Logica_Negocio.Producto;
 import java.util.ArrayList;
 
 /**
- *
+ * Clase encargada de la Impresion de datos para el usuario final
  * @author Santiago Lopez
  */
 public class HelperImpresion {
 
+    /** Imprime la informacion de las personas y los productos asociados a cada una de ellas
+     *
+     * @param lspersonasnube es la lista de personas que se quiere imprimir
+     */
+    
     public static void ImprimirInfoPersonaNube(ArrayList<Persona> lspersonasnube) {
-        String[] parts = null,
-                parts2 = null;
+        String[] parts = null, parts2 = null;
         Producto objprodu;
         ArrayList<Producto> lsnube = new ArrayList<>();
 
-        for (int i = 0; i < lspersonasnube.size(); i++) {
+        for(int i = 0; i < lspersonasnube.size(); i++) {
             System.out.println("Persona" + "\t" + (i + 1) + "\n"
                     + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                     + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
@@ -51,7 +51,11 @@ public class HelperImpresion {
         }
 
     }
-
+    // se podria hacer un metodo que extraiga la informacion de forma mas generica para que sirva tanto para global como para local
+    /**
+     * Imprime las personas de la base de datos local con sus productos asociados
+     * @param lspersonalocal es la lista de personas de la base de datos local
+     */
     public static void ImprimirInfoLocal(ArrayList<Persona> lspersonalocal) {
         if (!lspersonalocal.isEmpty()) {
             for (int i = 0; i < lspersonalocal.size(); i++) {
@@ -69,14 +73,14 @@ public class HelperImpresion {
                     System.out.println("Serial" + "\t" + lspersonalocal.get(i).getProductos().get(j).getSerial() + "\n");
                 }
             }
-        } else {
+        }
+        else {
             System.out.println("No se ha registrado ningun usuario local, por favor registre una persona");
         }
     }
 
     public static void BuscarPersonaNube(ArrayList<Persona> lspersonasnube, String codigo) {
-        String[] partes = null,
-                partes2 = null;
+        String[] partes = null, partes2 = null;
         int bandera = 0;
         Producto objprodu;
         ArrayList<Producto> lsnube = new ArrayList<>();
