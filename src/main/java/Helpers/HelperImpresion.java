@@ -14,7 +14,7 @@ public class HelperImpresion {
      *
      * @param lspersonasnube es la lista de personas que se quiere imprimir
      */
-    
+
     public static void ImprimirInfoPersonaNube(ArrayList<Persona> lspersonasnube) {
         String[] parts = null, parts2 = null;
         Producto objprodu;
