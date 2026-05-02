@@ -24,6 +24,8 @@ CREATE TABLE Producto (
     id_producto INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     codigo VARCHAR(20) NOT NULL UNIQUE,
     nombre VARCHAR(50) NOT NULL,
+    marca VARCHAR(50) NOT NULL,
+    serial VARCHAR(50) NOT NULL,
     stock INT NOT NULL,
     precio_actual DECIMAL(10,2) NOT NULL,
     fecha_vencimiento TIMESTAMP NOT NULL,
