@@ -1,10 +1,20 @@
 package Helpers;
 
+/**
+ * Clase encargada de Monitorear la red
+ * @author Manuel Escobar
+ */
 public class HelperMonitorRed extends Thread{
 
     public static boolean usandoNube = true;
     public static boolean estadoAnterior = true;
 
+    /**
+     * Metodo sobreescrito de la clase Thread donde monitorea todo el tiempo el estado de la red
+     * haciendo uso del metodo personalizado (HelperRed.verificarConexion)
+     * si hay red entonces sincroniza los datos en la nube, de lo contrario cambia el estado de la red
+     * este proceso hace el monitoreo cada 5 segundos durante toda la vida del programa
+     */
     @Override
     public void run(){
         while(true){
@@ -29,5 +39,10 @@ public class HelperMonitorRed extends Thread{
             catch (InterruptedException e){ break; }
         }
     }
+
+    /**
+     * Metodo estatico que retorna si hay conexion o no.
+     * @return true si hay conexion estable de internet, de lo contrario retorna false
+     */
     public static boolean estaUsandoNube(){ return usandoNube; }
 }

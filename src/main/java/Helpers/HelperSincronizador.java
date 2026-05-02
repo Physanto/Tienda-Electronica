@@ -3,13 +3,22 @@ package Helpers;
 import Logica_Conexion.PersonaDAO;
 import Logica_Conexion.PersonaProvider;
 import Logica_Negocio.Persona;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Clase encargada de Sincronizar datos no reflejados en las dos bases de datos
+ * @author Manuel Escobar (Physanto)
+ */
 public class HelperSincronizador {
 
+    /**
+     * Metodo que se encarga de sincronizar la base de datos local a la nube
+     * - valida que haya datos sin sincronizar (con ayuda de un metodo personalizado PersonaDAO.getNoSincronizados())
+     * - si hay datos que no estan sincronizados entonces los agrega a la nube
+     * - de lo contrario sino hay nada pendiente entonces hace una parada anticipada
+     */
     public static void SincronizarLocalANube(){
         System.out.println("Iniciando vaciado de cola local hacia la nube...");
 
