@@ -1,34 +1,75 @@
 package Logica_Negocio;
 
-import Helpers.HelperCifrado;
-
+import java.util.ArrayList;
 /**
  *
- * @author Santiago Lopez Patron Template Method
+ * @author Santiago Lopez
  */
 
 /**
- * Clase que modela a los usuarios con el rol de Cliente
+ * Clase que moldea a una Cliente en el sistema
  */
-public class Cliente extends Usuario {
+public class Cliente {
 
-    public Cliente(String usuario, String contrasenha) {
-        super(usuario, contrasenha);
+    public int id;
+    private String nombre, apellido, direccion, cedula, nombreImg;
+
+    public Cliente(){}
+
+	public Cliente(int id, String nombre, String apellido, String cedula, String direccion, String nombreImg) {
+        this.id= id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.direccion = direccion;
+        this.nombreImg=nombreImg;
     }
 
-    /**
-     * Verifica si las credenciales ingresadas coinciden con las almacenadas
-     * @param usuario usuario cifrado que se recibe
-     * @param contrasenha contrasenha cifrada que se recibe
-     * @return true si coinciden, false si no.
-     */
-    public boolean LogOn(String usuario, String contrasenha) {
+    public String getNombre() {
+        return nombre;
+    }
 
-        String comprobarUsuario = HelperCifrado.CifrarSHA256(getUsuario());
-        String comprobarContrasenha = HelperCifrado.CifrarSHA256(getContrasenha());
-        System.out.println("usuario cifrado: " + "\t" + comprobarUsuario);
-        System.out.println("contrasenha cifrada" + "\t" + comprobarContrasenha);
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-        return (comprobarUsuario.equals(usuario) && comprobarContrasenha.equals(contrasenha));
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getCedula() {
+        return cedula;
+    }
+
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNombreImg() {
+        return nombreImg;
+    }
+
+    public void setNombreImg(String nombreImg) {
+        this.nombreImg = nombreImg;
     }
 }

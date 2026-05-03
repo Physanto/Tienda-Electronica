@@ -5,24 +5,17 @@
 package GUI_Admin;
 
 import Helpers.HelperGestorBD;
-import Helpers.HelperImpresion;
-import Helpers.HelperTiempo;
-import Logica_Conexion.Conexion;
-import Logica_Conexion.PersonaProvider;
-import Logica_Negocio.Persona;
-import java.awt.Color;
+import Logica_Negocio.Cliente;
+
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.border.LineBorder;
 
 /**
  *
@@ -33,8 +26,8 @@ public class EliminarPersonaAdministrador extends javax.swing.JFrame {
     /**
      * Creates new form BuscarPersona
      */
-    ArrayList<Persona> lspersonasnube;
-    Persona objper = null;
+    ArrayList<Cliente> lspersonasnube;
+    Cliente objper = null;
 
     public String pathc;
     public String pathc1;
@@ -76,12 +69,12 @@ public class EliminarPersonaAdministrador extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Buscar Persona Administrador");
+        setTitle("Buscar Cliente Administrador");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("Eliminar Persona");
+        jLabel1.setText("Eliminar Cliente");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(158, 14, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -126,11 +119,11 @@ public class EliminarPersonaAdministrador extends javax.swing.JFrame {
 
         String uid = jTextField1.getText();
         //se cambio el metodo para funcionar el linea
-        if(HelperGestorBD.EliminarPersonaGeneral("Persona", uid)) {
-            jTextPane1.setText("Cliente eliminado");
+        if(HelperGestorBD.EliminarPersonaGeneral("Cliente", uid)) {
+            jTextPane1.setText("Persona eliminado");
         }
         else {
-            JOptionPane.showMessageDialog(null, "Cliente no encontrado");
+            JOptionPane.showMessageDialog(null, "Persona no encontrado");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

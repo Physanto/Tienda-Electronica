@@ -11,11 +11,9 @@ import Helpers.HelperValidacion;
 import Logica_Conexion.Conexion;
 import Logica_Conexion.PersonaProvider;
 import Logica_Negocio.Producto;
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -32,21 +30,21 @@ public class Main {
 
         int opc = 0, num_pcs = 0;
 
-        Persona objper;
+        Cliente objper;
         Producto objprodu;
         String producto = "";
         ArrayList<Producto> lsproduglobal = null;
-        ArrayList<Persona> lspersonasnube = new ArrayList<>();
-        ArrayList<Persona> lspersonalocal = new ArrayList<>();
+        ArrayList<Cliente> lspersonasnube = new ArrayList<>();
+        ArrayList<Cliente> lspersonalocal = new ArrayList<>();
         Scanner scan = new Scanner(System.in);
         String nombre, apellido, direccion, cedula, marca, serial, nom_produ, nom_img;
         int rta, conteo;
 
         do {
-            System.out.println("1. Registrar Persona");
-            System.out.println("2. Visualizar Personas Nube");
-            System.out.println("3. Visualizar Persona Local");
-            System.out.println("4. Consultar Persona Nube");
+            System.out.println("1. Registrar Cliente");
+            System.out.println("2. Visualizar Persona Nube");
+            System.out.println("3. Visualizar Cliente Local");
+            System.out.println("4. Consultar Cliente Nube");
             System.out.println("5. Salir");
 
             do {
@@ -266,7 +264,7 @@ public class Main {
 
                     int id = (int) (Math.random() * 100000);
 
-                    objper = new Persona(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
+                    objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
                     objper.setProductos(lsproduglobal);
                     lspersonalocal.add(objper);
                     HelperRegistro.RegistrarPersonaNubeI(objper, id, producto);

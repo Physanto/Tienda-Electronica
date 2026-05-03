@@ -4,17 +4,13 @@
  */
 package GUI_Cliente;
 
-import GUI_Admin.*;
 import Helpers.HelperImpresion;
-import Logica_Conexion.Conexion;
 import Logica_Conexion.PersonaProvider;
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -32,8 +28,8 @@ public class BuscarPersonaCliente extends javax.swing.JFrame {
     /**
      * Creates new form BuscarPersona
      */
-    ArrayList<Persona> lspersonasnube;
-    Persona objper=null;
+    ArrayList<Cliente> lspersonasnube;
+    Cliente objper=null;
     String pathc ;
     String pathc1 ;
    
@@ -69,14 +65,14 @@ public class BuscarPersonaCliente extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Buscar Persona");
+        setTitle("Buscar Cliente");
         setPreferredSize(new java.awt.Dimension(400, 400));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 121, 121, 121));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 255, 255));
-        jLabel1.setText("Buscar Persona");
+        jLabel1.setText("Buscar Cliente");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 14, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -124,7 +120,7 @@ public class BuscarPersonaCliente extends javax.swing.JFrame {
          if(objper==null)
         {
              jTextField1.setBorder(new LineBorder(Color.RED, 2));
-            JOptionPane.showMessageDialog(null,"Cliente no encontrado");
+            JOptionPane.showMessageDialog(null,"Persona no encontrado");
         }
         else
         {

@@ -1,6 +1,6 @@
 package Helpers;
 
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 import Logica_Negocio.Producto;
 import java.util.ArrayList;
 
@@ -15,13 +15,13 @@ public class HelperImpresion {
      * @param lspersonasnube es la lista de personas que se quiere imprimir
      */
 
-    public static void ImprimirInfoPersonaNube(ArrayList<Persona> lspersonasnube) {
+    public static void ImprimirInfoPersonaNube(ArrayList<Cliente> lspersonasnube) {
         String[] parts = null, parts2 = null;
         Producto objprodu;
         ArrayList<Producto> lsnube = new ArrayList<>();
 
         for(int i = 0; i < lspersonasnube.size(); i++) {
-            System.out.println("Persona" + "\t" + (i + 1) + "\n"
+            System.out.println("Cliente" + "\t" + (i + 1) + "\n"
                     + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                     + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                     + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
@@ -56,10 +56,10 @@ public class HelperImpresion {
      * Imprime las personas de la base de datos local con sus productos asociados
      * @param lspersonalocal es la lista de personas de la base de datos local
      */
-    public static void ImprimirInfoLocal(ArrayList<Persona> lspersonalocal) {
+    public static void ImprimirInfoLocal(ArrayList<Cliente> lspersonalocal) {
         if (!lspersonalocal.isEmpty()) {
             for (int i = 0; i < lspersonalocal.size(); i++) {
-                System.out.println("Persona" + "\t" + (i + 1) + "\n"
+                System.out.println("Cliente" + "\t" + (i + 1) + "\n"
                         + "El id de la persona es" + "\t" + lspersonalocal.get(i).getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonalocal.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonalocal.get(i).getApellido() + "\n"
@@ -79,7 +79,7 @@ public class HelperImpresion {
         }
     }
 
-    public static void BuscarPersonaNube(ArrayList<Persona> lspersonasnube, String codigo) {
+    public static void BuscarPersonaNube(ArrayList<Cliente> lspersonasnube, String codigo) {
         String[] partes = null, partes2 = null;
         int bandera = 0;
         Producto objprodu;
@@ -88,7 +88,7 @@ public class HelperImpresion {
         for (int i = 0; i < lspersonasnube.size(); i++) {
             if (codigo.equals(lspersonasnube.get(i).getUid())) {
                 bandera = 1;
-                System.out.println("Persona" + "\t" + (i + 1) + "\n"
+                System.out.println("Cliente" + "\t" + (i + 1) + "\n"
                         + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
@@ -123,7 +123,7 @@ public class HelperImpresion {
         }
     }
 
-    public static String ImprimirInfoInterfaz(ArrayList<Persona> lspersonasnube) {
+    public static String ImprimirInfoInterfaz(ArrayList<Cliente> lspersonasnube) {
         String info = "";
         String[] parts = null,
                 parts2 = null;
@@ -132,7 +132,7 @@ public class HelperImpresion {
 
         for (int i = 0; i < lspersonasnube.size(); i++) {
 
-            info += "Persona" + "\t" + (i + 1) + "\n"
+            info += "Cliente" + "\t" + (i + 1) + "\n"
                     + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                     + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                     + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
@@ -166,7 +166,7 @@ public class HelperImpresion {
         return info;
     }
 
-    public static String ImprimirInfoInterfazNube(ArrayList<Persona> lspersonasnube, String codigo) {
+    public static String ImprimirInfoInterfazNube(ArrayList<Cliente> lspersonasnube, String codigo) {
         String info = "";
         String[] parts = null,
                 parts2 = null;
@@ -177,7 +177,7 @@ public class HelperImpresion {
         for (int i = 0; i < lspersonasnube.size(); i++) {
             if (codigo.equals(lspersonasnube.get(i).getUid())) {
                 bandera = 1;
-                info += "Persona" + "\t" + (i + 1) + "\n"
+                info += "Cliente" + "\t" + (i + 1) + "\n"
                         + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
@@ -215,7 +215,7 @@ public class HelperImpresion {
         return info;
     }
     
-    public static String ImprimirInfoInterfazLocal(Persona per) {
+    public static String ImprimirInfoInterfazLocal(Cliente per) {
         String info = "";
         String[] parts = null,
                 parts2 = null;
@@ -223,7 +223,7 @@ public class HelperImpresion {
         ArrayList<Producto> lsnube = new ArrayList<>();
         int bandera = 0;
 
-                info += "Persona"  + "\n"
+                info += "Cliente"  + "\n"
                         + "El id de la persona es:" + per.getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + per.getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + per.getApellido() + "\n"

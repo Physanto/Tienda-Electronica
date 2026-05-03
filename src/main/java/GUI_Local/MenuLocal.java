@@ -4,7 +4,8 @@
  */
 package GUI_Local;
 
-import Logica_Conexion.PersonaDAO;
+import Logica_Conexion.ClienteDAO;
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class MenuLocal extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(0, 0, 204));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Registrar Persona Local");
+        jButton1.setText("Registrar Cliente Local");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -82,7 +83,7 @@ public class MenuLocal extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(0, 0, 255));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Mostrar Persona Local");
+        jButton2.setText("Mostrar Cliente Local");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -93,7 +94,7 @@ public class MenuLocal extends javax.swing.JFrame {
         jButton3.setBackground(new java.awt.Color(0, 0, 255));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Buscar Persona Local");
+        jButton3.setText("Buscar Cliente Local");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -104,7 +105,7 @@ public class MenuLocal extends javax.swing.JFrame {
         jButton5.setBackground(new java.awt.Color(0, 0, 204));
         jButton5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Eliminar Persona");
+        jButton5.setText("Eliminar Cliente");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -115,7 +116,7 @@ public class MenuLocal extends javax.swing.JFrame {
         jButton6.setBackground(new java.awt.Color(0, 0, 204));
         jButton6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("Actualizar Persona");
+        jButton6.setText("Actualizar Cliente");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -162,7 +163,7 @@ public class MenuLocal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        PersonaDAO dao = new PersonaDAO();
+        ClienteDAO dao = new ClienteDAO();
         try {
             dao.close();
             JOptionPane.showMessageDialog(null, "Conexion Cerrada");

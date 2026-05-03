@@ -1,7 +1,8 @@
 package Helpers;
 
 import Logica_Conexion.PersonaProvider;
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class HelperRegistro implements IHelperRegistro{
      * @param producto es el producto asignado a esa persona
      */
     @Override
-    public void RegistrarPersonaNube(Persona objper, int id, String producto)
+    public void RegistrarPersonaNube(Cliente objper, int id, String producto)
     {
         boolean res = PersonaProvider.RetornarUid(objper.getUid());
         if (!res) {
@@ -37,10 +38,10 @@ public class HelperRegistro implements IHelperRegistro{
                 datos.put("Productos", producto);
                 datos.put("Nom_img", objper.getNom_img());
                 long inicio = System.currentTimeMillis();
-                PersonaProvider.GuardarPersona("Persona", String.valueOf(id), datos);
+                PersonaProvider.GuardarPersona("Cliente", String.valueOf(id), datos);
                 long fin = System.currentTimeMillis();
                 HelperTiempo.RetornarTiempo(fin, inicio);
-                System.out.println("Persona guardada con exito con id"+"\t"+id);
+                System.out.println("Cliente guardada con exito con id"+"\t"+id);
             } catch (Exception e) {
                 System.out.println("Error:" + e.getMessage());
             }
@@ -56,7 +57,7 @@ public class HelperRegistro implements IHelperRegistro{
      * @param id es el id que se quiere dar a ese usuario
      * @param producto es el producto asignado a esa persona
      */
-    public static void RegistrarPersonaNubeI(Persona objper, int id, String producto) {
+    public static void RegistrarPersonaNubeI(Cliente objper, int id, String producto) {
         HelperRegistro objHelperRegistro= new HelperRegistro();
         objHelperRegistro.RegistrarPersonaNube(objper, id, producto);
     }

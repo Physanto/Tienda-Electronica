@@ -4,16 +4,14 @@
  */
 package GUI_Local;
 
-import Logica_Conexion.Conexion;
-import Logica_Conexion.PersonaDAO;
-import Logica_Negocio.Persona;
+import Logica_Conexion.ClienteDAO;
+import Logica_Negocio.Cliente;
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -27,7 +25,7 @@ public class EditarPersona extends javax.swing.JFrame {
     /**
      * Creates new form RegistarBDLocal
      */
-    Persona per;
+    Cliente per;
     public String pathc;
     public String s;
     
@@ -141,7 +139,7 @@ public class EditarPersona extends javax.swing.JFrame {
         jLabel8.setBackground(new java.awt.Color(0, 0, 255));
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("Registar Persona Local");
+        jLabel8.setText("Registar Cliente Local");
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(166, 6, -1, -1));
         getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 460, 310));
 
@@ -167,8 +165,8 @@ public class EditarPersona extends javax.swing.JFrame {
         String nombreimg = jTextField7.getText();
         
         try {
-            per = new Persona(uid, nombre, apellido, cedula, direccion, producto, nombreimg,'0');
-            PersonaDAO dao = new PersonaDAO();
+            per = new Cliente(uid, nombre, apellido, cedula, direccion, producto, nombreimg,'0');
+            ClienteDAO dao = new ClienteDAO();
             dao.update(per);
             JOptionPane.showMessageDialog(null, "Actualizar Exitoso");
         } catch (Exception e) {
@@ -182,20 +180,20 @@ public class EditarPersona extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PersonaDAO per = new PersonaDAO();
+        ClienteDAO per = new ClienteDAO();
         String id = jTextField1.getText();
         try {
-            Persona persona = per.getPersona(id);
-            if (persona == null) {
-                JOptionPane.showMessageDialog(null, "No se ha encontrado persona");
+            Cliente cliente = per.getPersona(id);
+            if (cliente == null) {
+                JOptionPane.showMessageDialog(null, "No se ha encontrado cliente");
             }
-            jTextField1.setText(persona.getUid());
-            jTextField2.setText(persona.getNombre());
-            jTextField3.setText(persona.getApellido());
-            jTextField4.setText(persona.getDireccion());
-            jTextField5.setText(persona.getCedula());
-            jTextField6.setText(persona.getProducto());
-            jTextField7.setText(persona.getNom_img());
+            jTextField1.setText(cliente.getUid());
+            jTextField2.setText(cliente.getNombre());
+            jTextField3.setText(cliente.getApellido());
+            jTextField4.setText(cliente.getDireccion());
+            jTextField5.setText(cliente.getCedula());
+            jTextField6.setText(cliente.getProducto());
+            jTextField7.setText(cliente.getNom_img());
             jButton2.setVisible(true);
             jTextField1.setEditable(false);
             
