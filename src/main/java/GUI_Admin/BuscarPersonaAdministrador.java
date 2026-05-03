@@ -7,15 +7,12 @@ package GUI_Admin;
 import Helpers.HelperGestorBD;
 import Helpers.HelperImpresion;
 import Helpers.HelperTiempo;
-import Logica_Conexion.Conexion;
-import Logica_Conexion.PersonaProvider;
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
+
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -33,8 +30,8 @@ public class BuscarPersonaAdministrador extends javax.swing.JFrame {
     /**
      * Creates new form BuscarPersona
      */
-    ArrayList<Persona> lspersonasnube;
-    Persona objper = null;
+    ArrayList<Cliente> lspersonasnube;
+    Cliente objper = null;
     
     public String pathc;
     public String pathc1;
@@ -71,12 +68,12 @@ public class BuscarPersonaAdministrador extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Buscar Persona Administrador");
+        setTitle("Buscar Cliente Administrador");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("Buscar Persona");
+        jLabel1.setText("Buscar Cliente");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(158, 14, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -129,7 +126,7 @@ public class BuscarPersonaAdministrador extends javax.swing.JFrame {
 
         if (objper == null) {
             jTextField1.setBorder(new LineBorder(Color.RED, 2));
-            JOptionPane.showMessageDialog(null, "Cliente no encontrado");
+            JOptionPane.showMessageDialog(null, "Persona no encontrado");
         } else {
             jTextField1.setBorder(new LineBorder(Color.BLACK, 1));
             String res = HelperImpresion.ImprimirInfoInterfazNube(lspersonasnube, codigo);

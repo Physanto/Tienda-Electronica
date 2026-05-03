@@ -5,10 +5,8 @@
 package GUI_Admin;
 
 import Helpers.HelperGestorBD;
-import Helpers.HelperRegistro;
 import Helpers.HelperValidacion;
-import Logica_Conexion.Conexion;
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 import Logica_Negocio.Producto;
 import java.awt.Color;
 import java.awt.Image;
@@ -32,8 +30,8 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
      * Creates new form RegistrarPersona
      */
     public ArrayList<Producto> lsproductos = new ArrayList<>();
-    public ArrayList<Persona> lspersona = new ArrayList<>();
-    Persona objper;
+    public ArrayList<Cliente> lspersona = new ArrayList<>();
+    Cliente objper;
     String producto = "";
     int numglobal = 0;
     int band = 0;
@@ -183,7 +181,7 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
 
         int id = (int) (Math.random() * 100000);
 
-        objper = new Persona(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
+        objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
         lspersona.add(objper);
         objper.setProductos(lsproductos);
         HelperGestorBD.GuardarPersonaGeneral(objper, id, producto);
@@ -277,7 +275,7 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Registrar Persona Administrador");
+        setTitle("Registrar Cliente Administrador");
         getContentPane().setLayout(null);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -364,7 +362,7 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(0, 0, 204));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 204, 204));
-        jButton1.setText("Registrar Persona");
+        jButton1.setText("Registrar Cliente");
         jButton1.setActionCommand("Registrar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -400,7 +398,7 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel10.setText("Registrar Persona");
+        jLabel10.setText("Registrar Cliente");
         getContentPane().add(jLabel10);
         jLabel10.setBounds(187, 217, 130, 16);
 

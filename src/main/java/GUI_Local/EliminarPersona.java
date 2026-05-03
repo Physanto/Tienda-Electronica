@@ -4,8 +4,8 @@
  */
 package GUI_Local;
 
-import Logica_Conexion.PersonaDAO;
-import Logica_Negocio.Persona;
+import Logica_Conexion.ClienteDAO;
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -129,7 +129,7 @@ public class EliminarPersona extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Buscar Persona Local");
+        jLabel4.setText("Buscar Cliente Local");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, -1, -1));
 
         pack();
@@ -140,14 +140,14 @@ public class EliminarPersona extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PersonaDAO per = new PersonaDAO();
+        ClienteDAO per = new ClienteDAO();
         String id = jTextField1.getText();
         try {
              if (id!=null) {
                  if (per.delete(id)) {
                      JOptionPane.showMessageDialog(null, "No se ha encontrado persona");
                  } else {
-                     jTextPane1.setText("Persona Eliminada con uid" + id);
+                     jTextPane1.setText("Cliente Eliminada con uid" + id);
                  }
              }
              else {

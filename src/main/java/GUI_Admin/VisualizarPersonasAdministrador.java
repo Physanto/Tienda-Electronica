@@ -6,9 +6,7 @@ package GUI_Admin;
 
 import Helpers.HelperGestorBD;
 import Helpers.HelperImpresion;
-import Logica_Conexion.Conexion;
-import Logica_Conexion.PersonaProvider;
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +27,7 @@ public class VisualizarPersonasAdministrador extends javax.swing.JFrame {
      * Creates new form VisualizarPersonas
      */
     
-    ArrayList<Persona> lspersonasnube;
+    ArrayList<Cliente> lspersonasnube;
     public String pathc;
     public String s;
     
@@ -73,7 +71,7 @@ public class VisualizarPersonasAdministrador extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Visualizar Personas Administrador");
+        setTitle("Visualizar Persona Administrador");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jScrollPane1.setViewportView(jTextPane1);
@@ -104,7 +102,7 @@ public class VisualizarPersonasAdministrador extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("Visualizar Personas");
+        jLabel1.setText("Visualizar Persona");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(151, 0, -1, -1));
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 430, 310));
 

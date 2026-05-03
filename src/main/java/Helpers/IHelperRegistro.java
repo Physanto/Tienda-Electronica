@@ -1,6 +1,6 @@
 package Helpers;
 
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 
 /**
  *
@@ -8,5 +8,5 @@ import Logica_Negocio.Persona;
  */
 public interface IHelperRegistro {
   
-    public void RegistrarPersonaNube(Persona objper, int id, String producto);
+    public void RegistrarPersonaNube(Cliente objper, int id, String producto);
 }

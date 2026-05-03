@@ -1,9 +1,8 @@
 package Helpers;
 
-import Logica_Conexion.Conexion;
-import Logica_Conexion.PersonaDAO;
+import Logica_Conexion.ClienteDAO;
 import Logica_Conexion.PersonaProvider;
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,29 +10,29 @@ import java.util.Map;
 
 public class HelperGestorBD {
 
-    public static void GuardarPersonaGeneral(Persona persona, int id, String producto){
+    public static void GuardarPersonaGeneral(Cliente cliente, int id, String producto){
 
         boolean online = HelperMonitorRed.estaUsandoNube();
 
         try{
-            PersonaDAO personaDAO = new PersonaDAO();
-            personaDAO.add(persona);
+            ClienteDAO clienteDAO = new ClienteDAO();
+            clienteDAO.add(cliente);
 
             if(online){
                 //aqui podemos usar el metodo de guardarPersonaNube pero se debe modificar
                 // esto con el fin de no repetir codigo aqui
                 Map<String, Object> datos = new HashMap<>();
-                datos.put("uid", persona.getUid());
-                datos.put("Nombre", persona.getNombre());
-                datos.put("Apellido", persona.getApellido());
-                datos.put("Direccion", persona.getDireccion());
-                datos.put("Cedula", persona.getCedula());
+                datos.put("uid", cliente.getUid());
+                datos.put("Nombre", cliente.getNombre());
+                datos.put("Apellido", cliente.getApellido());
+                datos.put("Direccion", cliente.getDireccion());
+                datos.put("Cedula", cliente.getCedula());
                 datos.put("Productos", producto);
-                datos.put("Nom_img", persona.getNom_img());
-                boolean exito = PersonaProvider.GuardarPersona("persona", String.valueOf(id), datos);
+                datos.put("Nom_img", cliente.getNom_img());
+                boolean exito = PersonaProvider.GuardarPersona("cliente", String.valueOf(id), datos);
 
                 if (exito) {
-                    personaDAO.marcarSincronizado(persona.getUid());
+                    clienteDAO.marcarSincronizado(cliente.getUid());
                     System.out.println("Guardado exitoso en Local y Nube.");
                 }
                 else {
@@ -49,46 +48,46 @@ public class HelperGestorBD {
         }
     }
 
-    public static ArrayList<Persona> CargarPersonaGeneral(){
-        ArrayList<Persona> listaPersonas = new ArrayList<>();
+    public static ArrayList<Cliente> CargarPersonaGeneral(){
+        ArrayList<Cliente> listaClientes = new ArrayList<>();
         boolean online = HelperMonitorRed.estaUsandoNube();
 
         try{
             if(online) {
                 System.out.println("Listando desde la nube");
-                listaPersonas = PersonaProvider.CargarInfoPersona();
+                listaClientes = PersonaProvider.CargarInfoPersona();
             }
             else {
-                PersonaDAO personaDAO = new PersonaDAO();
-                listaPersonas = personaDAO.getPersona();
+                ClienteDAO clienteDAO = new ClienteDAO();
+                listaClientes = clienteDAO.getPersona();
                 System.out.println("Listando desde local");
             }
         }
         catch(Exception e){
             System.out.println("Error faltal listando los datos " + e.getMessage());
         }
-        return  listaPersonas;
+        return listaClientes;
     }
 
-    public static Persona CargarPersonaGeneral(String codigo){
-        Persona persona = new Persona();
-        PersonaDAO personaDAO = new PersonaDAO();
+    public static Cliente CargarPersonaGeneral(String codigo){
+        Cliente cliente = new Cliente();
+        ClienteDAO clienteDAO = new ClienteDAO();
         boolean online = HelperMonitorRed.estaUsandoNube();
 
         try{
             if(online) {
                 System.out.println("Listando desde la nube");
-                persona = PersonaProvider.CargarInfoPersonaCodigo(codigo);
+                cliente = PersonaProvider.CargarInfoPersonaCodigo(codigo);
             }
             else {
-                persona = personaDAO.getPersona(codigo);
+                cliente = clienteDAO.getPersona(codigo);
                 System.out.println("Listando desde local");
             }
         }
         catch(Exception e){
             System.out.println("Error faltal listando los datos " + e.getMessage());
         }
-        return  persona;
+        return cliente;
     }
 
     public static boolean EliminarPersonaGeneral(String coleccion, String codigo){
@@ -96,8 +95,8 @@ public class HelperGestorBD {
         boolean online = HelperMonitorRed.estaUsandoNube();
 
         try{
-            PersonaDAO personaDAO = new PersonaDAO();
-            if(personaDAO.delete(codigo)){ System.out.println("eliminado desde local"); }
+            ClienteDAO clienteDAO = new ClienteDAO();
+            if(clienteDAO.delete(codigo)){ System.out.println("eliminado desde local"); }
 
             if(online) {
                 System.out.println("Sistema online y listo para eliminar");

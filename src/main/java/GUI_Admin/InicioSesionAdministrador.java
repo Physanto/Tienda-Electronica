@@ -6,9 +6,8 @@ package GUI_Admin;
 
 import GUI_Cliente.MenuCliente;
 import Helpers.HelperCifrado;
-import Logica_Conexion.Conexion;
 import Logica_Negocio.Administrador;
-import Logica_Negocio.Cliente;
+import Logica_Negocio.Persona;
 import Logica_Negocio.Usuario;
 import java.awt.Color;
 import java.awt.Image;
@@ -16,8 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -76,8 +73,8 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
             if (usuario.equals("Admin")) {
                 usuAdmin = new Administrador("Admin", "12345");
             } 
-			else if (usuario.equals("Cliente")) {
-                usuCliente = new Cliente("Cliente", "12345");
+			else if (usuario.equals("Persona")) {
+                usuCliente = new Persona("Persona", "12345");
             }
 			else{
                 JOptionPane.showMessageDialog(null, "Usuario o contraseña invalida");
@@ -86,11 +83,11 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
 
             }
 
-            if (usuCliente instanceof Cliente) {
+            if (usuCliente instanceof Persona) {
                 boolean rta1 = usuCliente.LogOn(cifrarusu, cifrarcontra);
 
                 if (rta1) {
-                    JOptionPane.showMessageDialog(null, "Bienvenido Cliente");
+                    JOptionPane.showMessageDialog(null, "Bienvenido Persona");
                     MenuCliente menu = new MenuCliente();
                     menu.setVisible(true);
                     dispose();

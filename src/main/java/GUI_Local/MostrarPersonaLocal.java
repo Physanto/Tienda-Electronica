@@ -4,15 +4,14 @@
  */
 package GUI_Local;
 
-import Logica_Conexion.PersonaDAO;
-import Logica_Negocio.Persona;
+import Logica_Conexion.ClienteDAO;
+import Logica_Negocio.Cliente;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
@@ -98,7 +97,7 @@ public class MostrarPersonaLocal extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Mostrar Persona Local");
+        jLabel2.setText("Mostrar Cliente Local");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, -1, -1));
 
         pack();
@@ -106,9 +105,9 @@ public class MostrarPersonaLocal extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try{
-            PersonaDAO dao= new PersonaDAO();
+            ClienteDAO dao= new ClienteDAO();
            
-            ArrayList<Persona> listaper= dao.getPersona();
+            ArrayList<Cliente> listaper= dao.getPersona();
             String imp=Helpers.HelperImpresion.ImprimirInfoInterfaz(listaper);
             jTextPane1.setText(imp);
             

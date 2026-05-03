@@ -72,7 +72,7 @@ public class MenuAdministrador extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(0, 0, 204));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 204, 204));
-        jButton1.setText("Registrar Persona");
+        jButton1.setText("Registrar Cliente");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -83,7 +83,7 @@ public class MenuAdministrador extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(0, 0, 204));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 204, 204));
-        jButton2.setText("Visualizar Personas");
+        jButton2.setText("Visualizar Persona");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -94,7 +94,7 @@ public class MenuAdministrador extends javax.swing.JFrame {
         jButton3.setBackground(new java.awt.Color(0, 0, 204));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 204, 204));
-        jButton3.setText("Buscar Persona");
+        jButton3.setText("Buscar Cliente");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -105,7 +105,7 @@ public class MenuAdministrador extends javax.swing.JFrame {
         jButton4.setBackground(new java.awt.Color(0, 0, 204));
         jButton4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton4.setForeground(new java.awt.Color(0, 204, 204));
-        jButton4.setText("Eliminar Persona");
+        jButton4.setText("Eliminar Cliente");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);

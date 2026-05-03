@@ -1,108 +1,34 @@
 package Logica_Negocio;
 
-import java.util.ArrayList;
+import Helpers.HelperCifrado;
+
 /**
  *
- * @author Santiago Lopez
+ * @author Santiago Lopez Patron Template Method
  */
 
 /**
- * Clase que moldea a una Persona en el sistema
+ * Clase que modela a los usuarios con el rol de Persona
  */
-public class Persona{
+public class Persona extends Usuario {
 
-    public String uid, nombre, apellido, direccion,cedula, producto, Nom_img;
-    public char estado;
-    public ArrayList<Producto> productos;
-
-    public Persona(){}
-
-	public Persona(String uid,String nombre, String apellido, String cedula, String direccion, String producto, String Nom_img) {
-        this.uid= uid;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.cedula = cedula;
-        this.direccion = direccion;
-        this.producto= producto;
-        this.Nom_img=Nom_img;
-    }
-   
-    public Persona(String uid,String nombre, String apellido, String cedula, String direccion, String producto, String Nom_img, char estado) {
-        this.uid= uid;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.cedula = cedula;
-        this.direccion = direccion;
-        this.producto= producto;
-        this.Nom_img=Nom_img;
-        this.estado = estado;
+    public Persona(String usuario, String contrasenha) {
+        super(usuario, contrasenha);
     }
 
-    public String getNombre() {
-        return nombre;
+    /**
+     * Verifica si las credenciales ingresadas coinciden con las almacenadas
+     * @param usuario usuario cifrado que se recibe
+     * @param contrasenha contrasenha cifrada que se recibe
+     * @return true si coinciden, false si no.
+     */
+    public boolean LogOn(String usuario, String contrasenha) {
+
+        String comprobarUsuario = HelperCifrado.CifrarSHA256(getUsuario());
+        String comprobarContrasenha = HelperCifrado.CifrarSHA256(getContrasenha());
+        System.out.println("usuario cifrado: " + "\t" + comprobarUsuario);
+        System.out.println("contrasenha cifrada" + "\t" + comprobarContrasenha);
+
+        return (comprobarUsuario.equals(usuario) && comprobarContrasenha.equals(contrasenha));
     }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
-    public ArrayList<Producto> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(ArrayList<Producto> productos) {
-        this.productos = productos;
-    }
-
-    public String getProducto() {
-        return producto;
-    }
-
-    public void setProducto(String producto) {
-        this.producto = producto;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getNom_img() {
-        return Nom_img;
-    }
-
-    public void setNom_img(String Nom_img) {
-        this.Nom_img = Nom_img;
-    }
-
-    public char getEstado(){ return estado; }
-
-    public void setEstado(char estado) { this.estado = estado; }
 }

@@ -1,10 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Logica_Conexion;
 
-import Logica_Negocio.Persona;
+import Logica_Negocio.Cliente;
 import Logica_Negocio.Producto;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -23,6 +19,7 @@ import javax.swing.JOptionPane;
  *
  * @author Santiago Lopez
  */
+
 public class PersonaProvider {
 
     CollectionReference reference;
@@ -41,21 +38,21 @@ public class PersonaProvider {
         return false;
     }
 
-    public static ArrayList<Persona> CargarInfoPersona() {
+    public static ArrayList<Cliente> CargarInfoPersona() {
 
-        Persona objper;
+        Cliente objper;
         Producto produ;
 
-        ArrayList<Persona> lspersona = new ArrayList<>();
+        ArrayList<Cliente> lspersona = new ArrayList<>();
         ArrayList<Producto> lsprodu = new ArrayList<>();
 
         try {
-            CollectionReference persona = Conexion.db.collection("Persona");
+            CollectionReference persona = Conexion.db.collection("Cliente");
             ApiFuture<QuerySnapshot> querySnap = persona.get();
 
             for (DocumentSnapshot document : querySnap.get().getDocuments()) {
 
-                objper = new Persona(document.getString("uid"),
+                objper = new Cliente(document.getString("uid"),
                         document.getString("Nombre"),
                         document.getString("Apellido"),
                         document.getString("Cedula"),
@@ -77,7 +74,7 @@ public class PersonaProvider {
         boolean rta = true;
 
         try {
-            CollectionReference persona = Conexion.db.collection("Persona");
+            CollectionReference persona = Conexion.db.collection("Cliente");
             ApiFuture<QuerySnapshot> querySnap = persona.get();
 
             for (DocumentSnapshot document : querySnap.get().getDocuments()) {
@@ -100,21 +97,21 @@ public class PersonaProvider {
         return !rta;
     }
 
-    public static Persona CargarInfoPersonaCodigo(String codigo) {
+    public static Cliente CargarInfoPersonaCodigo(String codigo) {
 
-        Persona objper;
-        Persona objper1 = null;
+        Cliente objper;
+        Cliente objper1 = null;
 
-        ArrayList<Persona> lspersona = new ArrayList<>();
+        ArrayList<Cliente> lspersona = new ArrayList<>();
         ArrayList<Producto> lsprodu = new ArrayList<>();
 
         try {
-            CollectionReference persona = Conexion.db.collection("Persona");
+            CollectionReference persona = Conexion.db.collection("Cliente");
             ApiFuture<QuerySnapshot> querySnap = persona.get();
 
             for (DocumentSnapshot document : querySnap.get().getDocuments()) {
 
-                objper = new Persona(document.getString("uid"),
+                objper = new Cliente(document.getString("uid"),
                         document.getString("Nombre"),
                         document.getString("Apellido"),
                         document.getString("Cedula"),
@@ -151,7 +148,7 @@ public class PersonaProvider {
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Cliente no encontrado");
+            JOptionPane.showMessageDialog(null, "Persona no encontrado");
         }
         return false;
     }
