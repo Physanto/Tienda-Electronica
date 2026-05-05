@@ -1,49 +1,64 @@
 package Logica_Negocio;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class Venta {
 
     public enum MetodoPago { EFECTIVO, TARJETA };
 
-    private int id;
-    private Timestamp fechaVenta;
-    private double totalVenta;
+    private String idVenta;
+    private Date fechaVenta;
+    private Double totalVenta;
     private MetodoPago metodoPago;
+    private String idCliente;
 
     public Venta(){ }
 
-    public Venta(int id, Timestamp fechaVenta, double totalVenta) {
-        this.id = id;
+    public Venta(String idVenta, Date fechaVenta, Double totalVenta, MetodoPago metodoPago, String idCliente) {
+        this.idVenta = idVenta;
         this.fechaVenta = fechaVenta;
         this.totalVenta = totalVenta;
+        this.metodoPago = metodoPago;
+        this.idCliente = idCliente;
     }
 
-    public MetodoPago getMetodoPago(){
-        return metodoPago;
+    public String getIdVenta() {
+        return idVenta;
     }
 
-    public int getId() {
-        return id;
+    public void setIdVenta(String idVenta) {
+        this.idVenta = idVenta;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Timestamp getFechaVenta() {
+    public Date getFechaVenta() {
         return fechaVenta;
     }
 
-    public void setFechaVenta(Timestamp fechaVenta) {
+    public void setFechaVenta(Date fechaVenta) {
         this.fechaVenta = fechaVenta;
     }
 
-    public double getTotalVenta() {
+    public Double getTotalVenta() {
         return totalVenta;
     }
 
-    public void setTotalVenta(double totalVenta) {
+    public void setTotalVenta(Double totalVenta) {
         this.totalVenta = totalVenta;
+    }
+
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(MetodoPago metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public String getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 }

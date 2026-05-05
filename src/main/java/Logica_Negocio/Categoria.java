@@ -2,22 +2,22 @@ package Logica_Negocio;
 
 public class Categoria {
 
-    private int id;
+    private String idCategoria;
     private String nombre;
 
     public Categoria() { }
 
-    public Categoria(int id, String nombre) {
-        this.id = id;
+    public Categoria(String idCategoria, String nombre) {
+        this.idCategoria = idCategoria;
         this.nombre = nombre;
     }
 
-    public int getId() {
-        return id;
+    public String getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdCategoria(String idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     public String getNombre() {

@@ -186,7 +186,7 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         objper.setProductos(lsproductos);
         HelperGestorBD.GuardarPersonaGeneral(objper, id, producto);
         // ya no es necesario ya que ahora depende de la conexion a internet
-        //HelperRegistro.RegistrarPersonaNubeI(objper, id, producto);
+        //HelperRegistro.RegistrarPersonaNubeI(objper, idCliente, producto);
         producto = "";
 
         jTextField5.setVisible(false);
@@ -198,7 +198,7 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         jButton4.setVisible(true);
         jLabel12.setVisible(true);
 
-        jLabel12.setText("Registro exitoso, El id del cliente es:" + "\t" + id);
+        jLabel12.setText("Registro exitoso, El idCliente del cliente es:" + "\t" + id);
         }else
         {
             if (res >= 1) {

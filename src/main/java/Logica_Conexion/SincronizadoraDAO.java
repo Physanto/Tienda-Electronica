@@ -41,8 +41,8 @@ public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
         return preparedStatement.executeUpdate() >= 1;
     }
     /**
-     * Elimina de la base de datos el registro con el id pasado por argumento
-     * @param id es el id del registro que se quiere eliminar.
+     * Elimina de la base de datos el registro con el idCliente pasado por argumento
+     * @param id es el idCliente del registro que se quiere eliminar.
      * @return true si elimina el registro, de lo contrario false
      * @throws SQLException si no puede acceder a la base de datos
      */
@@ -56,8 +56,8 @@ public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
     }
 
     /**
-     * Extrae de la base de datos el registro que coincide con el id pasado por argumento
-     * @param id es el id del registro a buscar
+     * Extrae de la base de datos el registro que coincide con el idCliente pasado por argumento
+     * @param id es el idCliente del registro a buscar
      * @return un objeto de tipo Producto con toda la informacion o null si no encuentra nada.
      * @throws SQLException si no puede acceder a la base de datos.
      */

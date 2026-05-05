@@ -3599,7 +3599,7 @@
 											"width": 400.689453125,
 											"height": 13,
 											"underline": true,
-											"text": "+RegistrarPersonaNubeI(Persona objper, int id, String producto): void",
+											"text": "+RegistrarPersonaNubeI(Persona objper, int idCategoria, String producto): void",
 											"horizontalAlignment": 0
 										}
 									],
@@ -5873,7 +5873,7 @@
 											"top": 169,
 											"width": 186.0751953125,
 											"height": 13,
-											"text": "+delete(String id): int",
+											"text": "+delete(String idCategoria): int",
 											"horizontalAlignment": 0
 										},
 										{
@@ -5890,7 +5890,7 @@
 											"top": 184,
 											"width": 186.0751953125,
 											"height": 13,
-											"text": "+getPersona(String id): Persona",
+											"text": "+getPersona(String idCategoria): Persona",
 											"horizontalAlignment": 0
 										},
 										{
@@ -6816,7 +6816,7 @@
 											"top": 858,
 											"width": 431.0439453125,
 											"height": 13,
-											"text": "+RegistrarPersonaNube(Persona objper, int id, String producto): void",
+											"text": "+RegistrarPersonaNube(Persona objper, int idCategoria, String producto): void",
 											"horizontalAlignment": 0
 										}
 									],
@@ -8716,7 +8716,7 @@
 													"_parent": {
 														"$ref": "AAAAAAGN9VbureXQkTs="
 													},
-													"name": "int id",
+													"name": "int idCategoria",
 													"type": ""
 												},
 												{
@@ -9053,7 +9053,7 @@
 													"_parent": {
 														"$ref": "AAAAAAGPGziyVaO4fnQ="
 													},
-													"name": "int id",
+													"name": "int idCategoria",
 													"type": ""
 												},
 												{
@@ -9185,7 +9185,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGPdBlf6OZN+jc="
 									},
-									"name": "String id",
+									"name": "String idCategoria",
 									"type": ""
 								},
 								{
@@ -9213,7 +9213,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGPdBmKOeZ/0jU="
 									},
-									"name": "String id",
+									"name": "String idCategoria",
 									"type": ""
 								},
 								{

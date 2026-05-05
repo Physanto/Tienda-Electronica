@@ -22,7 +22,7 @@ public class HelperImpresion {
 
         for(int i = 0; i < lspersonasnube.size(); i++) {
             System.out.println("Cliente" + "\t" + (i + 1) + "\n"
-                    + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                    + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                     + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                     + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                     + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
@@ -60,7 +60,7 @@ public class HelperImpresion {
         if (!lspersonalocal.isEmpty()) {
             for (int i = 0; i < lspersonalocal.size(); i++) {
                 System.out.println("Cliente" + "\t" + (i + 1) + "\n"
-                        + "El id de la persona es" + "\t" + lspersonalocal.get(i).getUid() + "\n"
+                        + "El idCliente de la persona es" + "\t" + lspersonalocal.get(i).getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonalocal.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonalocal.get(i).getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + lspersonalocal.get(i).getCedula() + "\n"
@@ -89,7 +89,7 @@ public class HelperImpresion {
             if (codigo.equals(lspersonasnube.get(i).getUid())) {
                 bandera = 1;
                 System.out.println("Cliente" + "\t" + (i + 1) + "\n"
-                        + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                        + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
@@ -133,7 +133,7 @@ public class HelperImpresion {
         for (int i = 0; i < lspersonasnube.size(); i++) {
 
             info += "Cliente" + "\t" + (i + 1) + "\n"
-                    + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                    + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                     + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                     + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                     + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
@@ -178,7 +178,7 @@ public class HelperImpresion {
             if (codigo.equals(lspersonasnube.get(i).getUid())) {
                 bandera = 1;
                 info += "Cliente" + "\t" + (i + 1) + "\n"
-                        + "El id de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                        + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
@@ -224,7 +224,7 @@ public class HelperImpresion {
         int bandera = 0;
 
                 info += "Cliente"  + "\n"
-                        + "El id de la persona es:" + per.getUid() + "\n"
+                        + "El idCliente de la persona es:" + per.getUid() + "\n"
                         + "El nombre de la persona es" + "\t" + per.getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + per.getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + per.getCedula() + "\n"

@@ -1,6 +1,5 @@
 package Logica_Negocio;
 
-import java.util.ArrayList;
 /**
  *
  * @author Santiago Lopez
@@ -11,18 +10,17 @@ import java.util.ArrayList;
  */
 public class Cliente {
 
-    public int id;
-    private String nombre, apellido, direccion, cedula, nombreImg;
+    private String idCliente, nombre, apellido, direccion, cedula, urlImg;
 
     public Cliente(){}
 
-	public Cliente(int id, String nombre, String apellido, String cedula, String direccion, String nombreImg) {
-        this.id= id;
+	public Cliente(String idCliente, String nombre, String apellido, String cedula, String direccion, String urlImg) {
+        this.idCliente = idCliente;
         this.nombre = nombre;
         this.apellido = apellido;
         this.cedula = cedula;
         this.direccion = direccion;
-        this.nombreImg=nombreImg;
+        this.urlImg=urlImg;
     }
 
     public String getNombre() {
@@ -57,19 +55,19 @@ public class Cliente {
         this.cedula = cedula;
     }
 
-    public int getId() {
-        return id;
+    public String getIdCliente() {
+        return idCliente;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public String getNombreImg() {
-        return nombreImg;
+    public String getUrlImg() {
+        return urlImg;
     }
 
-    public void setNombreImg(String nombreImg) {
-        this.nombreImg = nombreImg;
+    public void setUrlImg(String urlImg) {
+        this.urlImg = urlImg;
     }
 }

@@ -118,9 +118,9 @@ public class PersonaProvider {
     }
 
     /**
-     * Metodo encargado de buscar en la base de datos de la nube por medio del id
+     * Metodo encargado de buscar en la base de datos de la nube por medio del idCliente
      * y devolver el registro asociado
-     * @param id es el id del registro que se quiere encontrar y mostrar
+     * @param id es el idCliente del registro que se quiere encontrar y mostrar
      * @return el registro completo, de lo contrario null
      */
     public static Cliente cargarInfoClienteCodigo(String id) {
@@ -149,7 +149,7 @@ public class PersonaProvider {
     }
 
     /**
-     * metodo encargado de verificar si en la base de datos en la nube existe el registro con el id
+     * metodo encargado de verificar si en la base de datos en la nube existe el registro con el idCliente
      * pasado por argumento
      * Este metodo hace uso de cargarInfoClienteCodigo para hacer la busqueda
      * @param id registro a buscar en la base de datos

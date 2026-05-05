@@ -6,13 +6,20 @@ USE Tienda_Electronica;
 
 ------------------------- Modulo de ventas
 
+CREATE TABLE Persona (
+    idUsuario VARCHAR(50) PRIMARY KEY NOT NULL,
+    usuario VARCHAR(20) NOT NULL UNIQUE,
+    contrasenha VARCHAR(20) NOT NULL,
+    estado BOOLEAN NOT NULL
+);
+
 CREATE TABLE Cliente (
     idCliente VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     cedula VARCHAR(15) NOT NULL UNIQUE,
-    nomImg VARCHAR(200)
+    urlImg VARCHAR(200)
 );
 
 CREATE TABLE Categoria (
@@ -29,7 +36,7 @@ CREATE TABLE Producto (
     stock BIGINT NOT NULL,
     precioActual DOUBLE NOT NULL,
     fechaVencimiento TIMESTAMP NOT NULL,
-    nomImg VARCHAR(200),
+    urlImg VARCHAR(200),
     idCategoria VARCHAR(50) NOT NULL,
     FOREIGN KEY(idCategoria) REFERENCES Categoria(idCategoria)
 );

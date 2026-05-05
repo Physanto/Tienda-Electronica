@@ -12,8 +12,10 @@ import Helpers.HelperCifrado;
  */
 public class Persona extends Usuario {
 
-    public Persona(String usuario, String contrasenha) {
-        super(usuario, contrasenha);
+    public Persona(){ }
+
+    public Persona(String idPersona, String usuario, String contrasenha, Boolean estado) {
+        super(idPersona, usuario, contrasenha, estado);
     }
 
     /**

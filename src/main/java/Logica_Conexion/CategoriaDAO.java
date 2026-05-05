@@ -22,14 +22,14 @@ public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
         String query = "INSERT INTO Categoria (id_categoria, nombre) VALUES (?,?)";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        preparedStatement.setInt(1, categoria.getId());
+        preparedStatement.setInt(1, categoria.getIdCategoria());
         preparedStatement.setString(2, categoria.getNombre());
 
         return preparedStatement.executeUpdate() >= 1;
     }
     /**
-     * Elimina de la base de datos la categoria con el id pasado por argumento
-     * @param id es el id de la categoria que se quiere eliminar
+     * Elimina de la base de datos la categoria con el idCliente pasado por argumento
+     * @param id es el idCliente de la categoria que se quiere eliminar
      * @return true si elimina el registro, de lo contrario false
      * @throws SQLException si no puede acceder a la base de datos
      */
@@ -42,8 +42,8 @@ public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
         return preparedStatement.executeUpdate() >= 1;
     }
     /**
-     * Extrae de la base de datos la categoria que coincide con el id pasado por argumento
-     * @param id es el id de la categoria a buscar
+     * Extrae de la base de datos la categoria que coincide con el idCliente pasado por argumento
+     * @param id es el idCliente de la categoria a buscar
      * @return un objeto de tipo Categoria con toda la informacion de la categoria o null si no encuentra nada.
      * @throws SQLException si no puede acceder a la base de datos.
      */
