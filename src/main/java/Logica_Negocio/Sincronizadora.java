@@ -1,44 +1,40 @@
 package Logica_Negocio;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class Sincronizadora {
 
     public enum Accion { INSERT, UPDATE, DELETE};
 
-    private int id, idRegistroAfectado;
+    private String id, idRegistroAfectado;
     private Accion accion;
     private String tablaAfectada;
-    private Timestamp tiempo;
+    private Date tiempo;
 
     public Sincronizadora(){ }
 
-    public Sincronizadora(int id, Accion accion, String tablaAfectada, int idRegistroAfectado, Timestamp tiempo) {
+    public Sincronizadora(String id, Accion accion, String tablaAfectada, String idRegistroAfectado, Date tiempo) {
         this.id = id;
-        this.idRegistroAfectado = idRegistroAfectado;
         this.accion = accion;
         this.tablaAfectada = tablaAfectada;
+        this.idRegistroAfectado = idRegistroAfectado;
         this.tiempo = tiempo;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public int getIdRegistroAfectado() {
-        return idRegistroAfectado;
-    }
-
-    public void setIdRegistroAfectado(int idRegistroAfectado) {
-        this.idRegistroAfectado = idRegistroAfectado;
     }
 
     public Accion getAccion() {
         return accion;
+    }
+
+    public void setAccion(Accion accion) {
+        this.accion = accion;
     }
 
     public String getTablaAfectada() {
@@ -49,11 +45,19 @@ public class Sincronizadora {
         this.tablaAfectada = tablaAfectada;
     }
 
-    public Timestamp getTiempo() {
+    public String getIdRegistroAfectado() {
+        return idRegistroAfectado;
+    }
+
+    public void setIdRegistroAfectado(String idRegistroAfectado) {
+        this.idRegistroAfectado = idRegistroAfectado;
+    }
+
+    public Date getTiempo() {
         return tiempo;
     }
 
-    public void setTiempo(Timestamp tiempo) {
+    public void setTiempo(Date tiempo) {
         this.tiempo = tiempo;
     }
 }

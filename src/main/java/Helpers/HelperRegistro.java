@@ -20,7 +20,7 @@ public class HelperRegistro implements IHelperRegistro{
     /**
      * Metodo que registra a una persona en la base de datos de la nube
      * @param objper es la persona que se quiere registrar
-     * @param id es el id que se quiere dar a ese usuario
+     * @param id es el idCliente que se quiere dar a ese usuario
      * @param producto es el producto asignado a esa persona
      */
     @Override
@@ -41,7 +41,7 @@ public class HelperRegistro implements IHelperRegistro{
                 PersonaProvider.GuardarPersona("Cliente", String.valueOf(id), datos);
                 long fin = System.currentTimeMillis();
                 HelperTiempo.RetornarTiempo(fin, inicio);
-                System.out.println("Cliente guardada con exito con id"+"\t"+id);
+                System.out.println("Cliente guardada con exito con idCliente"+"\t"+id);
             } catch (Exception e) {
                 System.out.println("Error:" + e.getMessage());
             }
@@ -54,7 +54,7 @@ public class HelperRegistro implements IHelperRegistro{
     /**
      * Metodo statico que se encarga de usar el metodo para registrar una persona en la nube
      * @param objper es la persona que se quiere registrar
-     * @param id es el id que se quiere dar a ese usuario
+     * @param id es el idCliente que se quiere dar a ese usuario
      * @param producto es el producto asignado a esa persona
      */
     public static void RegistrarPersonaNubeI(Cliente objper, int id, String producto) {

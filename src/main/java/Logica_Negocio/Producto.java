@@ -1,60 +1,58 @@
 package Logica_Negocio;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  *
  * @author Santiago Lopez
  */
 
-
 /**
- * Clase que moldea un Producto en el sistema
+ * Clase que modela un Producto en el sistema
  */
 public class Producto {
 
-    private int id, stock, idCategoria;
-    private BigDecimal precioActual;
-    private String codigo, nombre, marca, serial, nombreImg;
-    private Timestamp fechaVencimiento;
+    private Long stock;
+    private Double precioActual;
+    private String id, idCategoria, codigo, nombre, marca, serie, urlImg;
+    private Date fechaVencimiento;
 
     public Producto() { }
 
-    public Producto(int id, String codigo, String nombre, String marca, String serial, int stock, BigDecimal precioActual, Timestamp fechaVencimiento, String nombreImg, int idCategoria) {
+    public Producto(String id, String codigo, String nombre, String marca, String serie, Long stock, Double precioActual, Date fechaVencimiento, String urlImg, String idCategoria) {
         this.id = id;
         this.stock = stock;
         this.precioActual = precioActual;
         this.codigo = codigo;
         this.nombre = nombre;
         this.marca = marca;
-        this.serial = serial;
-        this.nombreImg = nombreImg;
+        this.serie = serie;
+        this.urlImg = urlImg;
         this.fechaVencimiento = fechaVencimiento;
         this.idCategoria = idCategoria;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getStock() {
+    public Long getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Long stock) {
         this.stock = stock;
     }
 
-    public BigDecimal getPrecioActual() {
+    public Double getPrecioActual() {
         return precioActual;
     }
 
-    public void setPrecioActual(BigDecimal precioActual) {
+    public void setPrecioActual(Double precioActual) {
         this.precioActual = precioActual;
     }
 
@@ -82,31 +80,31 @@ public class Producto {
         this.marca = marca;
     }
 
-    public String getSerial() {
-        return serial;
+    public String getSerie() {
+        return serie;
     }
 
-    public void setSerial(String serial) {
-        this.serial = serial;
+    public void setSerie(String serie) {
+        this.serie = serie;
     }
 
-    public String getNombreImg() {
-        return nombreImg;
+    public String getUrlImg() {
+        return urlImg;
     }
 
-    public void setNombreImg(String nombreImg) {
-        this.nombreImg = nombreImg;
+    public void setUrlImg(String nombreImg) {
+        this.urlImg = nombreImg;
     }
 
-    public Timestamp getFechaVencimiento() {
+    public Date getFechaVencimiento() {
         return fechaVencimiento;
     }
 
-    public void setFechaVencimiento(Timestamp fechaVencimiento) {
+    public void setFechaVencimiento(Date fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
     }
 
-    public int getIdCategoria() { return idCategoria; }
+    public String getIdCategoria() { return idCategoria; }
 
-    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }
+    public void setIdCategoria(String idCategoria) { this.idCategoria = idCategoria; }
 }

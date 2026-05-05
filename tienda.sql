@@ -1,4 +1,3 @@
-
 DROP DATABASE IF EXISTS Tienda_Electronica;
 
 CREATE DATABASE Tienda_Electronica;
@@ -6,22 +5,29 @@ USE Tienda_Electronica;
 
 ------------------------- Modulo de ventas
 
+CREATE TABLE Persona (
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    usuario VARCHAR(20) NOT NULL UNIQUE,
+    contrasenha VARCHAR(20) NOT NULL,
+    estado BOOLEAN NOT NULL
+);
+
 CREATE TABLE Cliente (
-    idCliente VARCHAR(50) PRIMARY KEY NOT NULL,
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     cedula VARCHAR(15) NOT NULL UNIQUE,
-    nomImg VARCHAR(200)
+    urlImg VARCHAR(200)
 );
 
 CREATE TABLE Categoria (
-    idCategoria VARCHAR(50) PRIMARY KEY NOT NULL,
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Producto (
-    idProducto VARCHAR(50) PRIMARY KEY NOT NULL,
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
     codigo VARCHAR(50) NOT NULL UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     marca VARCHAR(50) NOT NULL,
@@ -29,29 +35,29 @@ CREATE TABLE Producto (
     stock BIGINT NOT NULL,
     precioActual DOUBLE NOT NULL,
     fechaVencimiento TIMESTAMP NOT NULL,
-    nomImg VARCHAR(200),
+    urlImg VARCHAR(200),
     idCategoria VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idCategoria) REFERENCES Categoria(idCategoria)
+    FOREIGN KEY(idCategoria) REFERENCES Categoria(id)
 );
 
 CREATE TABLE Venta (
-    idVenta VARCHAR(50) PRIMARY KEY NOT NULL,
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
     fechaVenta TIMESTAMP NOT NULL,
     totalVenta DOUBLE NOT NULL, 
     metodoPago ENUM("EFECTIVO", "TARJETA") NOT NULL,
     idCliente VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idCliente) REFERENCES Cliente(idCliente)
+    FOREIGN KEY(idCliente) REFERENCES Cliente(id)
 );
 
 CREATE TABLE Detalle_Venta (
-    idDetalleVenta VARCHAR(50) PRIMARY KEY NOT NULL,
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
     cantidad BIGINT NOT NULL,
     subtotal DOUBLE NOT NULL,
     precioVenta DOUBLE NOT NULL,
     idProducto VARCHAR(50) NOT NULL,
     idVenta VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idProducto) REFERENCES Producto(idProducto),
-    FOREIGN KEY(idVenta) REFERENCES Venta(idVenta)
+    FOREIGN KEY(idProducto) REFERENCES Producto(id),
+    FOREIGN KEY(idVenta) REFERENCES Venta(id)
 );
 
 ----------------------------------------------------------
@@ -59,7 +65,7 @@ CREATE TABLE Detalle_Venta (
 --------- tabla encargada del registro de la sincronizacion
 
 CREATE TABLE Cola_Sincronizadora(
-    idCola VARCHAR(50) PRIMARY KEY NOT NULL,
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,
     tablaAfectada VARCHAR(50) NOT NULL,
     idRegistroAfectado VARCHAR(50) NOT NULL,

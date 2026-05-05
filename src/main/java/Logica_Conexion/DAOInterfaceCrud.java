@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public interface DAOInterfaceCrud<T> {
     
     public boolean agregar(T object) throws SQLException;
-    public boolean eliminar(int id) throws SQLException;
-    public T obtener(int id) throws SQLException;
+    public boolean eliminar(String id) throws SQLException;
+    public T obtener(String id) throws SQLException;
     public ArrayList<T> obteners() throws SQLException;
     public boolean actualizar(T object) throws SQLException;
     public void cerrarConexion() throws SQLException;

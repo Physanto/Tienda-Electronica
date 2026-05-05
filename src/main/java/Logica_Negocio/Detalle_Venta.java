@@ -2,47 +2,66 @@ package Logica_Negocio;
 
 public class Detalle_Venta {
 
-    private int id, cantidad;
-    private double decimal, precioVenta;
+    private String id, idProducto, idVenta;
+    private Long cantidad;
+    private Double subtotal, precioVenta;
 
     public Detalle_Venta(){ }
 
-    public Detalle_Venta(int id, int cantidad, double decimal, double precioVenta) {
+    public Detalle_Venta(String id, Long cantidad, Double subtotal, Double precioVenta, String idProducto, String idVenta) {
         this.id = id;
         this.cantidad = cantidad;
-        this.decimal = decimal;
+        this.subtotal = subtotal;
         this.precioVenta = precioVenta;
+        this.idProducto = idProducto;
+        this.idVenta = idVenta;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getCantidad() {
+    public Long getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(Long cantidad) {
         this.cantidad = cantidad;
     }
 
-    public double getDecimal() {
-        return decimal;
+    public Double getSubtotal() {
+        return subtotal;
     }
 
-    public void setDecimal(double decimal) {
-        this.decimal = decimal;
+    public void setSubtotal(Double subtotal) {
+        this.subtotal = subtotal;
     }
 
-    public double getPrecioVenta() {
+    public Double getPrecioVenta() {
         return precioVenta;
     }
 
-    public void setPrecioVenta(double precioVenta) {
+    public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
+    }
+
+    public String getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(String idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public String getIdVenta() {
+        return idVenta;
+    }
+
+    public void setIdVenta(String idVenta) {
+        this.idVenta = idVenta;
     }
 }
