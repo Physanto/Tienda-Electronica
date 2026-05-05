@@ -14,13 +14,13 @@ public class Producto {
 
     private Long stock;
     private Double precioActual;
-    private String idProducto, idCategoria, codigo, nombre, marca, serie, urlImg;
+    private String id, idCategoria, codigo, nombre, marca, serie, urlImg;
     private Date fechaVencimiento;
 
     public Producto() { }
 
-    public Producto(String idProducto, String codigo, String nombre, String marca, String serie, Long stock, Double precioActual, Date fechaVencimiento, String urlImg, String idCategoria) {
-        this.idProducto = idProducto;
+    public Producto(String id, String codigo, String nombre, String marca, String serie, Long stock, Double precioActual, Date fechaVencimiento, String urlImg, String idCategoria) {
+        this.id = id;
         this.stock = stock;
         this.precioActual = precioActual;
         this.codigo = codigo;
@@ -32,12 +32,12 @@ public class Producto {
         this.idCategoria = idCategoria;
     }
 
-    public String getIdProducto() {
-        return idProducto;
+    public String getId() {
+        return id;
     }
 
-    public void setIdProducto(String idProducto) {
-        this.idProducto = idProducto;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Long getStock() {

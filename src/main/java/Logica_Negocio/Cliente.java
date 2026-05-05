@@ -10,12 +10,12 @@ package Logica_Negocio;
  */
 public class Cliente {
 
-    private String idCliente, nombre, apellido, direccion, cedula, urlImg;
+    private String id, nombre, apellido, direccion, cedula, urlImg;
 
     public Cliente(){}
 
-	public Cliente(String idCliente, String nombre, String apellido, String cedula, String direccion, String urlImg) {
-        this.idCliente = idCliente;
+	public Cliente(String id, String nombre, String apellido, String cedula, String direccion, String urlImg) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.cedula = cedula;
@@ -55,12 +55,12 @@ public class Cliente {
         this.cedula = cedula;
     }
 
-    public String getIdCliente() {
-        return idCliente;
+    public String getId() {
+        return id;
     }
 
-    public void setIdCliente(String idCliente) {
-        this.idCliente = idCliente;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUrlImg() {

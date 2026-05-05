@@ -3,10 +3,7 @@ package Logica_Conexion;
 import Logica_Negocio.Categoria;
 import Logica_Negocio.Sincronizadora;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 /**
@@ -27,16 +24,16 @@ public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
      */
     @Override
     public boolean agregar(Sincronizadora sincronizadora) throws SQLException {
-        String query = "INSERT INTO Cola_Sincronizadora (id_cola_sincronizadora, accion," +
-                "tabla_afectada, id_registro_afectado, tiempo) " +
+        String query = "INSERT INTO Cola_Sincronizadora (id, accion," +
+                "tablaAfectada, idRegistroAfectado, tiempo) " +
                 "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        preparedStatement.setInt(1, sincronizadora.getId());
+        preparedStatement.setString(1, sincronizadora.getId());
         preparedStatement.setString(2, sincronizadora.getAccion().name());
         preparedStatement.setString(3, sincronizadora.getTablaAfectada());
-        preparedStatement.setInt(3, sincronizadora.getIdRegistroAfectado());
-        preparedStatement.setTimestamp(4, sincronizadora.getTiempo());
+        preparedStatement.setString(3, sincronizadora.getIdRegistroAfectado());
+        preparedStatement.setTimestamp(4, new Timestamp(sincronizadora.getTiempo().getTime()));
 
         return preparedStatement.executeUpdate() >= 1;
     }
@@ -47,10 +44,10 @@ public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
      * @throws SQLException si no puede acceder a la base de datos
      */
     @Override
-    public boolean eliminar(int id) throws SQLException {
-        String query = "DELETE FROM Cola_Sincronizadora WHERE id_cola_sincronizadora = ?";
+    public boolean eliminar(String id) throws SQLException {
+        String query = "DELETE FROM Cola_Sincronizadora WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
         return preparedStatement.executeUpdate() >= 1;
     }
@@ -62,19 +59,19 @@ public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
      * @throws SQLException si no puede acceder a la base de datos.
      */
     @Override
-    public Sincronizadora obtener(int id) throws SQLException {
-        String query = "SELECT * FROM Cola_Sincronizadora WHERE id_cola_sincronizadora = ?";
+    public Sincronizadora obtener(String id) throws SQLException {
+        String query = "SELECT * FROM Cola_Sincronizadora WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
         Sincronizadora sincronizadora = null;
 
         while(resultSet.next()){
-            sincronizadora = new Sincronizadora(resultSet.getInt("id_cola_sincronizadora"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
-                    resultSet.getString("tabla_afectada"), resultSet.getInt("id_registro_afectado"), resultSet.getTimestamp("tiempo"));
+            sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
+                    resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"), resultSet.getTimestamp("tiempo"));
         }
         return sincronizadora;
     }
@@ -94,8 +91,10 @@ public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
         ArrayList<Sincronizadora> listaSincronizadora = new ArrayList<>();
 
         while(resultSet.next()){
-            Sincronizadora sincronizadora = new Sincronizadora(resultSet.getInt("id_cola_sincronizadora"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
-                    resultSet.getString("tabla_afectada"), resultSet.getInt("id_registro_afectado"), resultSet.getTimestamp("tiempo"));
+            Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
+                    resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"), resultSet.getTimestamp("tiempo")
+            );
+            listaSincronizadora.add(sincronizadora);
         }
         return listaSincronizadora;
     }
@@ -107,14 +106,14 @@ public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
      */
     @Override
     public boolean actualizar(Sincronizadora sincronizadora) throws SQLException {
-        String query = "UPDATE Cola_Sincronizadora SET accion = ?, tabla_afectada = ?," +
-                "id_registro_afectado = ?, tiempo = ? WHERE id_cola_sincronizadora = ?";
+        String query = "UPDATE Cola_Sincronizadora SET accion = ?, tablaAfectada = ?," +
+                "idRegistroAfectado = ?, tiempo = ? WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
         preparedStatement.setString(1, sincronizadora.getAccion().name());
         preparedStatement.setString(2, sincronizadora.getTablaAfectada());
-        preparedStatement.setInt(3, sincronizadora.getIdRegistroAfectado());
-        preparedStatement.setTimestamp(4, sincronizadora.getTiempo());
+        preparedStatement.setString(3, sincronizadora.getIdRegistroAfectado());
+        preparedStatement.setTimestamp(4, new Timestamp(sincronizadora.getTiempo().getTime()));
 
         return preparedStatement.executeUpdate() >= 1;
     }

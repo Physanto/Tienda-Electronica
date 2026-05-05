@@ -30,11 +30,11 @@ public class ClienteDAO implements DAOInterfaceCrud<Cliente> {
     @Override
     public boolean agregar(Cliente cliente) throws SQLException {
         String query
-                = "INSERT INTO Cliente(id_cliente,nombre,apellido,direccion,cedula,nom_img)"
+                = "INSERT INTO Cliente (id,nombre,apellido,direccion,cedula,urlImg)"
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = con.prepareStatement(query);
 
-        preparedStatement.setInt(1, cliente.getIdCliente());
+        preparedStatement.setString(1, cliente.getId());
         preparedStatement.setString(2, cliente.getNombre());
         preparedStatement.setString(3, cliente.getApellido());
         preparedStatement.setString(4, cliente.getDireccion());
@@ -45,44 +45,44 @@ public class ClienteDAO implements DAOInterfaceCrud<Cliente> {
     }
 
     /**
-     * Elimina de la base de datos el cliente con el idCliente pasado por argumento
-     * @param id es el idCliente del cliente que se quiere eliminar
+     * Elimina de la base de datos el cliente con el id pasado por argumento
+     * @param id es el id del cliente que se quiere eliminar
      * @return true si elimina el registro, de lo contrario false
      * @throws SQLException si no puede acceder a la base de datos
      */
     @Override
-    public boolean eliminar(int id) throws SQLException {
-        String query = "DELETE FROM Cliente WHERE id_cliente = ?";
+    public boolean eliminar(String id) throws SQLException {
+        String query = "DELETE FROM Cliente WHERE id = ?";
         PreparedStatement preparedStatement = con.prepareStatement(query);
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
        return preparedStatement.executeUpdate() >= 1;
     }
 
     /**
-     * Extrae de la base de datos el cliente que coincide con el idCliente pasado por argumento
-     * @param id es el idCliente del cliente a buscar
+     * Extrae de la base de datos el cliente que coincide con el id pasado por argumento
+     * @param id es el id del cliente a buscar
      * @return un objeto de tipo Cliente con toda la informacion del cliente o null si no encuentra nada.
      * @throws SQLException si no puede acceder a la base de datos.
      */
     @Override
-    public Cliente obtener(int id) throws SQLException {
-        String query = "SELECT * FROM Cliente WHERE id_cliente = ?";
+    public Cliente obtener(String id) throws SQLException {
+        String query = "SELECT * FROM Cliente WHERE id = ?";
         PreparedStatement preparedStatement = con.prepareStatement(query);
 
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
         Cliente cliente = null;
 
         while (resultSet.next()) {
-            cliente = new Cliente(resultSet.getInt("id"),
+            cliente = new Cliente(resultSet.getString("id"),
                     resultSet.getString("nombre"),
                     resultSet.getString("apellido"),
                     resultSet.getString("cedula"),
                     resultSet.getString("direccion"),
-                    resultSet.getString("nom_img"));
+                    resultSet.getString("urlImg"));
         }
         return cliente;
     }
@@ -101,12 +101,12 @@ public class ClienteDAO implements DAOInterfaceCrud<Cliente> {
  
         while (resultSet.next()) {
             Cliente cliente = new Cliente(
-                    resultSet.getInt("id"),
+                    resultSet.getString("id"),
                     resultSet.getString("nombre"),
                     resultSet.getString("apellido"),
                     resultSet.getString("cedula"),
                     resultSet.getString("direccion"),
-                    resultSet.getString("nom_img"));
+                    resultSet.getString("urlImg"));
             listaClientes.add(cliente);
         }
         return listaClientes;
@@ -120,16 +120,15 @@ public class ClienteDAO implements DAOInterfaceCrud<Cliente> {
     @Override
     public boolean actualizar(Cliente cliente) throws SQLException {
          String query
-            = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?,nom_img=?"
-              + "WHERE id_cliente=?";
+            = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?,urlImg=?"
+              + "WHERE id = ?";
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
-        preparedStatement.setInt(1, cliente.getIdCliente());
-        preparedStatement.setString(2, cliente.getNombre());
-        preparedStatement.setString(3, cliente.getApellido());
-        preparedStatement.setString(4, cliente.getDireccion());
-        preparedStatement.setString(5, cliente.getCedula());
-        preparedStatement.setString(6, cliente.getUrlImg());
+        preparedStatement.setString(1, cliente.getNombre());
+        preparedStatement.setString(2, cliente.getApellido());
+        preparedStatement.setString(3, cliente.getDireccion());
+        preparedStatement.setString(4, cliente.getCedula());
+        preparedStatement.setString(5, cliente.getUrlImg());
 
         return preparedStatement.executeUpdate() >= 1;
     }
@@ -141,19 +140,19 @@ public class ClienteDAO implements DAOInterfaceCrud<Cliente> {
         ArrayList<Cliente> listaClientes = new ArrayList<>();
 
         while(resultSet.next()){
-            Cliente cliente = new Cliente(resultSet.getInt("id"),
+            Cliente cliente = new Cliente(resultSet.getString("id"),
                     resultSet.getString("nombre"),
                     resultSet.getString("apellido"),
                     resultSet.getString("cedula"),
                     resultSet.getString("direccion"),
-                    resultSet.getString("nom_img"));
+                    resultSet.getString("urlImg"));
             listaClientes.add(cliente);
         }
         return listaClientes;
     }
 
     public void marcarResultSetincronizado(String Uid) throws SQLException {
-        String query = "UPDATE Cliente SET estado = 1 WHERE idCliente = ?";
+        String query = "UPDATE Cliente SET estado = 1 WHERE id = ?";
         PreparedStatement preparedStatement = con.prepareStatement(query);
         preparedStatement.setString(1,Uid);
         preparedStatement.executeUpdate();

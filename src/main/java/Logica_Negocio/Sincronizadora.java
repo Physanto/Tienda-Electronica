@@ -6,27 +6,27 @@ public class Sincronizadora {
 
     public enum Accion { INSERT, UPDATE, DELETE};
 
-    private String idCola, idRegistroAfectado;
+    private String id, idRegistroAfectado;
     private Accion accion;
     private String tablaAfectada;
     private Date tiempo;
 
     public Sincronizadora(){ }
 
-    public Sincronizadora(String idCola, Accion accion, String tablaAfectada, String idRegistroAfectado, Date tiempo) {
-        this.idCola = idCola;
+    public Sincronizadora(String id, Accion accion, String tablaAfectada, String idRegistroAfectado, Date tiempo) {
+        this.id = id;
         this.accion = accion;
         this.tablaAfectada = tablaAfectada;
         this.idRegistroAfectado = idRegistroAfectado;
         this.tiempo = tiempo;
     }
 
-    public String getIdCola() {
-        return idCola;
+    public String getId() {
+        return id;
     }
 
-    public void setIdCola(String idCola) {
-        this.idCola = idCola;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Accion getAccion() {

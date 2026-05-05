@@ -1,10 +1,8 @@
 package Logica_Conexion;
 
 import Logica_Negocio.Producto;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 
 public class ProductoDAO implements DAOInterfaceCrud<Producto> {
@@ -19,22 +17,22 @@ public class ProductoDAO implements DAOInterfaceCrud<Producto> {
      */
     @Override
     public boolean agregar(Producto producto) throws SQLException {
-        String query = "INSERT INTO Producto(id_producto, codigo, nombre, marca, serie, stock," +
-                "precio_actual, fecha_vencimiento, nom_img, id_categoria) " +
+        String query = "INSERT INTO Producto (id, codigo, nombre, marca, serie, stock," +
+                "precioActual, fechaVencimiento, urlImg, idCategoria) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        preparedStatement.setInt(1, producto.getIdProducto());
+        preparedStatement.setString(1, producto.getId());
         preparedStatement.setString(2, producto.getCodigo());
         preparedStatement.setString(3, producto.getNombre());
         preparedStatement.setString(4, producto.getMarca());
-        preparedStatement.setString(5, producto.getSerial());
-        preparedStatement.setInt(6, producto.getStock());
-        preparedStatement.setBigDecimal(7, producto.getPrecioActual());
-        preparedStatement.setTimestamp(8, producto.getFechaVencimiento());
-        preparedStatement.setString(9, producto.getNombreImg());
-        preparedStatement.setInt(10, producto.getIdCategoria());
+        preparedStatement.setString(5, producto.getSerie());
+        preparedStatement.setLong(6, producto.getStock());
+        preparedStatement.setDouble(7, producto.getPrecioActual());
+        preparedStatement.setTimestamp(8, new Timestamp(producto.getFechaVencimiento().getTime()));
+        preparedStatement.setString(9, producto.getUrlImg());
+        preparedStatement.setString(10, producto.getIdCategoria());
 
         return preparedStatement.executeUpdate() >= 1;
     }
@@ -46,10 +44,10 @@ public class ProductoDAO implements DAOInterfaceCrud<Producto> {
      * @throws SQLException si no puede acceder a la base de datos
      */
     @Override
-    public boolean eliminar(int id) throws SQLException {
-        String query = "DELETE FROM Producto WHERE id_producto = ?";
+    public boolean eliminar(String id) throws SQLException {
+        String query = "DELETE FROM Producto WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
         return preparedStatement.executeUpdate() >= 1;
     }
@@ -61,22 +59,23 @@ public class ProductoDAO implements DAOInterfaceCrud<Producto> {
      * @throws SQLException si no puede acceder a la base de datos.
      */
     @Override
-    public Producto obtener(int id) throws SQLException {
-        String query = "SELECT * FROM Producto WHERE id_producto = ?";
+    public Producto obtener(String id) throws SQLException {
+        String query = "SELECT * FROM Producto WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
         Producto producto = null;
 
         while(resultSet.next()){
-            producto = new Producto(resultSet.getInt("id_producto"), resultSet.getString("codigo"),
+            producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
                     resultSet.getString("nombre"), resultSet.getString("marca"),
-                    resultSet.getString("serie"), resultSet.getInt("stock"),
-                    resultSet.getBigDecimal("precio_actual"), resultSet.getTimestamp("fecha_vencimiento"),
-                    resultSet.getString("nom_img"), resultSet.getInt("id_categoria"));
+                    resultSet.getString("serie"), resultSet.getLong("stock"),
+                    resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
+                    resultSet.getString("urlImg"), resultSet.getString("idCategoria")
+            );
         }
         return producto;
     }
@@ -96,11 +95,12 @@ public class ProductoDAO implements DAOInterfaceCrud<Producto> {
         ArrayList<Producto> listaProductos= new ArrayList<>();
 
         while(resultSet.next()){
-            Producto producto = new Producto(resultSet.getInt("id_producto"), resultSet.getString("codigo"),
+            Producto producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
                     resultSet.getString("nombre"), resultSet.getString("marca"),
-                    resultSet.getString("serie"), resultSet.getInt("stock"),
-                    resultSet.getBigDecimal("precio_actual"), resultSet.getTimestamp("fecha_vencimiento"),
-                    resultSet.getString("nom_img"), resultSet.getInt("id_categoria"));
+                    resultSet.getString("serie"), resultSet.getLong("stock"),
+                    resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
+                    resultSet.getString("urlImg"), resultSet.getString("idCategoria")
+            );
             listaProductos.add(producto);
         }
         return listaProductos;
@@ -115,18 +115,19 @@ public class ProductoDAO implements DAOInterfaceCrud<Producto> {
     public boolean actualizar(Producto producto) throws SQLException {
         String query = "UPDATE Producto SET codigo = ?, nombre = ?, marca = ?, " +
                 "serie = ?, stock = ?, precio_actual = ?, " +
-                "fecha_vencimiento = ?, nom_img = ?, id_categoria = ? WHERE id_producto = ?";
+                "fecha_vencimiento = ?, nom_img = ?, id_categoria = ? WHERE id = ?";
+
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
         preparedStatement.setString(1, producto.getCodigo());
         preparedStatement.setString(2, producto.getNombre());
         preparedStatement.setString(3, producto.getMarca());
-        preparedStatement.setString(4, producto.getSerial());
-        preparedStatement.setInt(5, producto.getStock());
-        preparedStatement.setBigDecimal(6, producto.getPrecioActual());
-        preparedStatement.setTimestamp(7, producto.getFechaVencimiento());
-        preparedStatement.setString(8, producto.getNombreImg());
-        preparedStatement.setInt(9, producto.getIdCategoria());
+        preparedStatement.setString(4, producto.getSerie());
+        preparedStatement.setLong(5, producto.getStock());
+        preparedStatement.setDouble(6, producto.getPrecioActual());
+        preparedStatement.setTimestamp(7, new Timestamp(producto.getFechaVencimiento().getTime()));
+        preparedStatement.setString(8, producto.getUrlImg());
+        preparedStatement.setString(9, producto.getIdCategoria());
 
         return preparedStatement.executeUpdate() >= 1;
     }

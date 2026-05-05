@@ -19,10 +19,10 @@ public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
      */
     @Override
     public boolean agregar(Categoria categoria) throws SQLException {
-        String query = "INSERT INTO Categoria (id_categoria, nombre) VALUES (?,?)";
+        String query = "INSERT INTO Categoria (id, nombre) VALUES (?,?)";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        preparedStatement.setInt(1, categoria.getIdCategoria());
+        preparedStatement.setString(1, categoria.getId());
         preparedStatement.setString(2, categoria.getNombre());
 
         return preparedStatement.executeUpdate() >= 1;
@@ -34,10 +34,10 @@ public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
      * @throws SQLException si no puede acceder a la base de datos
      */
     @Override
-    public boolean eliminar(int id) throws SQLException {
-        String query = "DELETE FROM Categoria WHERE id_categoria = ?";
+    public boolean eliminar(String id) throws SQLException {
+        String query = "DELETE FROM Categoria WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
         return preparedStatement.executeUpdate() >= 1;
     }
@@ -48,18 +48,18 @@ public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
      * @throws SQLException si no puede acceder a la base de datos.
      */
     @Override
-    public Categoria obtener(int id) throws SQLException {
-        String query = "SELECT * FROM Categoria WHERE id_categoria = ?";
+    public Categoria obtener(String id) throws SQLException {
+        String query = "SELECT * FROM Categoria WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        preparedStatement.setInt(1, id);
+        preparedStatement.setString(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
         Categoria categoria = null;
 
         while(resultSet.next()){
-            categoria = new Categoria(resultSet.getInt("id_categoria"), resultSet.getString("nombre"));
+            categoria = new Categoria(resultSet.getString("id"), resultSet.getString("nombre"));
         }
         return categoria;
     }
@@ -78,7 +78,7 @@ public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
         ArrayList<Categoria> listaCategorias = new ArrayList<>();
 
         while(resultSet.next()){
-            Categoria categoria = new Categoria(resultSet.getInt("id_categoria"), resultSet.getString("nombre"));
+            Categoria categoria = new Categoria(resultSet.getString("id"), resultSet.getString("nombre"));
             listaCategorias.add(categoria);
         }
         return listaCategorias;
@@ -90,7 +90,7 @@ public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
      */
     @Override
     public boolean actualizar(Categoria categoria) throws SQLException {
-        String query = "UPDATE Categoria SET nombre = ? WHERE id_categoria = ?";
+        String query = "UPDATE Categoria SET nombre = ? WHERE id = ?";
         PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
         preparedStatement.setString(1, categoria.getNombre());

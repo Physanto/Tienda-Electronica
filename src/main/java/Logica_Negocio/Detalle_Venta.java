@@ -2,14 +2,14 @@ package Logica_Negocio;
 
 public class Detalle_Venta {
 
-    private String idDetalleVenta, idProducto, idVenta;
+    private String id, idProducto, idVenta;
     private Long cantidad;
     private Double subtotal, precioVenta;
 
     public Detalle_Venta(){ }
 
-    public Detalle_Venta(String idDetalleVenta, Long cantidad, Double subtotal, Double precioVenta, String idProducto, String idVenta) {
-        this.idDetalleVenta = idDetalleVenta;
+    public Detalle_Venta(String id, Long cantidad, Double subtotal, Double precioVenta, String idProducto, String idVenta) {
+        this.id = id;
         this.cantidad = cantidad;
         this.subtotal = subtotal;
         this.precioVenta = precioVenta;
@@ -17,12 +17,12 @@ public class Detalle_Venta {
         this.idVenta = idVenta;
     }
 
-    public String getIdDetalleVenta() {
-        return idDetalleVenta;
+    public String getId() {
+        return id;
     }
 
-    public void setIdDetalleVenta(String idDetalleVenta) {
-        this.idDetalleVenta = idDetalleVenta;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Long getCantidad() {

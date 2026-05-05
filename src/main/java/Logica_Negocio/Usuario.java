@@ -1,6 +1,5 @@
 package Logica_Negocio;
 
-import Helpers.HelperCifrado;
 /**
  *
  * @author Santiago Lopez Patron Template Method
@@ -11,26 +10,26 @@ import Helpers.HelperCifrado;
  */
 public abstract class Usuario {
 
-    private String idUsuario;
+    private String id;
     private String usuario;
     private String contrasenha;
     private Boolean estado;
 
     public Usuario(){ }
 
-    public Usuario(String idUsuario, String usuario, String contrasenha, Boolean estado) {
-        this.idUsuario = idUsuario;
+    public Usuario(String id, String usuario, String contrasenha, Boolean estado) {
+        this.id = id;
         this.usuario = usuario;
         this.contrasenha = contrasenha;
         this.estado = estado;
     }
 
-    public String getIdUsuario(){
-        return idUsuario;
+    public String getId(){
+        return id;
     }
 
-    public void setIdUsuario(String idUsuario){
-        this.idUsuario = idUsuario;
+    public void setId(String id){
+        this.id = id;
     }
 
     public String getUsuario() {

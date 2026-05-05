@@ -2,11 +2,15 @@ package Logica_Negocio;
 
 import java.util.Date;
 
+/**
+ * @author Manuel Escobar
+ */
+
 public class Venta {
 
     public enum MetodoPago { EFECTIVO, TARJETA };
 
-    private String idVenta;
+    private String id;
     private Date fechaVenta;
     private Double totalVenta;
     private MetodoPago metodoPago;
@@ -14,20 +18,20 @@ public class Venta {
 
     public Venta(){ }
 
-    public Venta(String idVenta, Date fechaVenta, Double totalVenta, MetodoPago metodoPago, String idCliente) {
-        this.idVenta = idVenta;
+    public Venta(String id, Date fechaVenta, Double totalVenta, MetodoPago metodoPago, String idCliente) {
+        this.id = id;
         this.fechaVenta = fechaVenta;
         this.totalVenta = totalVenta;
         this.metodoPago = metodoPago;
         this.idCliente = idCliente;
     }
 
-    public String getIdVenta() {
-        return idVenta;
+    public String getId() {
+        return id;
     }
 
-    public void setIdVenta(String idVenta) {
-        this.idVenta = idVenta;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Date getFechaVenta() {
