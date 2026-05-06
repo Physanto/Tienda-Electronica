@@ -1,10 +1,14 @@
 package Helpers;
 
+import Logica_Conexion.GeneralOnlineCRUD;
 import Logica_Conexion.PersonaProvider;
 import Logica_Negocio.Cliente;
+import Logica_Negocio.Persona;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  *
@@ -19,36 +23,38 @@ public class HelperRegistro implements IHelperRegistro{
 
     /**
      * Metodo que registra a una persona en la base de datos de la nube
-     * @param objper es la persona que se quiere registrar
-     * @param id es el idCliente que se quiere dar a ese usuario
-     * @param producto es el producto asignado a esa persona
+     * @param cliente es el registro que se quiere guardar
      */
     @Override
-    public void RegistrarPersonaNube(Cliente objper, int id, String producto)
-    {
-        boolean res = PersonaProvider.RetornarUid(objper.getUid());
-        if (!res) {
+    public <T> void registrarNube(Class<T> clase) {
+        Field[] metodos = clase.getDeclaredFields();
+
+        if (!GeneralOnlineCRUD.existeRegistro(clase.getName(), clase, clase.getDeclaredMethod("getId", clase))) {
             try {
                 Map<String, Object> datos = new HashMap<>();
-                datos.put("uid", objper.getUid());
-                datos.put("Nombre", objper.getNombre());
-                datos.put("Apellido", objper.getApellido());
-                datos.put("Direccion", objper.getDireccion());
-                datos.put("Cedula", objper.getCedula());
-                datos.put("Productos", producto);
-                datos.put("Nom_img", objper.getNom_img());
+                datos.put(metodos[0].getName(), clase.getDeclaredMethod("getId", clase));
+                datos.put(metodos[1].getName(), clase.getDeclaredMethod("getNombre", clase));
+                datos.put(metodos[2].getName(), clase.getDeclaredMethod("getApellido", clase));
+                datos.put(metodos[3].getName(), clase.getDeclaredMethod("getCedula", clase));
+                datos.put(metodos[4].getName(), clase.getDeclaredMethod("getDireccion", clase));
+                datos.put(metodos[5].getName(), cliente.getUrlImg());
                 long inicio = System.currentTimeMillis();
-                PersonaProvider.GuardarPersona("Cliente", String.valueOf(id), datos);
+                GeneralOnlineCRUD.guardar("Cliente", cliente.getId(), datos);
                 long fin = System.currentTimeMillis();
                 HelperTiempo.RetornarTiempo(fin, inicio);
                 System.out.println("Cliente guardada con exito con idCliente"+"\t"+id);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 System.out.println("Error:" + e.getMessage());
             }
         }
         else {
-            System.out.println("El uid ya existe");
+            System.out.println("El id ya existe");
         }
+    }
+
+    public void eliminarCliente(String coleccion, Cliente cliente){
+        Cliente.class.getDeclaredFields();
     }
 
     /**

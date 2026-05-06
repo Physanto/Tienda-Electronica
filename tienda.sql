@@ -49,7 +49,7 @@ CREATE TABLE Venta (
     FOREIGN KEY(idCliente) REFERENCES Cliente(id)
 );
 
-CREATE TABLE Detalle_Venta (
+CREATE TABLE DetalleVenta (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     cantidad BIGINT NOT NULL,
     subtotal DOUBLE NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE Detalle_Venta (
 
 --------- tabla encargada del registro de la sincronizacion
 
-CREATE TABLE Cola_Sincronizadora(
+CREATE TABLE ColaSincronizadora(
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,
     tablaAfectada VARCHAR(50) NOT NULL,
