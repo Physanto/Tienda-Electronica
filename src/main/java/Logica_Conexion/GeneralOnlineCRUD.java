@@ -125,6 +125,7 @@ public class GeneralOnlineCRUD {
      * Hace uso del metodo *obtener* para verificar si existe o no un registro especificado mediante el documento
      * @param coleccion es el contenedor donde se almacenan los registros
      * @param clase es el tipo de objeto donde se desea guardar el registro encontrado.
+     * @param documento es el identifiador del registro especifico que se desea buscar
      * @return true si el registro existe, de lo contrario false
      * @param <T> es generico, asi que puede ser de cualquier tipo
      */

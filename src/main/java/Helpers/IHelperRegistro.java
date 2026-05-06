@@ -6,7 +6,12 @@ import Logica_Negocio.Cliente;
  *
  * @author Santiago Lopez
  */
+
+/**
+ * Intefaz/Contrato
+ */
 public interface IHelperRegistro {
   
-    public void RegistrarPersonaNube(Cliente objper, int id, String producto);
+    public <T> void registrarCliente(Class<T> object);
+    public void eliminarCliente(Cliente cliente, String id);
 }
