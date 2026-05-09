@@ -1,7 +1,7 @@
 package Helpers;
 
 import Logica_Conexion.ClienteDAO;
-import Logica_Conexion.PersonaProvider;
+import Logica_Conexion.GeneralOnlineCRUD;
 import Logica_Negocio.Cliente;
 
 import java.util.ArrayList;
@@ -16,23 +16,22 @@ public class HelperGestorBD {
 
         try{
             ClienteDAO clienteDAO = new ClienteDAO();
-            clienteDAO.add(cliente);
+            clienteDAO.agregar(cliente);
 
             if(online){
-                //aqui podemos usar el metodo de guardarPersonaNube pero se debe modificar
-                // esto con el fin de no repetir codigo aqui
-                Map<String, Object> datos = new HashMap<>();
-                datos.put("uid", cliente.getUid());
-                datos.put("Nombre", cliente.getNombre());
-                datos.put("Apellido", cliente.getApellido());
-                datos.put("Direccion", cliente.getDireccion());
-                datos.put("Cedula", cliente.getCedula());
-                datos.put("Productos", producto);
-                datos.put("Nom_img", cliente.getNom_img());
-                boolean exito = PersonaProvider.GuardarPersona("cliente", String.valueOf(id), datos);
+//                //aqui podemos usar el metodo de guardarPersonaNube pero se debe modificar
+//                // esto con el fin de no repetir codigo aqui
+//                Map<String, Object> datos = new HashMap<>();
+//                datos.put("id", cliente.getId());
+//                datos.put("nombre", cliente.getNombre());
+//                datos.put("apellido", cliente.getApellido());
+//                datos.put("direccion", cliente.getDireccion());
+//                datos.put("cedula", cliente.getCedula());
+//                datos.put("urlImg", cliente.getUrlImg());
+                boolean exito = HelperRegistro.RegistrarPersonaNubeI(cliente);
 
                 if (exito) {
-                    clienteDAO.marcarSincronizado(cliente.getUid());
+                    clienteDAO.marcarResultSetincronizado(cliente.getId());
                     System.out.println("Guardado exitoso en Local y Nube.");
                 }
                 else {
@@ -55,11 +54,11 @@ public class HelperGestorBD {
         try{
             if(online) {
                 System.out.println("Listando desde la nube");
-                listaClientes = PersonaProvider.CargarInfoPersona();
+                listaClientes = GeneralOnlineCRUD.obteners("Cliente", Cliente.class);
             }
             else {
                 ClienteDAO clienteDAO = new ClienteDAO();
-                listaClientes = clienteDAO.getPersona();
+                listaClientes = clienteDAO.obteners();
                 System.out.println("Listando desde local");
             }
         }
@@ -77,10 +76,10 @@ public class HelperGestorBD {
         try{
             if(online) {
                 System.out.println("Listando desde la nube");
-                cliente = PersonaProvider.CargarInfoPersonaCodigo(codigo);
+                cliente = GeneralOnlineCRUD.obtener("Cliente", codigo, Cliente.class);
             }
             else {
-                cliente = clienteDAO.getPersona(codigo);
+                cliente = clienteDAO.obtener(codigo);
                 System.out.println("Listando desde local");
             }
         }
@@ -96,12 +95,12 @@ public class HelperGestorBD {
 
         try{
             ClienteDAO clienteDAO = new ClienteDAO();
-            if(clienteDAO.delete(codigo)){ System.out.println("eliminado desde local"); }
+            if(clienteDAO.eliminar(codigo)){ System.out.println("eliminado desde local"); }
 
             if(online) {
                 System.out.println("Sistema online y listo para eliminar");
 
-                if(PersonaProvider.EliminarPersona(coleccion, codigo)){
+                if(GeneralOnlineCRUD.eliminar(coleccion, codigo, Cliente.class)){
                     System.out.println("Eliminado desde la nube.");
                 }
                 else{

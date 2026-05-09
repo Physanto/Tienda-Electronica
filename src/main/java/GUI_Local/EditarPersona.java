@@ -165,9 +165,9 @@ public class EditarPersona extends javax.swing.JFrame {
         String nombreimg = jTextField7.getText();
         
         try {
-            per = new Cliente(uid, nombre, apellido, cedula, direccion, producto, nombreimg,'0');
+            per = new Cliente(uid, nombre, apellido, cedula, direccion, nombreimg);
             ClienteDAO dao = new ClienteDAO();
-            dao.update(per);
+            dao.actualizar(per);
             JOptionPane.showMessageDialog(null, "Actualizar Exitoso");
         } catch (Exception e) {
             System.out.println("Excepcion" + e);
@@ -183,17 +183,16 @@ public class EditarPersona extends javax.swing.JFrame {
         ClienteDAO per = new ClienteDAO();
         String id = jTextField1.getText();
         try {
-            Cliente cliente = per.getPersona(id);
+            Cliente cliente = per.obtener(id);
             if (cliente == null) {
                 JOptionPane.showMessageDialog(null, "No se ha encontrado cliente");
             }
-            jTextField1.setText(cliente.getUid());
+            jTextField1.setText(cliente.getId());
             jTextField2.setText(cliente.getNombre());
             jTextField3.setText(cliente.getApellido());
             jTextField4.setText(cliente.getDireccion());
             jTextField5.setText(cliente.getCedula());
-            jTextField6.setText(cliente.getProducto());
-            jTextField7.setText(cliente.getNom_img());
+            jTextField7.setText(cliente.getUrlImg());
             jButton2.setVisible(true);
             jTextField1.setEditable(false);
             

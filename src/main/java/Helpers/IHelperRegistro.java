@@ -12,6 +12,6 @@ import Logica_Negocio.Cliente;
  */
 public interface IHelperRegistro {
   
-    public <T> void registrarCliente(Class<T> object);
-    public void eliminarCliente(Cliente cliente, String id);
+    public <T> boolean registrarNube(T object);
+    //public void eliminarCliente(Cliente cliente, String id);
 }

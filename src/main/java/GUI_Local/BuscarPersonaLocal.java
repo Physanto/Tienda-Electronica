@@ -144,13 +144,13 @@ public class BuscarPersonaLocal extends javax.swing.JFrame {
         ClienteDAO per = new ClienteDAO();
         String id = jTextField1.getText();
         try {
-            Cliente cliente = per.getPersona(id);
+            Cliente cliente = per.obtener(id);
             if (cliente ==null) {
                 JOptionPane.showMessageDialog(null, "No se ha encontrado cliente");
             }
             String im = Helpers.HelperImpresion.ImprimirInfoInterfazLocal(cliente);
             jTextPane1.setText(im);
-            pathc = s + "\\Images\\" + cliente.getNom_img() + ".jpg";
+            pathc = s + "\\Images\\" + cliente.getUrlImg() + ".jpg";
             establecerImagen();
 
         } catch (Exception e) {

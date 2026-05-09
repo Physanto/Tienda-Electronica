@@ -9,7 +9,7 @@ import Helpers.HelperRegistro;
 import Helpers.HelperTiempo;
 import Helpers.HelperValidacion;
 import Logica_Conexion.Conexion;
-import Logica_Conexion.PersonaProvider;
+//import Logica_Conexion.PersonaProvider;
 import Logica_Negocio.Producto;
 import Logica_Negocio.Cliente;
 import java.util.ArrayList;
@@ -246,8 +246,8 @@ public class Main {
                             }
                             //Termina Serial
 
-                            objprodu = new Producto(nom_produ, marca, serial);
-                            lsprodulocal.add(objprodu);
+                            //objprodu = new Producto(nom_produ, marca, serial);
+                            //lsprodulocal.add(objprodu);
 
                         }
                         lsproduglobal = lsprodulocal;
@@ -258,22 +258,22 @@ public class Main {
                     }
 
                     for (int i = 0; i < lsproduglobal.size(); i++) {
-                        producto += lsproduglobal.get(i).getNombre() + "," + lsproduglobal.get(i).getMarca() + "," + lsproduglobal.get(i).getSerial() + ";";
+                        producto += lsproduglobal.get(i).getNombre() + "," + lsproduglobal.get(i).getMarca() + "," + lsproduglobal.get(i).getSerie() + ";";
 
                     }
 
                     int id = (int) (Math.random() * 100000);
 
-                    objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
-                    objper.setProductos(lsproduglobal);
+                    objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, nom_img);
+                    //objper.setProductos(lsproduglobal);
                     lspersonalocal.add(objper);
-                    HelperRegistro.RegistrarPersonaNubeI(objper, id, producto);
+                    HelperRegistro.RegistrarPersonaNubeI(objper);
                     producto = "";
                     break;
 
                 case 2:
 
-                    lspersonasnube = PersonaProvider.CargarInfoPersona();
+                   // lspersonasnube = PersonaProvider.CargarInfoPersona();
                     HelperImpresion.ImprimirInfoPersonaNube(lspersonasnube);
 
                     break;
@@ -286,7 +286,7 @@ public class Main {
                 case 4:
 
                     String codigo = "";
-                    lspersonasnube = PersonaProvider.CargarInfoPersona();
+                    //lspersonasnube = PersonaProvider.CargarInfoPersona();
                     System.out.println("Digite el uid a buscar");
                     codigo = scan.nextLine();
                     long inicio = System.currentTimeMillis();

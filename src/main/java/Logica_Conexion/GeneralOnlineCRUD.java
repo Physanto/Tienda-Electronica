@@ -57,7 +57,7 @@ public class GeneralOnlineCRUD {
      * @param coleccion es el contenedor de donde se van a traer los registros
      * @return los datos cargados previamente si estos existen, de lo contrario retorna null
      */
-    public static QuerySnapshot cargarDatos(String coleccion){
+    private static QuerySnapshot cargarDatos(String coleccion){
         try {
             CollectionReference clienteFirestore = Conexion.db.collection(coleccion);
             return clienteFirestore.get().get(); // tener cuidado: operacion asincrona sin get()

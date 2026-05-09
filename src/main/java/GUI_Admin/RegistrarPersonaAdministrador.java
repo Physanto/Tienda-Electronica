@@ -117,9 +117,9 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
             jTextField1.setBorder(new LineBorder(Color.BLACK, 1));
             jTextField2.setBorder(new LineBorder(Color.BLACK, 1));
             jTextField3.setBorder(new LineBorder(Color.BLACK, 1));
-            
-            Producto objproducto = new Producto(nombre, marca, serial);
-            lsproductos.add(objproducto);
+
+            //Producto objproducto = new Producto(nombre, marca, serial);
+            //lsproductos.add(objproducto);
             band++;
             
             JOptionPane.showMessageDialog(null, "Registrando producto"+"\t"+band+"de"+numglobal);
@@ -176,14 +176,14 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         if(res==0 && res1==0 && res2==0 && res3==0 && res4==0){
 
         for (int i = 0; i < lsproductos.size(); i++) {
-            producto += lsproductos.get(i).getNombre() + "," + lsproductos.get(i).getMarca() + "," + lsproductos.get(i).getSerial() + ";";
+            producto += lsproductos.get(i).getNombre() + "," + lsproductos.get(i).getMarca() + "," + lsproductos.get(i).getSerie() + ";";
         }
 
         int id = (int) (Math.random() * 100000);
 
-        objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, producto, nom_img,'0');
+        objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, nom_img);
         lspersona.add(objper);
-        objper.setProductos(lsproductos);
+        //objper.setProductos(lsproductos);
         HelperGestorBD.GuardarPersonaGeneral(objper, id, producto);
         // ya no es necesario ya que ahora depende de la conexion a internet
         //HelperRegistro.RegistrarPersonaNubeI(objper, idCliente, producto);
