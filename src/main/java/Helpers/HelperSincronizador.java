@@ -1,7 +1,7 @@
 package Helpers;
 
 import Logica_Conexion.ClienteDAO;
-import Logica_Conexion.PersonaProvider;
+import Logica_Conexion.GeneralOnlineCRUD;
 import Logica_Negocio.Cliente;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,19 +33,18 @@ public class HelperSincronizador {
 
             for (Cliente p : pendientes) {
                 Map<String, Object> datos = new HashMap<>();
-                datos.put("uid", p.getUid());
+                datos.put("uid", p.getId());
                 datos.put("Nombre", p.getNombre());
                 datos.put("Apellido", p.getApellido());
                 datos.put("Direccion", p.getDireccion());
                 datos.put("Cedula", p.getCedula());
-                datos.put("Productos", p.getProducto());
-                datos.put("Nom_img", p.getNom_img());
+                datos.put("Nom_img", p.getUrlImg());
 
-                boolean exito = PersonaProvider.GuardarPersona("Cliente", p.getUid(), datos);
+                boolean exito = GeneralOnlineCRUD.guardar("Cliente", p.getId(), datos);
 
                 if (exito) {
-                    clienteDAO.marcarSincronizado(p.getUid());
-                    System.out.println("Cliente " + p.getUid() + " sincronizada con exito.");
+                    clienteDAO.marcarResultSetincronizado(p.getId());
+                    System.out.println("Cliente " + p.getId() + " sincronizada con exito.");
                 }
             }
         }

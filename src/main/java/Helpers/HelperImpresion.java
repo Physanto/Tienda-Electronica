@@ -22,26 +22,26 @@ public class HelperImpresion {
 
         for(int i = 0; i < lspersonasnube.size(); i++) {
             System.out.println("Cliente" + "\t" + (i + 1) + "\n"
-                    + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                    + "El idCliente de la persona es:" + lspersonasnube.get(i).getId() + "\n"
                     + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                     + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                     + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
                     + "La direccion de la persona es" + "\t" + lspersonasnube.get(i).getDireccion() + "\n"
             );
-            parts = lspersonasnube.get(i).getProducto().split(";");
-
-            for (int j = 0; j < parts.length; j++) {
-
-                parts2 = parts[j].split(",");
-                objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
-                lsnube.add(objprodu);
-            }
+//            parts = lspersonasnube.get(i).getProducto().split(";");
+//
+//            for (int j = 0; j < parts.length; j++) {
+//
+//                parts2 = parts[j].split(",");
+//                objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
+//                lsnube.add(objprodu);
+//            }
 
             for (int k = 0; k < lsnube.size(); k++) {
                 System.out.println("Producto:" + "\t" + (k + 1));
                 System.out.println("Nombre" + "\t" + lsnube.get(k).getNombre());
                 System.out.println("Marca" + "\t" + lsnube.get(k).getMarca());
-                System.out.println("Serial" + "\t" + lsnube.get(k).getSerial() + "\n");
+                System.out.println("Serial" + "\t" + lsnube.get(k).getSerie() + "\n");
             }
 
             lsnube.clear();
@@ -60,18 +60,18 @@ public class HelperImpresion {
         if (!lspersonalocal.isEmpty()) {
             for (int i = 0; i < lspersonalocal.size(); i++) {
                 System.out.println("Cliente" + "\t" + (i + 1) + "\n"
-                        + "El idCliente de la persona es" + "\t" + lspersonalocal.get(i).getUid() + "\n"
+                        + "El idCliente de la persona es" + "\t" + lspersonalocal.get(i).getId() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonalocal.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonalocal.get(i).getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + lspersonalocal.get(i).getCedula() + "\n"
                         + "La direccion de la persona es" + "\t" + lspersonalocal.get(i).getDireccion() + "\n"
                 );
-                for (int j = 0; j < lspersonalocal.get(i).getProductos().size(); j++) {
-                    System.out.println("Producto:" + "\t" + (j + 1));
-                    System.out.println("Nombre" + "\t" + lspersonalocal.get(i).getProductos().get(j).getNombre());
-                    System.out.println("Marca" + "\t" + lspersonalocal.get(i).getProductos().get(j).getMarca());
-                    System.out.println("Serial" + "\t" + lspersonalocal.get(i).getProductos().get(j).getSerial() + "\n");
-                }
+//                for (int j = 0; j < lspersonalocal.get(i).getProductos().size(); j++) {
+//                    System.out.println("Producto:" + "\t" + (j + 1));
+//                    System.out.println("Nombre" + "\t" + lspersonalocal.get(i).getProductos().get(j).getNombre());
+//                    System.out.println("Marca" + "\t" + lspersonalocal.get(i).getProductos().get(j).getMarca());
+//                    System.out.println("Serial" + "\t" + lspersonalocal.get(i).getProductos().get(j).getSerial() + "\n");
+//                }
             }
         }
         else {
@@ -86,29 +86,29 @@ public class HelperImpresion {
         ArrayList<Producto> lsnube = new ArrayList<>();
 
         for (int i = 0; i < lspersonasnube.size(); i++) {
-            if (codigo.equals(lspersonasnube.get(i).getUid())) {
+            if (codigo.equals(lspersonasnube.get(i).getId())) {
                 bandera = 1;
                 System.out.println("Cliente" + "\t" + (i + 1) + "\n"
-                        + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                        + "El idCliente de la persona es:" + lspersonasnube.get(i).getId() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
                         + "La direccion de la persona es" + "\t" + lspersonasnube.get(i).getDireccion() + "\n"
                 );
-                partes = lspersonasnube.get(i).getProducto().split(";");
-
-                for (int j = 0; j < partes.length; j++) {
-
-                    partes2 = partes[j].split(",");
-                    objprodu = new Producto(partes2[0], partes2[1], partes2[2]);
-                    lsnube.add(objprodu);
-                }
+//                partes = lspersonasnube.get(i).getProducto().split(";");
+//
+//                for (int j = 0; j < partes.length; j++) {
+//
+//                    partes2 = partes[j].split(",");
+//                    objprodu = new Producto(partes2[0], partes2[1], partes2[2]);
+//                    lsnube.add(objprodu);
+//                }
 
                 for (int k = 0; k < lsnube.size(); k++) {
                     System.out.println("Producto:" + "\t" + (k + 1));
                     System.out.println("Nombre" + "\t" + lsnube.get(k).getNombre());
                     System.out.println("Marca" + "\t" + lsnube.get(k).getMarca());
-                    System.out.println("Serial" + "\t" + lsnube.get(k).getSerial() + "\n");
+                    System.out.println("Serial" + "\t" + lsnube.get(k).getSerie() + "\n");
                 }
 
                 lsnube.clear();
@@ -133,27 +133,27 @@ public class HelperImpresion {
         for (int i = 0; i < lspersonasnube.size(); i++) {
 
             info += "Cliente" + "\t" + (i + 1) + "\n"
-                    + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                    + "El idCliente de la persona es:" + lspersonasnube.get(i).getId() + "\n"
                     + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                     + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                     + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
                     + "La direccion de la persona es" + "\t" + lspersonasnube.get(i).getDireccion() + "\n"
                     + "\n";
 
-            parts = lspersonasnube.get(i).getProducto().split(";");
-
-            for (int j = 0; j < parts.length; j++) {
-
-                parts2 = parts[j].split(",");
-                objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
-                lsnube.add(objprodu);
-            }
+//            parts = lspersonasnube.get(i).getProducto().split(";");
+//
+//            for (int j = 0; j < parts.length; j++) {
+//
+//                parts2 = parts[j].split(",");
+//                objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
+//                lsnube.add(objprodu);
+//            }
 
             for (int k = 0; k < lsnube.size(); k++) {
                 info += "Producto:" + "\t" + (k + 1) + "\n"
                         + "Nombre" + "\t" + lsnube.get(k).getNombre() + "\n"
                         + "Marca" + "\t" + lsnube.get(k).getMarca() + "\n"
-                        + "Serial" + "\t" + lsnube.get(k).getSerial() + "\n"
+                        + "Serial" + "\t" + lsnube.get(k).getSerie() + "\n"
                         + "\n";
             }
 
@@ -175,30 +175,30 @@ public class HelperImpresion {
         int bandera = 0;
 
         for (int i = 0; i < lspersonasnube.size(); i++) {
-            if (codigo.equals(lspersonasnube.get(i).getUid())) {
+            if (codigo.equals(lspersonasnube.get(i).getId())) {
                 bandera = 1;
                 info += "Cliente" + "\t" + (i + 1) + "\n"
-                        + "El idCliente de la persona es:" + lspersonasnube.get(i).getUid() + "\n"
+                        + "El idCliente de la persona es:" + lspersonasnube.get(i).getId() + "\n"
                         + "El nombre de la persona es" + "\t" + lspersonasnube.get(i).getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + lspersonasnube.get(i).getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + lspersonasnube.get(i).getCedula() + "\n"
                         + "La direccion de la persona es" + "\t" + lspersonasnube.get(i).getDireccion() + "\n"
                         + "\n";
 
-                parts = lspersonasnube.get(i).getProducto().split(";");
-
-                for (int j = 0; j < parts.length; j++) {
-
-                    parts2 = parts[j].split(",");
-                    objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
-                    lsnube.add(objprodu);
-                }
+//                parts = lspersonasnube.get(i).getProducto().split(";");
+//
+//                for (int j = 0; j < parts.length; j++) {
+//
+//                    parts2 = parts[j].split(",");
+//                    objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
+//                    lsnube.add(objprodu);
+//                }
 
                 for (int k = 0; k < lsnube.size(); k++) {
                     info += "Producto:" + "\t" + (k + 1) + "\n"
                             + "Nombre" + "\t" + lsnube.get(k).getNombre() + "\n"
                             + "Marca" + "\t" + lsnube.get(k).getMarca() + "\n"
-                            + "Serial" + "\t" + lsnube.get(k).getSerial() + "\n"
+                            + "Serial" + "\t" + lsnube.get(k).getSerie() + "\n"
                             + "\n";
                 }
 
@@ -224,27 +224,27 @@ public class HelperImpresion {
         int bandera = 0;
 
                 info += "Cliente"  + "\n"
-                        + "El idCliente de la persona es:" + per.getUid() + "\n"
+                        + "El idCliente de la persona es:" + per.getId() + "\n"
                         + "El nombre de la persona es" + "\t" + per.getNombre() + "\n"
                         + "El Apellido de la persona es" + "\t" + per.getApellido() + "\n"
                         + "La cedula de la persona es" + "\t" + per.getCedula() + "\n"
                         + "La direccion de la persona es" + "\t" + per.getDireccion() + "\n"
                         + "\n";
 
-                parts = per.getProducto().split(";");
-
-                for (int j = 0; j < parts.length; j++) {
-
-                    parts2 = parts[j].split(",");
-                    objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
-                    lsnube.add(objprodu);
-                }
+//                parts = per.getProducto().split(";");
+//
+//                for (int j = 0; j < parts.length; j++) {
+//
+//                    parts2 = parts[j].split(",");
+//                    objprodu = new Producto(parts2[0], parts2[1], parts2[2]);
+//                    lsnube.add(objprodu);
+//                }
 
                 for (int k = 0; k < lsnube.size(); k++) {
                     info += "Producto:" + "\t" + (k + 1) + "\n"
                             + "Nombre" + "\t" + lsnube.get(k).getNombre() + "\n"
                             + "Marca" + "\t" + lsnube.get(k).getMarca() + "\n"
-                            + "Serial" + "\t" + lsnube.get(k).getSerial() + "\n"
+                            + "Serial" + "\t" + lsnube.get(k).getSerie() + "\n"
                             + "\n";
                 }
 

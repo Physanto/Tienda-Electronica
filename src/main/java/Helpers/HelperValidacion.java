@@ -42,7 +42,7 @@ public class HelperValidacion {
         listaCaracteres[3] = ':';
         listaCaracteres[4] = '"';
         listaCaracteres[5] = '!';
-        listaCaracteres[6] = ' ';
+        //listaCaracteres[6] = ' ';
 
         for (int i = 0; i < cadena.length(); i++) {
              if(!Character.isLetter(cadena.charAt(i)) && !Character.isDigit(cadena.charAt(i))) {

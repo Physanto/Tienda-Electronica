@@ -5,7 +5,7 @@
 package GUI_Cliente;
 
 import Helpers.HelperImpresion;
-import Logica_Conexion.PersonaProvider;
+import Logica_Conexion.GeneralOnlineCRUD;
 import Logica_Negocio.Cliente;
 import java.awt.Color;
 import java.awt.Image;
@@ -114,9 +114,9 @@ public class BuscarPersonaCliente extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        lspersonasnube = PersonaProvider.CargarInfoPersona();
+        lspersonasnube = GeneralOnlineCRUD.obteners("Cliente", Cliente.class);
         String codigo = jTextField1.getText();
-        objper = PersonaProvider.CargarInfoPersonaCodigo(codigo);
+        objper = GeneralOnlineCRUD.obtener("Cliente", codigo, Cliente.class);
          if(objper==null)
         {
              jTextField1.setBorder(new LineBorder(Color.RED, 2));
@@ -127,7 +127,7 @@ public class BuscarPersonaCliente extends javax.swing.JFrame {
             jTextField1.setBorder(new LineBorder(Color.BLACK, 1));
             String res = HelperImpresion.ImprimirInfoInterfazNube(lspersonasnube, codigo);
         jTextPane1.setText(res);
-        pathc = s + "\\Images\\"+objper.getNom_img()+".jpg";
+        pathc = s + "\\Images\\"+objper.getUrlImg()+".jpg";
             System.out.println(pathc);
                 establecerImagen();
         }

@@ -107,7 +107,7 @@ public class MostrarPersonaLocal extends javax.swing.JFrame {
         try{
             ClienteDAO dao= new ClienteDAO();
            
-            ArrayList<Cliente> listaper= dao.getPersona();
+            ArrayList<Cliente> listaper= dao.obteners();
             String imp=Helpers.HelperImpresion.ImprimirInfoInterfaz(listaper);
             jTextPane1.setText(imp);
             

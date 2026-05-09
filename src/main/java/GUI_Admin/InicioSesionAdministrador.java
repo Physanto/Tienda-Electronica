@@ -71,10 +71,10 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
             System.out.println("Usu" + cifrarusu);
 
             if (usuario.equals("Admin")) {
-                usuAdmin = new Administrador("Admin", "12345");
+                usuAdmin = new Administrador("1", "Admin", "12345", true);
             } 
 			else if (usuario.equals("Persona")) {
-                usuCliente = new Persona("Persona", "12345");
+                usuCliente = new Persona("2", "Persona", "12345", true);
             }
 			else{
                 JOptionPane.showMessageDialog(null, "Usuario o contraseña invalida");

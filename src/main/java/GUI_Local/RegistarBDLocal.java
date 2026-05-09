@@ -154,9 +154,9 @@ public class RegistarBDLocal extends javax.swing.JFrame {
         String nombreimg= jTextField7.getText();
          
         try{
-            per = new Cliente(uid, nombre, apellido, cedula, direccion, producto, nombreimg,'0');
+            per = new Cliente(uid, nombre, apellido, cedula, direccion, nombreimg);
             ClienteDAO dao= new ClienteDAO();
-            dao.add(per);
+            dao.agregar(per);
             
         //String consulta="INSERT INTO `persona`(`Uid`, `Nombre`, `Apellido`, `Direccion`, `Cedula`, `Producto`, `Nom_img`) VALUES ('"+uid+"','"+nombre+"','"+apellido+"','"+direccion+"','"+cedula+"','"+producto+"','"+nombreimg+"')";
         

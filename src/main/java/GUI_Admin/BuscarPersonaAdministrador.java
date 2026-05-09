@@ -131,7 +131,7 @@ public class BuscarPersonaAdministrador extends javax.swing.JFrame {
             jTextField1.setBorder(new LineBorder(Color.BLACK, 1));
             String res = HelperImpresion.ImprimirInfoInterfazNube(lspersonasnube, codigo);
             jTextPane1.setText(res);
-            pathc = s + "\\Images\\" + objper.getNom_img() + ".jpg";
+            pathc = s + "\\Images\\" + objper.getUrlImg() + ".jpg";
             establecerImagen();
         }
 
