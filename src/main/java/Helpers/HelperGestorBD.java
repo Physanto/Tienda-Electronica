@@ -3,9 +3,12 @@ package Helpers;
 import Logica_Conexion.ClienteDAO;
 import Logica_Conexion.ClienteOnlineDAO;
 import Logica_Conexion.GeneralOnlineProviderCRUD;
+import Logica_Conexion.SincronizadoraDAO;
 import Logica_Negocio.Cliente;
+import Logica_Negocio.Sincronizadora;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -24,20 +27,14 @@ public class HelperGestorBD {
             ClienteDAO clienteDAO = new ClienteDAO();
             clienteDAO.agregar(cliente);
 
+            if(!online){
+                Date n = new Date();
+                SincronizadoraDAO sincronizadoraDAO = new SincronizadoraDAO();
+                sincronizadoraDAO.agregar(new Sincronizadora("1", Sincronizadora.Accion.INSERT, "Cliente", String.valueOf(id), n));
+            }
             if(online){
-//                //aqui podemos usar el metodo de guardarPersonaNube pero se debe modificar
-//                // esto con el fin de no repetir codigo aqui
-//                Map<String, Object> datos = new HashMap<>();
-//                datos.put("id", cliente.getId());
-//                datos.put("nombre", cliente.getNombre());
-//                datos.put("apellido", cliente.getApellido());
-//                datos.put("direccion", cliente.getDireccion());
-//                datos.put("cedula", cliente.getCedula());
-//                datos.put("urlImg", cliente.getUrlImg());
                 ClienteOnlineDAO clienteOnlineDAO = new ClienteOnlineDAO();
-
                 if (clienteOnlineDAO.registrarNube(cliente)) {
-                    clienteDAO.marcarResultSetincronizado(cliente.getId());
                     System.out.println("Guardado exitoso en Local y Nube.");
                 }
                 else {

@@ -12,10 +12,10 @@ import java.util.ArrayList;
  */
 public interface ILocalCRUD<T> {
     
-    public boolean agregar(T object) throws SQLException;
-    public boolean eliminar(String id) throws SQLException;
-    public T obtener(String id) throws SQLException;
-    public ArrayList<T> obteners() throws SQLException;
-    public boolean actualizar(T object) throws SQLException;
-    public void cerrarConexion() throws SQLException;
+    public boolean agregar(T object);
+    public boolean eliminar(String id);
+    public T obtener(String id);
+    public ArrayList<T> obteners();
+    public boolean actualizar(T object);
+    public void cerrarConexion();
 }
