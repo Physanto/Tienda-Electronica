@@ -8,7 +8,9 @@ import GUI_Admin.InicioSesionAdministrador;
 import Helpers.HelperMonitorRed;
 import Helpers.HelperRed;
 import Logica_Conexion.Conexion;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -31,14 +33,15 @@ public class Portada extends javax.swing.JFrame {
     
     public Portada() {
         initComponents();
+        centerFrame();
         HelperMonitorRed monitor = new HelperMonitorRed();
         monitor.setDaemon(true);
         monitor.start();
         Conexion.Conectar();
         Path currentRelativePath = Paths.get("");
         s = currentRelativePath.toAbsolutePath().toString();
-        pathc = s + "\\Images\\" + "Background2" + ".jpg";
-        establecerImagen();
+        establecerFondo();
+        establecerIconoLogo();
     }
 
     /**
@@ -48,35 +51,62 @@ public class Portada extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     
-      public void establecerImagen() {
-
+    /**
+     * Centra el JFrame en la pantalla al momento de mostrarse.
+     */
+    private void centerFrame() {
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
+    }
+    
+     /**
+     * Carga el fondo desde el sistema de archivos y la asigna al JLabel fondo.
+     */
+    
+    public void establecerFondo() {
         Image img = null;
         try {
-            File file = new File(pathc);
-            img = ImageIO.read(new File(pathc));
-            //5. Setear la imagen al JLabel
-            jLabel1.setIcon(new ImageIcon(img));
+            String pathIcono = s + "\\Images\\" + "BackgroundN2" + ".png";
+            img = ImageIO.read(new File(pathIcono));
+            fondo.setIcon(new ImageIcon(img));
         } catch (IOException ioexception) {
             System.err.println(ioexception);
         }
     }
+    
+    /**
+     * Carga la imagen del logo desde el sistema de archivos y la asigna al JLabel icono_logo.
+     */
+    public void establecerIconoLogo() {
+        Image img = null;
+        try {
+            String pathIcono = s + "\\Images\\" + "LogoImage" + ".png";
+            img = ImageIO.read(new File(pathIcono));
+            icono_logo.setIcon(new ImageIcon(img));
+        } catch (IOException ioexception) {
+            System.err.println(ioexception);
+        }
+    }
+      
+    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
+        titulo = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        icono_logo = new javax.swing.JLabel();
+        fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Bienvenido");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 170, -1, -1));
+        titulo.setFont(new java.awt.Font("Segoe UI Light", 1, 40)); // NOI18N
+        titulo.setForeground(new java.awt.Color(0, 0, 0));
+        titulo.setText("Bienvenido");
+        getContentPane().add(titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 230, -1, -1));
 
         jButton1.setBackground(new java.awt.Color(0, 0, 153));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Avanzar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -84,8 +114,9 @@ public class Portada extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 250, 90, 30));
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -30, 500, 402));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 320, 90, 30));
+        getContentPane().add(icono_logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 30, 190, 180));
+        getContentPane().add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 510, 402));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -153,8 +184,9 @@ public class Portada extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel fondo;
+    private javax.swing.JLabel icono_logo;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel titulo;
     // End of variables declaration//GEN-END:variables
 }
