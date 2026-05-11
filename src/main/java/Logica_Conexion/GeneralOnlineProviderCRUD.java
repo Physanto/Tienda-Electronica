@@ -25,8 +25,10 @@ Sino se hace esto se deberia hacer basicamente un CRUD para cada objeto, con est
  * Clase encargada de manejar el CRUD a la base de datos en la nube (Firebase)
  * Esta hace implementacion de metodos genericos propios para un eficiente manejo de recursos y
  * disminuir la complejidad del manejo de varias clases
+ *
+ * @author Manuel Figueroa (Physanto)
  */
-public class GeneralOnlineCRUD {
+public class GeneralOnlineProviderCRUD {
 
     CollectionReference reference;
     public static Firestore db;
@@ -75,7 +77,6 @@ public class GeneralOnlineCRUD {
      * @param documento es el identificador del registro especifico que se desea buscar
      * @param clase es el tipo de objeto donde se desea guardar el registro encontrado.
      * @return el registro encontrado, de lo contrario null
-     * @param <T> es generico, asi que puede ser de cualquier tipo
      */
     public static <T> T obtener(String coleccion, String documento, Class<T> clase){
        QuerySnapshot datos = cargarDatos(coleccion);

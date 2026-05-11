@@ -1,7 +1,8 @@
 package Helpers;
 
 /**
- * Clase encargada de Monitorear la red
+ * Clase que se comporta como un daemon para la monitorizacion de la red del sistema.
+ *
  * @author Manuel Escobar
  */
 public class HelperMonitorRed extends Thread{

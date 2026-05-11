@@ -1,14 +1,16 @@
 package Helpers;
 
 import Logica_Conexion.ClienteDAO;
-import Logica_Conexion.GeneralOnlineCRUD;
+import Logica_Conexion.GeneralOnlineProviderCRUD;
 import Logica_Negocio.Cliente;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Clase encargada de Sincronizar datos no reflejados en las dos bases de datos
+ * Clase encargada de Sincronizar la informacion de las dos bases de datos existentes, esto
+ * para la implementacion de un metodo de redundancia optimo
+ *
  * @author Manuel Escobar (Physanto)
  */
 public class HelperSincronizador {
@@ -40,7 +42,7 @@ public class HelperSincronizador {
                 datos.put("Cedula", p.getCedula());
                 datos.put("Nom_img", p.getUrlImg());
 
-                boolean exito = GeneralOnlineCRUD.guardar("Cliente", p.getId(), datos);
+                boolean exito = GeneralOnlineProviderCRUD.guardar("Cliente", p.getId(), datos);
 
                 if (exito) {
                     clienteDAO.marcarResultSetincronizado(p.getId());

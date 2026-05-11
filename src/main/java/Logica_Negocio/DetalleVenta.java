@@ -1,14 +1,20 @@
 package Logica_Negocio;
 
-public class Detalle_Venta {
+/**
+ * Representa una DetalleVenta dentro del sistema.
+ * Esta entidad almacena y envia la informacion necesaria donde sea solicitada.
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
+public class DetalleVenta {
 
     private String id, idProducto, idVenta;
     private Long cantidad;
     private Double subtotal, precioVenta;
 
-    public Detalle_Venta(){ }
+    public DetalleVenta(){ }
 
-    public Detalle_Venta(String id, Long cantidad, Double subtotal, Double precioVenta, String idProducto, String idVenta) {
+    public DetalleVenta(String id, Long cantidad, Double subtotal, Double precioVenta, String idProducto, String idVenta) {
         this.id = id;
         this.cantidad = cantidad;
         this.subtotal = subtotal;

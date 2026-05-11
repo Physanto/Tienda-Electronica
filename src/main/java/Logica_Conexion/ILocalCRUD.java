@@ -4,18 +4,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
+ * Intefaz/contrato que se define para toda la implementacion del CRUD en la base de datos local,
+ * esta se hace generica para la reutilizacion del codigo y minimizar la complejidad de manejar varias interfaces
  *
  * @author Santiago Lopez
+ * @author Manuel Figueroa (Physanto)
  */
-
-/**
- * Interfaz/contrato que define el CRUD para la base de datos
- * @param <T> Entidad la cual va implementar los metodos
- */
-
-//Se hace el uso de Genericos para hacer una implementacion reutilizable.
-
-public interface DAOInterfaceCrud<T> {
+public interface ILocalCRUD<T> {
     
     public boolean agregar(T object) throws SQLException;
     public boolean eliminar(String id) throws SQLException;

@@ -5,7 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
- * Clase encargada de manejar parte de la conexion a la red wifi
+ * Clase que se encarga de manejar verificar la conexion a internet mediante sockets
+ *
  * @author Manuel Escobar
  */
 public class HelperRed {

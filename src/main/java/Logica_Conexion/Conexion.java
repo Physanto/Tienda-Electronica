@@ -15,7 +15,6 @@ import java.sql.SQLException;
  *
  * @author Santiago Lopez  Patron Singleton
  */
-
 public class Conexion {
 
     public static Firestore db;

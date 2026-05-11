@@ -2,13 +2,10 @@ package Helpers;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 /**
  *
  * @author Santiago Lopez
- */
-
-/**
- * Clase la cual se encarga de hacer el cifrado de datos
  */
 public class HelperCifrado {
 

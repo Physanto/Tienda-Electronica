@@ -1,13 +1,19 @@
 package Helpers;
 
 import Logica_Conexion.ClienteDAO;
-import Logica_Conexion.GeneralOnlineCRUD;
+import Logica_Conexion.ClienteOnlineDAO;
+import Logica_Conexion.GeneralOnlineProviderCRUD;
 import Logica_Negocio.Cliente;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
+
+/**
+ * Clase que se encarga de gestionar la informacion que no se ingresa en las bases de datos cuando la conexion a internet falla
+ * esta gestiona los datos y guarda la informacion cuando sea pertinente sin repetirla.
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
 public class HelperGestorBD {
 
     public static void GuardarPersonaGeneral(Cliente cliente, int id, String producto){
@@ -28,9 +34,9 @@ public class HelperGestorBD {
 //                datos.put("direccion", cliente.getDireccion());
 //                datos.put("cedula", cliente.getCedula());
 //                datos.put("urlImg", cliente.getUrlImg());
-                boolean exito = HelperRegistro.RegistrarPersonaNubeI(cliente);
+                ClienteOnlineDAO clienteOnlineDAO = new ClienteOnlineDAO();
 
-                if (exito) {
+                if (clienteOnlineDAO.registrarNube(cliente)) {
                     clienteDAO.marcarResultSetincronizado(cliente.getId());
                     System.out.println("Guardado exitoso en Local y Nube.");
                 }
@@ -54,7 +60,7 @@ public class HelperGestorBD {
         try{
             if(online) {
                 System.out.println("Listando desde la nube");
-                listaClientes = GeneralOnlineCRUD.obteners("Cliente", Cliente.class);
+                listaClientes = GeneralOnlineProviderCRUD.obteners("Cliente", Cliente.class);
             }
             else {
                 ClienteDAO clienteDAO = new ClienteDAO();
@@ -76,7 +82,7 @@ public class HelperGestorBD {
         try{
             if(online) {
                 System.out.println("Listando desde la nube");
-                cliente = GeneralOnlineCRUD.obtener("Cliente", codigo, Cliente.class);
+                cliente = GeneralOnlineProviderCRUD.obtener("Cliente", codigo, Cliente.class);
             }
             else {
                 cliente = clienteDAO.obtener(codigo);
@@ -100,7 +106,7 @@ public class HelperGestorBD {
             if(online) {
                 System.out.println("Sistema online y listo para eliminar");
 
-                if(GeneralOnlineCRUD.eliminar(coleccion, codigo, Cliente.class)){
+                if(GeneralOnlineProviderCRUD.eliminar(coleccion, codigo, Cliente.class)){
                     System.out.println("Eliminado desde la nube.");
                 }
                 else{

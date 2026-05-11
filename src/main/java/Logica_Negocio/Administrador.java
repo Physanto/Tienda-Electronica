@@ -7,9 +7,6 @@ import Helpers.HelperCifrado;
  * @author Santiago Lopez Patron Template Method
  */
 
-/**
- * Clase que modela a los usuarios con el rol de administrador
- */
 public class Administrador extends Usuario {
 
     public Administrador(){ }

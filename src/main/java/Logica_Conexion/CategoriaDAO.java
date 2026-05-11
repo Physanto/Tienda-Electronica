@@ -7,14 +7,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CategoriaDAO implements DAOInterfaceCrud<Categoria> {
+/**
+ * Clase que se encarga de hacer el CRUD en la tabla categoria de la base de datos local,
+ * esta implementa la interfaz generica definida en el mismo paquete, ademas hace uso de la clase Connection
+ * para la comunicacion con la base de datos.
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
+public class CategoriaDAO implements ILocalCRUD<Categoria> {
 
     public static Connection conexion = Conexion.getConnection();
 
     /**
      * Agrega una nueva categoria a la base de datos
      * @param categoria la categoria que quiere agregar a la base de datos
-     * @return 0 si no inserta ningun registro, >= 1 si inserta el registro en la base de datos.
+     * @return false si no inserta ningun registro, de lo contrario true.
      * @throws SQLException si no se puede acceder a la base de datos
      */
     @Override
