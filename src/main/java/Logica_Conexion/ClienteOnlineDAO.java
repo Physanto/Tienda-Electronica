@@ -1,5 +1,7 @@
 package Logica_Conexion;
 
+import Helpers.HelperRegistro;
+import Helpers.HelperTiempo;
 import Logica_Negocio.Cliente;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,9 +38,11 @@ public class ClienteOnlineDAO implements IOnlineCRUD<Cliente> {
         datos.put("direccion", cliente.getDireccion());
         datos.put("cedula", cliente.getCedula());
         datos.put("urlImg", cliente.getUrlImg());
-
-        long inicio = System.currentTimeMillis();
-        return GeneralOnlineProviderCRUD.guardar("Cliente", id, datos);
+        long m = System.currentTimeMillis();
+        GeneralOnlineProviderCRUD.guardar("Cliente", id, datos);
+        long n = System.currentTimeMillis();
+        HelperTiempo.RetornarTiempo(n,m);
+        return true;
     }
 
     /**

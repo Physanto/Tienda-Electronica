@@ -20,69 +20,80 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
      * Agrega una nuevo registro a la base de datos
      * @param producto el producto que quiere agregar a la base de datos
      * @return 0 si no inserta ningun registro, >= 1 si inserta el registro en la base de datos.
-     * @throws SQLException si no se puede acceder a la base de datos
      */
     @Override
-    public boolean agregar(Producto producto) throws SQLException {
+    public boolean agregar(Producto producto){
         String query = "INSERT INTO Producto (id, codigo, nombre, marca, serie, stock," +
                 "precioActual, fechaVencimiento, urlImg, idCategoria) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            preparedStatement.setString(1, producto.getId());
+            preparedStatement.setString(2, producto.getCodigo());
+            preparedStatement.setString(3, producto.getNombre());
+            preparedStatement.setString(4, producto.getMarca());
+            preparedStatement.setString(5, producto.getSerie());
+            preparedStatement.setLong(6, producto.getStock());
+            preparedStatement.setDouble(7, producto.getPrecioActual());
+            preparedStatement.setTimestamp(8, new Timestamp(producto.getFechaVencimiento().getTime()));
+            preparedStatement.setString(9, producto.getUrlImg());
+            preparedStatement.setString(10, producto.getIdCategoria());
 
-        PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
-        preparedStatement.setString(1, producto.getId());
-        preparedStatement.setString(2, producto.getCodigo());
-        preparedStatement.setString(3, producto.getNombre());
-        preparedStatement.setString(4, producto.getMarca());
-        preparedStatement.setString(5, producto.getSerie());
-        preparedStatement.setLong(6, producto.getStock());
-        preparedStatement.setDouble(7, producto.getPrecioActual());
-        preparedStatement.setTimestamp(8, new Timestamp(producto.getFechaVencimiento().getTime()));
-        preparedStatement.setString(9, producto.getUrlImg());
-        preparedStatement.setString(10, producto.getIdCategoria());
-
-        return preparedStatement.executeUpdate() >= 1;
+            return preparedStatement.executeUpdate() >= 1;
+        }
+        catch(Exception ex){
+            System.out.println("Error: " + ex.getMessage());
+        }
+        return false;
     }
 
     /**
      * Elimina de la base de datos el registro con el idCliente pasado por argumento
      * @param id es el idCliente del registro que se quiere eliminar.
      * @return true si elimina el registro, de lo contrario false
-     * @throws SQLException si no puede acceder a la base de datos
      */
     @Override
-    public boolean eliminar(String id) throws SQLException {
+    public boolean eliminar(String id){
         String query = "DELETE FROM Producto WHERE id = ?";
-        PreparedStatement preparedStatement = conexion.prepareStatement(query);
-        preparedStatement.setString(1, id);
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            preparedStatement.setString(1, id);
 
-        return preparedStatement.executeUpdate() >= 1;
+            return preparedStatement.executeUpdate() >= 1;
+        }
+        catch(Exception ex){
+            System.out.println("Error: " + ex.getMessage());
+        }
+       return false;
     }
 
     /**
      * Extrae de la base de datos el registro que coincide con el idCliente pasado por argumento
      * @param id es el idCliente del registro a buscar
      * @return un objeto de tipo Producto con toda la informacion o null si no encuentra nada.
-     * @throws SQLException si no puede acceder a la base de datos.
      */
     @Override
-    public Producto obtener(String id) throws SQLException {
+    public Producto obtener(String id){
         String query = "SELECT * FROM Producto WHERE id = ?";
-        PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
-        preparedStatement.setString(1, id);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-
         Producto producto = null;
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        while(resultSet.next()){
-            producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
-                    resultSet.getString("nombre"), resultSet.getString("marca"),
-                    resultSet.getString("serie"), resultSet.getLong("stock"),
-                    resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
-                    resultSet.getString("urlImg"), resultSet.getString("idCategoria")
-            );
+            preparedStatement.setString(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
+                        resultSet.getString("nombre"), resultSet.getString("marca"),
+                        resultSet.getString("serie"), resultSet.getLong("stock"),
+                        resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
+                        resultSet.getString("urlImg"), resultSet.getString("idCategoria")
+                );
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error: " + ex.getMessage());
         }
         return producto;
     }
@@ -90,61 +101,73 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
     /**
      * Obtiene todos los registros de la tabla de la base de datos
      * @return una lista con los registros encontrados en la base de datos o una lista vacia sino existen categorias
-     * @throws SQLException si no puede acceder a la base de datos
      */
     @Override
-    public ArrayList<Producto> obteners() throws SQLException {
+    public ArrayList<Producto> obteners(){
         String query = "SELECT * FROM Producto";
-        PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-
         ArrayList<Producto> listaProductos= new ArrayList<>();
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        while(resultSet.next()){
-            Producto producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
-                    resultSet.getString("nombre"), resultSet.getString("marca"),
-                    resultSet.getString("serie"), resultSet.getLong("stock"),
-                    resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
-                    resultSet.getString("urlImg"), resultSet.getString("idCategoria")
-            );
-            listaProductos.add(producto);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                Producto producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
+                        resultSet.getString("nombre"), resultSet.getString("marca"),
+                        resultSet.getString("serie"), resultSet.getLong("stock"),
+                        resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
+                        resultSet.getString("urlImg"), resultSet.getString("idCategoria")
+                );
+                listaProductos.add(producto);
+            }
+            return listaProductos;
         }
-        return listaProductos;
+        catch(Exception ex){
+            System.out.println("Error: " + ex.getMessage());
+        }
+       return listaProductos;
     }
 
     /**
      * Actualiza el registro por la nueva informacion del objeto pasado por argumento
      * @param producto es el registro que se quiere actualizar
-     * @throws SQLException sucede cuando no se puede acceder a la base de datos
      */
     @Override
-    public boolean actualizar(Producto producto) throws SQLException {
+    public boolean actualizar(Producto producto){
         String query = "UPDATE Producto SET codigo = ?, nombre = ?, marca = ?, " +
                 "serie = ?, stock = ?, precio_actual = ?, " +
                 "fecha_vencimiento = ?, nom_img = ?, id_categoria = ? WHERE id = ?";
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
-        PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            preparedStatement.setString(1, producto.getCodigo());
+            preparedStatement.setString(2, producto.getNombre());
+            preparedStatement.setString(3, producto.getMarca());
+            preparedStatement.setString(4, producto.getSerie());
+            preparedStatement.setLong(5, producto.getStock());
+            preparedStatement.setDouble(6, producto.getPrecioActual());
+            preparedStatement.setTimestamp(7, new Timestamp(producto.getFechaVencimiento().getTime()));
+            preparedStatement.setString(8, producto.getUrlImg());
+            preparedStatement.setString(9, producto.getIdCategoria());
 
-        preparedStatement.setString(1, producto.getCodigo());
-        preparedStatement.setString(2, producto.getNombre());
-        preparedStatement.setString(3, producto.getMarca());
-        preparedStatement.setString(4, producto.getSerie());
-        preparedStatement.setLong(5, producto.getStock());
-        preparedStatement.setDouble(6, producto.getPrecioActual());
-        preparedStatement.setTimestamp(7, new Timestamp(producto.getFechaVencimiento().getTime()));
-        preparedStatement.setString(8, producto.getUrlImg());
-        preparedStatement.setString(9, producto.getIdCategoria());
-
-        return preparedStatement.executeUpdate() >= 1;
+            return preparedStatement.executeUpdate() >= 1;
+        }
+        catch(Exception ex){
+            System.out.println("Error: " + ex.getMessage());
+        }
+        return false;
     }
 
     /**
      * se encarga de cerrar la conexion con la base de datos
-     * @throws SQLException lanza la exepcion si no puede cerrar esta conexion
      */
     @Override
-    public void cerrarConexion() throws SQLException {
-        conexion.close();
+    public void cerrarConexion(){
+        try{
+            conexion.close();
+        }
+        catch(Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 }
