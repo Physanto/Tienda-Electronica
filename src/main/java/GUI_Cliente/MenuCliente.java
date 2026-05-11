@@ -62,14 +62,14 @@ public class MenuCliente extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Menu Persona");
+        setTitle("Menu Cliente");
         setPreferredSize(new java.awt.Dimension(480, 300));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton3.setBackground(new java.awt.Color(0, 0, 204));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 204, 204));
-        jButton3.setText("Buscar Cliente");
+        jButton3.setText("Buscar Persona");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -79,7 +79,7 @@ public class MenuCliente extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("Menu Opciones Persona");
+        jLabel1.setText("Menu Opciones Cliente");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, -1, -1));
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-4, 0, 510, 300));
 

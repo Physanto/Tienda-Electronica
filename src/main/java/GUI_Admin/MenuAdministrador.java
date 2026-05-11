@@ -6,7 +6,9 @@ package GUI_Admin;
 
 import GUI_Local.EscogerBD;
 import GUI_Local.Portada;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,10 +31,19 @@ public class MenuAdministrador extends javax.swing.JFrame {
      
     public MenuAdministrador() {
         initComponents();
-         Path currentRelativePath = Paths.get("");
-         s = currentRelativePath.toAbsolutePath().toString();
-         pathc = s + "\\Images\\"+"Background"+".jpg";
+        centerFrame();
+        Path currentRelativePath = Paths.get("");
+        s = currentRelativePath.toAbsolutePath().toString();
+        pathc = s + "\\Images\\"+"Fondo"+".png";
         establecerImagen();
+    }
+    
+    /**
+     * Centra el JFrame en la pantalla al momento de mostrarse.
+     */
+    private void centerFrame() {
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
     }
     
     public void establecerImagen() {
@@ -42,7 +53,7 @@ public class MenuAdministrador extends javax.swing.JFrame {
             File file = new File(pathc);
            img = ImageIO.read(new File(pathc));
             //5. Setear la imagen al JLabel
-            jLabel2.setIcon(new ImageIcon(img));
+            fondo.setIcon(new ImageIcon(img));
         } catch (IOException ioexception) {
             System.err.println(ioexception);
         }
@@ -62,73 +73,73 @@ public class MenuAdministrador extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        titulo = new javax.swing.JLabel();
+        fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu Opciones Administrador");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton1.setBackground(new java.awt.Color(0, 0, 204));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 204, 204));
-        jButton1.setText("Registrar Cliente");
+        jButton1.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Registrar Persona");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 80, 140, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 160, 30));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 204));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(0, 204, 204));
-        jButton2.setText("Visualizar Persona");
+        jButton2.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("Visualizar Personas");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 120, 140, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 160, 30));
 
         jButton3.setBackground(new java.awt.Color(0, 0, 204));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 204, 204));
-        jButton3.setText("Buscar Cliente");
+        jButton3.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setText("Buscar Persona");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 160, 140, -1));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 160, 30));
 
         jButton4.setBackground(new java.awt.Color(0, 0, 204));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 204, 204));
-        jButton4.setText("Eliminar Cliente");
+        jButton4.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        jButton4.setForeground(new java.awt.Color(255, 255, 255));
+        jButton4.setText("Eliminar Persona");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 200, 140, -1));
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 240, 160, 30));
 
         jButton5.setBackground(new java.awt.Color(0, 0, 204));
-        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(0, 204, 204));
+        jButton5.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("Salir");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 250, -1, -1));
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 300, 60, -1));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("Menu Opciones Admin");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, -1, -1));
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-30, -10, 460, 330));
+        titulo.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
+        titulo.setForeground(new java.awt.Color(255, 255, 255));
+        titulo.setText("MENU DE OPCIONES");
+        getContentPane().add(titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, -1, -1));
+        getContentPane().add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 410, 390));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -200,12 +211,12 @@ public class MenuAdministrador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel fondo;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel titulo;
     // End of variables declaration//GEN-END:variables
 }
