@@ -5,7 +5,7 @@
 package GUI_Cliente;
 
 import Helpers.HelperImpresion;
-import Logica_Conexion.GeneralOnlineCRUD;
+import Logica_Conexion.GeneralOnlineProviderCRUD;
 import Logica_Negocio.Cliente;
 import java.awt.Color;
 import java.awt.Image;
@@ -114,9 +114,9 @@ public class BuscarPersonaCliente extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        lspersonasnube = GeneralOnlineCRUD.obteners("Cliente", Cliente.class);
+        lspersonasnube = GeneralOnlineProviderCRUD.obteners("Cliente", Cliente.class);
         String codigo = jTextField1.getText();
-        objper = GeneralOnlineCRUD.obtener("Cliente", codigo, Cliente.class);
+        objper = GeneralOnlineProviderCRUD.obtener("Cliente", codigo, Cliente.class);
          if(objper==null)
         {
              jTextField1.setBorder(new LineBorder(Color.RED, 2));

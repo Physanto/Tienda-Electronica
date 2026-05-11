@@ -3,9 +3,11 @@ package Logica_Negocio;
 import java.util.Date;
 
 /**
- * @author Manuel Escobar
+ * Representa una venta dentro del sistema.
+ * Esta entidad almacena y envia la informacion necesaria donde sea solicitada
+ *
+ * @author Manuel Figueroa (Physanto)
  */
-
 public class Venta {
 
     public enum MetodoPago { EFECTIVO, TARJETA };

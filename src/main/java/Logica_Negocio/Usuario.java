@@ -4,10 +4,6 @@ package Logica_Negocio;
  *
  * @author Santiago Lopez Patron Template Method
  */
-
-/**
- * Clase que moldea a un Usuario geneal en el sistema, esta sirve como base para implementaciones concretas.
- */
 public abstract class Usuario {
 
     private String id;

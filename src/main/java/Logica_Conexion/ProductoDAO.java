@@ -5,7 +5,14 @@ import Logica_Negocio.Producto;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class ProductoDAO implements DAOInterfaceCrud<Producto> {
+/**
+ * Clase que se encarga de hacer el CRUD en la tabla producto de la base de datos local,
+ * esta implementa la interfaz generica definida en el mismo paquete, ademas hace uso de la clase Connection
+ * para la comunicacion con la base de datos.
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
+public class ProductoDAO implements ILocalCRUD<Producto> {
 
     public static Connection conexion = Conexion.getConnection();
 

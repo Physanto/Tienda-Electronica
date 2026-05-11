@@ -1,18 +1,20 @@
 package Logica_Conexion;
 
-import Logica_Negocio.Categoria;
 import Logica_Negocio.Sincronizadora;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-/**
- * Clase que se encarga de hacer el CRUD en la tabla Sincronizadora de la base de datos
- */
-
 // Este crud se usa para poder sincronizar los registros entre las dos bases de datos
 
-public class SincronizadoraDAO implements DAOInterfaceCrud<Sincronizadora> {
+/**
+ * Clase que se encarga de hacer el CRUD en la tabla Sincronizadora de la base de datos local,
+ * esta implementa la interfaz generica definida en el mismo paquete, ademas hace uso de la clase Connection
+ * para la comunicacion con la base de datos.
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
+public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
 
     public static Connection conexion = Conexion.getConnection();
 

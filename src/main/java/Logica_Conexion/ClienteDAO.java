@@ -12,12 +12,7 @@ import java.util.ArrayList;
  *
  * @author Santiago Lopez
  */
-
-//Usamos la interfaz cumpliendo con el patron DAO y se implementa mediante Genericos
-/**
- * Clase que se encarga de hacer y gestionar todo el CRUD a la base de datos
- */
-public class ClienteDAO implements DAOInterfaceCrud<Cliente> {
+public class ClienteDAO implements ILocalCRUD<Cliente> {
 
     public static Connection con = Conexion.getConnection();
 

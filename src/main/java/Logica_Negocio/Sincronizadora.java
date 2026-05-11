@@ -2,6 +2,12 @@ package Logica_Negocio;
 
 import java.util.Date;
 
+/**
+ * Representa una Sincronizadora dentro del sistema.
+ * Esta entidad almacena y envia la informacion necesaria donde sea solicitada
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
 public class Sincronizadora {
 
     public enum Accion { INSERT, UPDATE, DELETE};

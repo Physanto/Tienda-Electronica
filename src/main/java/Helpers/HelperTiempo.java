@@ -8,10 +8,6 @@ package Helpers;
  *
  * @author Santiago Lopez
  */
-
-/**
- * Clase encargada de calcular tiempos de ejecucion en diferentes metodos de todo el proyecto
- */
 public class HelperTiempo {
 
     /**

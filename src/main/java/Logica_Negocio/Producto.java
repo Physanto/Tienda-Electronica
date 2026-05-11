@@ -6,10 +6,6 @@ import java.util.Date;
  *
  * @author Santiago Lopez
  */
-
-/**
- * Clase que modela un Producto en el sistema
- */
 public class Producto {
 
     private Long stock;

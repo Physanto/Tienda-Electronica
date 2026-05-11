@@ -1,5 +1,11 @@
 package Logica_Negocio;
 
+/**
+ * Representa una categoría dentro del sistema.
+ * Esta entidad almacena y envia la informacion necesaria donde sea solicitada
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
 public class Categoria {
 
     private String id;

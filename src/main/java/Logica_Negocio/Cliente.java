@@ -1,12 +1,11 @@
 package Logica_Negocio;
 
 /**
+ * Representa una cliente dentro del sistema.
+ * Esta entidad almacena y envia la informacion necesaria donde sea solicitada
  *
+ * @author Manuel Figueroa (Physanto)
  * @author Santiago Lopez
- */
-
-/**
- * Clase que moldea a una Cliente en el sistema
  */
 public class Cliente {
 

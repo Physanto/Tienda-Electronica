@@ -6,10 +6,6 @@ import Helpers.HelperCifrado;
  *
  * @author Santiago Lopez Patron Template Method
  */
-
-/**
- * Clase que modela a los usuarios con el rol de Persona
- */
 public class Persona extends Usuario {
 
     public Persona(){ }

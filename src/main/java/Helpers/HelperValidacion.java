@@ -5,14 +5,12 @@ package Helpers;
 // se pueden hacer 2 metodos que sean genericos
 // se puede optimizar un poco el metodo de validacion de caracteres especiales
 
-import java.util.ArrayList;
 /**
+ * Clase que se encarga de construir las validaciones necesarias para que el sistema no falle
+ * o si este es el caso entonces recuperarse y manejar los errores de forma correcta
  *
  * @author Santiago Lopez
- */
-
-/**
- * Clase que se encarga de hacer las validaciones a los campos correspondientes
+ * @author Manuel Figueroa (Physanto)
  */
 public class HelperValidacion {
 
@@ -35,14 +33,15 @@ public class HelperValidacion {
      */
     public static int RetornarCEV2(String cadena) {
         //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
-        char[] listaCaracteres = new char[7];
+        char[] listaCaracteres = new char[8];
         listaCaracteres[0] = '@';
         listaCaracteres[1] = '/';
         listaCaracteres[2] = ';';
         listaCaracteres[3] = ':';
         listaCaracteres[4] = '"';
         listaCaracteres[5] = '!';
-        //listaCaracteres[6] = ' ';
+        listaCaracteres[6] = ' ';
+        listaCaracteres[7] = '~';
 
         for (int i = 0; i < cadena.length(); i++) {
              if(!Character.isLetter(cadena.charAt(i)) && !Character.isDigit(cadena.charAt(i))) {
@@ -55,6 +54,47 @@ public class HelperValidacion {
         return 0;
     }
 
+    public static int RetornarCEDireccion(String cadena) {
+        //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
+        char[] listaCaracteres = new char[6];
+        listaCaracteres[0] = '@';
+        listaCaracteres[1] = '/';
+        listaCaracteres[2] = ';';
+        listaCaracteres[3] = ':';
+        listaCaracteres[4] = '"';
+        listaCaracteres[5] = '!';
+
+        for (int i = 0; i < cadena.length(); i++) {
+            if(!Character.isLetter(cadena.charAt(i)) && !Character.isDigit(cadena.charAt(i))) {
+
+                for(Character c : listaCaracteres){
+                    if(c.equals(cadena.charAt(i))){ return 1; }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static int RetornarCEContrasenha(String cadena) {
+        //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
+        char[] listaCaracteres = new char[7];
+        listaCaracteres[1] = '/';
+        listaCaracteres[2] = ';';
+        listaCaracteres[3] = ':';
+        listaCaracteres[4] = '"';
+        listaCaracteres[5] = '!';
+        listaCaracteres[6] = ' ';
+
+        for (int i = 0; i < cadena.length(); i++) {
+            if(!Character.isLetter(cadena.charAt(i)) && !Character.isDigit(cadena.charAt(i))) {
+
+                for(Character c : listaCaracteres){
+                    if(c.equals(cadena.charAt(i))){ return 1; }
+                }
+            }
+        }
+        return 0;
+    }
     /**
      * Verifica si la cadena pasada por argumento esta vacia
      * @param cadena es la cadena que se quiere validar
@@ -93,7 +133,7 @@ public class HelperValidacion {
      * @return 0 si la cadena no contiene caracteres especiales, 1 si contiene al menos un caracter especial
      */
     public static int RetornarCEDireccionV2(String cadena) {
-       return RetornarCEV2(cadena);
+       return RetornarCEDireccion(cadena);
     }
 
     /**
@@ -102,7 +142,7 @@ public class HelperValidacion {
      * @return 0 si la cadena no contiene caracteres especiales, 1 si contiene al menos un caracter especial
      */
     public static int RetornarCEV2Contrasenha(String cadena) {
-        return RetornarCEV2(cadena);
+        return RetornarCEContrasenha(cadena);
     }
 
     /**
