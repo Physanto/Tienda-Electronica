@@ -5,13 +5,6 @@ USE Tienda_Electronica;
 
 ------------------------- Modulo de ventas
 
-CREATE TABLE Persona (
-    id VARCHAR(50) PRIMARY KEY NOT NULL,
-    usuario VARCHAR(20) NOT NULL UNIQUE,
-    contrasenha VARCHAR(20) NOT NULL,
-    estado BOOLEAN NOT NULL
-);
-
 CREATE TABLE Cliente (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(50) NOT NULL,
@@ -19,6 +12,15 @@ CREATE TABLE Cliente (
     direccion VARCHAR(100) NOT NULL,
     cedula VARCHAR(15) NOT NULL UNIQUE,
     urlImg VARCHAR(200)
+);
+
+CREATE TABLE Persona (
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    contrasenha VARCHAR(255) NOT NULL,
+    estado VARCHAR(2) NOT NULL,
+    clienteId VARCHAR(50) NOT NULL,
+    FOREIGN KEY(clienteId) REFERENCES Cliente(id)
 );
 
 CREATE TABLE Categoria (
@@ -69,6 +71,7 @@ CREATE TABLE ColaSincronizadora(
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,
     tablaAfectada VARCHAR(50) NOT NULL,
     idRegistroAfectado VARCHAR(50) NOT NULL,
-    tiempo TIMESTAMP NOT NULL
+    registroJson VARCHAR(255) NOT NULL,
+    estado VARCHAR(2) NOT NULL
 );
 

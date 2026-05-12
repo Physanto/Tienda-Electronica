@@ -184,7 +184,7 @@ public class RegistrarPersonaAdministrador extends javax.swing.JFrame {
         objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, nom_img);
         lspersona.add(objper);
         //objper.setProductos(lsproductos);
-        HelperGestorBD.GuardarPersonaGeneral(objper, id, producto);
+        HelperGestorBD.GuardarPersonaGeneral(objper);
         // ya no es necesario ya que ahora depende de la conexion a internet
         //HelperRegistro.RegistrarPersonaNubeI(objper, idCliente, producto);
         producto = "";

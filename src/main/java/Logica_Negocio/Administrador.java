@@ -11,8 +11,8 @@ public class Administrador extends Usuario {
 
     public Administrador(){ }
 
-    public Administrador(String id, String usuario, String contrasenha, Boolean estado) {
-        super(id, usuario, contrasenha, estado);
+    public Administrador(String id, String email, String contrasenha, String estado, String clienteId) {
+        super(id, email, contrasenha, estado, clienteId);
     }
 
     /**
@@ -24,7 +24,7 @@ public class Administrador extends Usuario {
     @Override
     public boolean LogOn(String usuario, String contrasenha) {
 
-        String comprobarUsuario = HelperCifrado.CifrarSHA256(getUsuario());
+        String comprobarUsuario = HelperCifrado.CifrarSHA256(getEmail());
         String comprobarContrasenha = HelperCifrado.CifrarSHA256(getContrasenha());
         System.out.println("usuario cifrado: " + "\t" + comprobarUsuario);
         System.out.println("contrasenha cifrada" + "\t" + comprobarContrasenha);

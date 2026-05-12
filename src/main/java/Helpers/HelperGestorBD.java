@@ -1,15 +1,16 @@
 package Helpers;
 
 import Logica_Conexion.ClienteDAO;
-import Logica_Conexion.ClienteOnlineDAO;
+import Logica_Conexion.ClienteOnlineCRUD;
 import Logica_Conexion.GeneralOnlineProviderCRUD;
 import Logica_Conexion.SincronizadoraDAO;
 import Logica_Negocio.Cliente;
 import Logica_Negocio.Sincronizadora;
+import com.google.gson.Gson;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
-
 
 /**
  * Clase que se encarga de gestionar la informacion que no se ingresa en las bases de datos cuando la conexion a internet falla
@@ -19,34 +20,28 @@ import java.util.Date;
  */
 public class HelperGestorBD {
 
-    public static void GuardarPersonaGeneral(Cliente cliente, int id, String producto){
+    public static void GuardarPersonaGeneral(Cliente cliente){
 
         boolean online = HelperMonitorRed.estaUsandoNube();
 
         try{
-            ClienteDAO clienteDAO = new ClienteDAO();
-            clienteDAO.agregar(cliente);
-
-            if(!online){
-                Date n = new Date();
-                SincronizadoraDAO sincronizadoraDAO = new SincronizadoraDAO();
-                sincronizadoraDAO.agregar(new Sincronizadora("1", Sincronizadora.Accion.INSERT, "Cliente", String.valueOf(id), n));
+            if(!new ClienteDAO().agregar(cliente)){
+                guardarRedundancia(cliente);
+                return;
             }
-            if(online){
-                ClienteOnlineDAO clienteOnlineDAO = new ClienteOnlineDAO();
-                if (clienteOnlineDAO.registrarNube(cliente)) {
-                    System.out.println("Guardado exitoso en Local y Nube.");
-                }
-                else {
-                    System.out.println("Fallo en Firebase. El registro se quedó en la cola local (Estado 0).");
-                }
+            if(!online){
+                String registroJson = new Gson().toJson(cliente);
+                new SincronizadoraDAO().agregar(new Sincronizadora(String.valueOf((int) (Math.random() * 100000)), Sincronizadora.Accion.INSERT, "Cliente", cliente.getId(), registroJson, "0"));
+            }
+            if(online && new ClienteOnlineCRUD().registrarNube(cliente)){
+                System.out.println("Guardado exitoso en Local y Nube.");
             }
             else {
                 System.out.println("Modo Offline activo. Guardado solo en Local (Estado 0).");
             }
         }
         catch(Exception e){
-            System.out.println("Error faltal, guardando datos " + e.getMessage());
+            System.out.println("Error faltal en la insercion de datos " + e.getMessage());
         }
     }
 
@@ -103,7 +98,7 @@ public class HelperGestorBD {
             if(online) {
                 System.out.println("Sistema online y listo para eliminar");
 
-                if(GeneralOnlineProviderCRUD.eliminar(coleccion, codigo, Cliente.class)){
+                if(GeneralOnlineProviderCRUD.eliminar(coleccion, codigo)){
                     System.out.println("Eliminado desde la nube.");
                 }
                 else{
@@ -119,5 +114,16 @@ public class HelperGestorBD {
             exito = false;
         }
         return exito;
+    }
+
+    public static <T> void guardarRedundancia(T object){
+        try(PrintWriter printWitter = new PrintWriter(
+                new FileWriter("src/main/java/Metodo_Redundancia/bdRespaldo.txt", true)
+        )){
+            printWitter.println(new Gson().toJson(object));
+        }
+        catch (Exception ex){
+            System.out.println("Error al guardar en el metodo de redundancia: " + ex.getMessage());
+        }
     }
 }

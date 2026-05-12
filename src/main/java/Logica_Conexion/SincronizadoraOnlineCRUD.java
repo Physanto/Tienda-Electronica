@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public class SincronizadoraOnlineDAO implements IOnlineCRUD<Sincronizadora> {
+public class SincronizadoraOnlineCRUD implements IOnlineCRUD<Sincronizadora> {
 
     /**
      * Agrega un nuevo registro a la base de datos de la nube
@@ -31,9 +31,10 @@ public class SincronizadoraOnlineDAO implements IOnlineCRUD<Sincronizadora> {
         Map<String, Object> datos = new HashMap<>();
         datos.put("id", id);
         datos.put("accion", sincronizadora.getAccion().name());
-        datos.put("nombre", sincronizadora.getTablaAfectada());
-        datos.put("marca", sincronizadora.getIdRegistroAfectado());
-        datos.put("serie", sincronizadora.getTiempo());
+        datos.put("tablaAfectada", sincronizadora.getTablaAfectada());
+        datos.put("idRegistroAfectado", sincronizadora.getIdRegistroAfectado());
+        datos.put("registroJson", sincronizadora.getRegistroJson());
+        datos.put("estado", sincronizadora.getEstado());
 
         return GeneralOnlineProviderCRUD.guardar("Sincronizadora", id, datos);
     }
@@ -62,13 +63,11 @@ public class SincronizadoraOnlineDAO implements IOnlineCRUD<Sincronizadora> {
 
     /**
      * Elimina de la base de datos de la nube el registro identificado con el id pasado por argumento
-     * @param sincronizadora es la clase la cual pertenece al registro buscado, no se espera una instancia sino la clase.
      * @return true si lo elimina correctamente, de lo contrario false;
      */
     @Override
-    public boolean eliminarNube(Class<Sincronizadora> sincronizadora, String id){
-        if(sincronizadora == null) return false;
-        return GeneralOnlineProviderCRUD.eliminar("Sincronizadora", id, sincronizadora);
+    public boolean eliminarNube(String id){
+        return GeneralOnlineProviderCRUD.eliminar("Sincronizadora", id);
     }
 
     /**
@@ -85,9 +84,10 @@ public class SincronizadoraOnlineDAO implements IOnlineCRUD<Sincronizadora> {
         Map<String, Object> datos = new HashMap<>();
         datos.put("id", id);
         datos.put("accion", sincronizadora.getAccion().name());
-        datos.put("nombre", sincronizadora.getTablaAfectada());
-        datos.put("marca", sincronizadora.getIdRegistroAfectado());
-        datos.put("serie", sincronizadora.getTiempo());
+        datos.put("tablaAfectada", sincronizadora.getTablaAfectada());
+        datos.put("idRegistroAfectado", sincronizadora.getIdRegistroAfectado());
+        datos.put("registroJson", sincronizadora.getRegistroJson());
+        datos.put("estado", sincronizadora.getEstado());
 
         return GeneralOnlineProviderCRUD.actualizar("Sincronizadora", id, datos);
     }

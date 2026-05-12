@@ -1,7 +1,5 @@
 package Logica_Negocio;
 
-import java.util.Date;
-
 /**
  * Representa una Sincronizadora dentro del sistema.
  * Esta entidad almacena y envia la informacion necesaria donde sea solicitada
@@ -15,16 +13,18 @@ public class Sincronizadora {
     private String id, idRegistroAfectado;
     private Accion accion;
     private String tablaAfectada;
-    private Date tiempo;
+    private String registroJson;
+    private String estado;
 
     public Sincronizadora(){ }
 
-    public Sincronizadora(String id, Accion accion, String tablaAfectada, String idRegistroAfectado, Date tiempo) {
+    public Sincronizadora(String id, Accion accion, String tablaAfectada, String idRegistroAfectado, String registroJson, String estado) {
         this.id = id;
         this.accion = accion;
         this.tablaAfectada = tablaAfectada;
         this.idRegistroAfectado = idRegistroAfectado;
-        this.tiempo = tiempo;
+        this.registroJson = registroJson;
+        this.estado = estado;
     }
 
     public String getId() {
@@ -59,11 +59,19 @@ public class Sincronizadora {
         this.idRegistroAfectado = idRegistroAfectado;
     }
 
-    public Date getTiempo() {
-        return tiempo;
+    public String getRegistroJson() {
+        return registroJson;
     }
 
-    public void setTiempo(Date tiempo) {
-        this.tiempo = tiempo;
+    public void setRegistroJson(String registroJson) {
+        this.registroJson = registroJson;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

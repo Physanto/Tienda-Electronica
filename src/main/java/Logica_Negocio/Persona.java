@@ -10,8 +10,8 @@ public class Persona extends Usuario {
 
     public Persona(){ }
 
-    public Persona(String id, String usuario, String contrasenha, Boolean estado) {
-        super(id, usuario, contrasenha, estado);
+    public Persona(String id, String email, String contrasenha, String estado, String clienteId) {
+        super(id, email, contrasenha, estado, clienteId);
     }
 
     /**
@@ -22,7 +22,7 @@ public class Persona extends Usuario {
      */
     public boolean LogOn(String usuario, String contrasenha) {
 
-        String comprobarUsuario = HelperCifrado.CifrarSHA256(getUsuario());
+        String comprobarUsuario = HelperCifrado.CifrarSHA256(getEmail());
         String comprobarContrasenha = HelperCifrado.CifrarSHA256(getContrasenha());
         System.out.println("usuario cifrado: " + "\t" + comprobarUsuario);
         System.out.println("contrasenha cifrada" + "\t" + comprobarContrasenha);

@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public class ProductoOnlineDAO implements IOnlineCRUD<Producto> {
+public class ProductoOnlineCRUD implements IOnlineCRUD<Producto> {
 
     /**
      * Agrega un nuevo registro a la base de datos de la nube
@@ -67,13 +67,11 @@ public class ProductoOnlineDAO implements IOnlineCRUD<Producto> {
 
     /**
      * Elimina de la base de datos de la nube el registro identificado con el id pasado por argumento
-     * @param producto es la clase la cual pertenece al registro buscado, no se espera una instancia sino la clase.
      * @return true si lo elimina correctamente, de lo contrario false;
      */
     @Override
-    public boolean eliminarNube(Class<Producto> producto, String id){
-        if(producto == null) return false;
-        return GeneralOnlineProviderCRUD.eliminar("Producto", id, producto);
+    public boolean eliminarNube(String id){
+        return GeneralOnlineProviderCRUD.eliminar("Producto", id);
     }
 
     /**

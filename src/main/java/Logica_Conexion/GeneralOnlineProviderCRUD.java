@@ -137,12 +137,10 @@ public class GeneralOnlineProviderCRUD {
     /**
      * Metodo generico que elimina de Firebase un registro dentro de la coleccion especificada por argumento
      * @param coleccion es el contenedor donde se almacenan los registros
-     * @param clase es el tipo de objeto donde se desea guardar el registro encontrado.
      * @param documento es el identificador del registro especifico que se desea buscar
      * @return true si el registro fue eliminado correctamente, de lo contrario false
-     * @param <T> es generico, asi que puede ser de cualquier tipo
      */
-    public static <T> boolean eliminar(String coleccion, String documento, Class<T> clase) {
+    public static boolean eliminar(String coleccion, String documento) {
         db = FirestoreClient.getFirestore();
         try {
             DocumentReference docref = db.collection(coleccion).document(documento);

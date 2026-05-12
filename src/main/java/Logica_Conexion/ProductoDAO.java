@@ -25,7 +25,7 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
     public boolean agregar(Producto producto){
         String query = "INSERT INTO Producto (id, codigo, nombre, marca, serie, stock," +
                 "precioActual, fechaVencimiento, urlImg, idCategoria) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, producto.getId());
@@ -135,8 +135,8 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
     @Override
     public boolean actualizar(Producto producto){
         String query = "UPDATE Producto SET codigo = ?, nombre = ?, marca = ?, " +
-                "serie = ?, stock = ?, precio_actual = ?, " +
-                "fecha_vencimiento = ?, nom_img = ?, id_categoria = ? WHERE id = ?";
+                "serie = ?, stock = ?, precioActual = ?, " +
+                "fechaVencimiento = ?, urlImg = ?, idCategoria = ? WHERE id = ?";
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -149,6 +149,7 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
             preparedStatement.setTimestamp(7, new Timestamp(producto.getFechaVencimiento().getTime()));
             preparedStatement.setString(8, producto.getUrlImg());
             preparedStatement.setString(9, producto.getIdCategoria());
+            preparedStatement.setString(10, producto.getId());
 
             return preparedStatement.executeUpdate() >= 1;
         }

@@ -25,9 +25,9 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
      */
     @Override
     public boolean agregar(Sincronizadora sincronizadora){
-        String query = "INSERT INTO Cola_Sincronizadora (id, accion," +
-                "tablaAfectada, idRegistroAfectado, tiempo) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO ColaSincronizadora (id, accion," +
+                "tablaAfectada, idRegistroAfectado, registroJson, estado) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -36,7 +36,8 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
             preparedStatement.setString(2, sincronizadora.getAccion().name());
             preparedStatement.setString(3, sincronizadora.getTablaAfectada());
             preparedStatement.setString(4, sincronizadora.getIdRegistroAfectado());
-            preparedStatement.setTimestamp(5, new Timestamp(sincronizadora.getTiempo().getTime()));
+            preparedStatement.setString(5, sincronizadora.getRegistroJson());
+            preparedStatement.setString(6, sincronizadora.getEstado());
 
             return preparedStatement.executeUpdate() >= 1;
         }
@@ -53,7 +54,7 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
      */
     @Override
     public boolean eliminar(String id){
-        String query = "DELETE FROM Cola_Sincronizadora WHERE id = ?";
+        String query = "DELETE FROM ColaSincronizadora WHERE id = ?";
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, id);
@@ -73,7 +74,7 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
      */
     @Override
     public Sincronizadora obtener(String id){
-        String query = "SELECT * FROM Cola_Sincronizadora WHERE id = ?";
+        String query = "SELECT * FROM ColaSincronizadora WHERE id = ?";
         Sincronizadora sincronizadora = null;
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -84,7 +85,8 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
 
             while(resultSet.next()){
                 sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
-                        resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"), resultSet.getTimestamp("tiempo"));
+                        resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
+                        resultSet.getString("registroJson"), resultSet.getString("estado"));
             }
         }
         catch (Exception ex){
@@ -99,7 +101,7 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
      */
     @Override
     public ArrayList<Sincronizadora> obteners(){
-        String query = "SELECT * FROM Cola_Sincronizadora";
+        String query = "SELECT * FROM ColaSincronizadora";
         ArrayList<Sincronizadora> listaSincronizadora = new ArrayList<>();
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -107,8 +109,8 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
 
             while(resultSet.next()){
                 Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
-                        resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"), resultSet.getTimestamp("tiempo")
-                );
+                        resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
+                        resultSet.getString("registroJson"), resultSet.getString("estado"));
                 listaSincronizadora.add(sincronizadora);
             }
         }
@@ -124,15 +126,17 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
      */
     @Override
     public boolean actualizar(Sincronizadora sincronizadora){
-        String query = "UPDATE Cola_Sincronizadora SET accion = ?, tablaAfectada = ?," +
-                "idRegistroAfectado = ?, tiempo = ? WHERE id = ?";
+        String query = "UPDATE ColaSincronizadora SET accion = ?, tablaAfectada = ?," +
+                "idRegistroAfectado = ?, registroJson = ?, estado = ? WHERE id = ?";
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
             preparedStatement.setString(1, sincronizadora.getAccion().name());
             preparedStatement.setString(2, sincronizadora.getTablaAfectada());
             preparedStatement.setString(3, sincronizadora.getIdRegistroAfectado());
-            preparedStatement.setTimestamp(4, new Timestamp(sincronizadora.getTiempo().getTime()));
+            preparedStatement.setString(4, sincronizadora.getRegistroJson());
+            preparedStatement.setString(5, sincronizadora.getEstado());
+            preparedStatement.setString(6, sincronizadora.getId());
 
             return preparedStatement.executeUpdate() >= 1;
         }
@@ -140,6 +144,45 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
             System.out.println("Error: " + ex.getMessage());
         }
        return false;
+    }
+
+    public boolean actualizarSincronizados(String id){
+        String query = "UPDATE ColaSincronizadora SET estado = ? WHERE id = ?";
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+
+            preparedStatement.setString(1, "1");
+            preparedStatement.setString(2, id);
+
+            return preparedStatement.executeUpdate() >= 1;
+        }
+        catch (Exception ex){
+            System.out.println("Error: " + ex.getMessage());
+        }
+        return false;
+    }
+
+    public ArrayList<Sincronizadora> obtenerNoSincronizados(String estado){
+        String query = "SELECT * FROM ColaSincronizadora WHERE estado = ?";
+        ArrayList<Sincronizadora> listaNoSincronizados = new ArrayList<>();
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+
+            preparedStatement.setString(1, estado);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
+                        resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
+                        resultSet.getString("registroJson"), resultSet.getString("estado"));
+                listaNoSincronizados.add(sincronizadora);
+            }
+        }
+        catch (Exception ex){
+            System.out.println("Error: " + ex.getMessage());
+        }
+        return listaNoSincronizados;
     }
 
     /**
