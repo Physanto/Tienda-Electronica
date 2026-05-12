@@ -13,6 +13,6 @@ public interface IOnlineCRUD<T> {
     public boolean registrarNube(T object);
     public T obtenerNube(Class<T> clase, String id);
     public ArrayList<T> obtenersNube(Class<T> clase);
-    public boolean eliminarNube(Class<T> clase, String id);
+    public boolean eliminarNube(String id);
     public boolean actualizarNube(T object);
 }

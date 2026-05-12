@@ -62,7 +62,6 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
      * Extrae de la base de datos la categoria que coincide con el idCliente pasado por argumento
      * @param id es el idCliente de la categoria a buscar
      * @return un objeto de tipo Categoria con toda la informacion de la categoria o null si no encuentra nada.
-     * @throws SQLException si no puede acceder a la base de datos.
      */
     @Override
     public Categoria obtener(String id){
@@ -119,6 +118,7 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, categoria.getNombre());
+            preparedStatement.setString(2, categoria.getId());
 
             return preparedStatement.executeUpdate() >= 1;
         }

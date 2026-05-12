@@ -30,7 +30,7 @@ El proyecto está organizado bajo una arquitectura de capas:
 *   `/Logica_Negocio`: Modelos de dominio (`Persona`, `Producto`, `Usuario`).
 *   `/Logica_Conexion`: Implementación del patrón **DAO** (`PersonaDAO`) para MySQL y el proveedor de Firestore (`PersonaProvider`).
 *   `/Helpers`: Clases utilitarias (Cifrado, validaciones, Monitor de Red, Gestor de Sincronización).
-*   `/GUI`: Interfaces de usuario separadas por módulo y rol.
+*   `/GUI`: Interfaces de email separadas por módulo y rol.
 *   `/Logica_Cliente`: Punto de entrada de la aplicación (`Main`).
 
 ## ⚙️ Instalación y Configuración

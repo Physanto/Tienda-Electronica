@@ -8,3 +8,6 @@ tienda-electronica-v2.json
 
 # ruido
 target/
+
+# Mecanismo de redundancia
+bdRespaldo.txt

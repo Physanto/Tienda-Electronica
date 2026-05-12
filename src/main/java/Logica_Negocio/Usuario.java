@@ -7,17 +7,19 @@ package Logica_Negocio;
 public abstract class Usuario {
 
     private String id;
-    private String usuario;
+    private String email;
     private String contrasenha;
-    private Boolean estado;
+    private String estado;
+    private String clienteID;
 
     public Usuario(){ }
 
-    public Usuario(String id, String usuario, String contrasenha, Boolean estado) {
+    public Usuario(String id, String email, String contrasenha, String estado, String clienteID) {
         this.id = id;
-        this.usuario = usuario;
+        this.email = email;
         this.contrasenha = contrasenha;
         this.estado = estado;
+        this.clienteID = clienteID;
     }
 
     public String getId(){
@@ -28,12 +30,12 @@ public abstract class Usuario {
         this.id = id;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getContrasenha() {
@@ -44,19 +46,27 @@ public abstract class Usuario {
         this.contrasenha = contrasenha;
     }
 
-    public Boolean getEstado(){
+    public String getEstado(){
         return estado;
     }
 
-    public void setEstado(Boolean estado){
+    public void setEstado(String estado){
         this.estado = estado;
+    }
+
+    public String getClienteID() {
+        return clienteID;
+    }
+
+    public void setClienteID(String clienteID) {
+        this.clienteID = clienteID;
     }
 
     /**
      * Verifica si las credenciales ingresadas coinciden con las almacenadas, este es un metodo abstracto comun.
-     * @param usuario usuarioa cifrado que se recibe para validacion
+     * @param email email cifrado que se recibe para validacion
      * @param contrasenha contrasenha cifrada que se recibe
      * @return true si coinciden, false si no.
      */
-    public abstract boolean  LogOn(String usuario, String contrasenha);
+    public abstract boolean  LogOn(String email, String contrasenha);
 }

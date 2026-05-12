@@ -4117,7 +4117,7 @@
 											"top": 1247,
 											"width": 298.0986328125,
 											"height": 13,
-											"text": "+LogOn(String usuario, String contraseña): boolean",
+											"text": "+LogOn(String email, String contraseña): boolean",
 											"horizontalAlignment": 0
 										}
 									],
@@ -8211,7 +8211,7 @@
 													"_parent": {
 														"$ref": "AAAAAAGOmtGD4GfUTiA="
 													},
-													"name": "String usuario",
+													"name": "String email",
 													"type": ""
 												},
 												{

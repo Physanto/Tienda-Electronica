@@ -25,7 +25,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
     public boolean agregar(Cliente cliente){
         String query
                 = "INSERT INTO Cliente (id,nombre,apellido,direccion,cedula,urlImg)"
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+                + " VALUES (?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
@@ -130,7 +130,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
     public boolean actualizar(Cliente cliente){
          String query
             = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?,urlImg=?"
-              + "WHERE id = ?";
+              + " WHERE id = ?";
         try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
@@ -139,6 +139,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             preparedStatement.setString(3, cliente.getDireccion());
             preparedStatement.setString(4, cliente.getCedula());
             preparedStatement.setString(5, cliente.getUrlImg());
+            preparedStatement.setString(6, cliente.getId());
 
             return preparedStatement.executeUpdate() >= 1;
         }
@@ -146,29 +147,6 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             System.out.println("Error: " + ex.getMessage());
         }
        return false;
-    }
-
-    public ArrayList<Cliente> getNoSincronizados(){
-        String query = "SELECT * FROM Cliente WHERE estado = 0";
-        ArrayList<Cliente> listaClientes = new ArrayList<>();
-        try{
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while(resultSet.next()){
-                Cliente cliente = new Cliente(resultSet.getString("id"),
-                        resultSet.getString("nombre"),
-                        resultSet.getString("apellido"),
-                        resultSet.getString("cedula"),
-                        resultSet.getString("direccion"),
-                        resultSet.getString("urlImg"));
-                listaClientes.add(cliente);
-            }
-        }
-        catch (Exception ex){
-            System.out.println("Error: " + ex.getMessage());
-        }
-       return listaClientes;
     }
 
     /**

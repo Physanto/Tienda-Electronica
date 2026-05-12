@@ -168,9 +168,9 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
         System.out.println("usu con inter\t" + cifrarcontra);
  
         if (usuario.equals("Admin")) {
-            usuAdmin = new Administrador("1", "Admin", "12345", true);
+            usuAdmin = new Administrador("1", "Admin", "12345", "1", "10");
         } else if (usuario.equals("Persona")) {
-            usuCliente = new Persona("2", "Persona", "12345", true);
+            usuCliente = new Persona("2", "Persona", "12345", "1", "20");
         } else {
             mostrarErrorCampos();
             return;

@@ -1,6 +1,5 @@
 package Logica_Conexion;
 
-import Helpers.HelperRegistro;
 import Helpers.HelperTiempo;
 import Logica_Negocio.Cliente;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Map;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public class ClienteOnlineDAO implements IOnlineCRUD<Cliente> {
+public class ClienteOnlineCRUD implements IOnlineCRUD<Cliente> {
 
     /**
      * Agrega un nuevo registro a la base de datos de la nube
@@ -69,13 +68,11 @@ public class ClienteOnlineDAO implements IOnlineCRUD<Cliente> {
 
     /**
      * Elimina de la base de datos de la nube el registro identificado con el id pasado por argumento
-     * @param cliente es la clase la cual pertenece al registro buscado, no se espera una instancia sino la clase.
      * @return true si lo elimina correctamente, de lo contrario false;
      */
     @Override
-    public boolean eliminarNube(Class<Cliente> cliente, String id){
-        if(cliente == null) return false;
-        return GeneralOnlineProviderCRUD.eliminar("Cliente", id, cliente);
+    public boolean eliminarNube(String id){
+        return GeneralOnlineProviderCRUD.eliminar("Cliente", id);
     }
 
     /**
