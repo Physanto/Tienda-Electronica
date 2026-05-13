@@ -16,9 +16,8 @@ public class HelperSincronizador {
 
     /**
      * Metodo que se encarga de sincronizar la base de datos local a la nube
-     * - valida que haya datos sin sincronizar (con ayuda de un metodo personalizado ClienteDAO.getNoSincronizados())
-     * - si hay datos que no estan sincronizados entonces los agrega a la nube
-     * - de lo contrario sino hay nada pendiente entonces hace una parada anticipada
+     * este metodo te hace toda la sincronizacion independientemente de si
+     * insertas, eliminas o actualizas un registro
      */
     public static void SincronizarLocalANube(){
         System.out.println("Iniciando vaciado de cola local hacia la nube...");
