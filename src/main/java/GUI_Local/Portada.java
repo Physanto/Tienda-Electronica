@@ -7,6 +7,7 @@ package GUI_Local;
 import GUI_Admin.InicioSesionAdministrador;
 import Helpers.HelperMonitorRed;
 import Helpers.HelperRed;
+import Helpers.OSHelper;
 import Logica_Conexion.Conexion;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -42,6 +43,8 @@ public class Portada extends javax.swing.JFrame {
         s = currentRelativePath.toAbsolutePath().toString();
         establecerFondo();
         establecerIconoLogo();
+        OSHelper.setImage(fondo, "usuario.png");
+        OSHelper.setImage(icono_logo, "LogoF.png");
     }
 
     /**
