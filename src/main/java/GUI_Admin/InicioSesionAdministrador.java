@@ -6,6 +6,7 @@ package GUI_Admin;
  
 import GUI_Cliente.MenuCliente;
 import Helpers.HelperCifrado;
+import Helpers.OSHelper;
 import Logica_Negocio.Administrador;
 import Logica_Negocio.Persona;
 import Logica_Negocio.Usuario;
@@ -52,6 +53,10 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
         establecerFondo();
         establecerIconoUsuario();
         establecerLogo();
+      
+        OSHelper.setImage(fondo, "Fondo.png");
+        OSHelper.setImage(icono_user, "usuario.png");
+        OSHelper.setImage(logo, "LogoF.png");
  
         // Forzar el foco al frame para evitar que un campo quede activo al abrir
         javax.swing.Timer timer = new javax.swing.Timer(100, e -> requestFocusInWindow());
