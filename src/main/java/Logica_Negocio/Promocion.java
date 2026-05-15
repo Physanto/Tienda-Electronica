@@ -3,14 +3,14 @@ package Logica_Negocio;
 public class Promocion {
 
     private String id;
-    private Long stockActual;
-    private Long diasSinVender;
-    private Long totalVendido;
+    private Double stockActual;
+    private Double diasSinVender;
+    private Double totalVendido;
     private int cluster;
 
-    public Promocion(){ }
+    public Promocion() {}
 
-    public Promocion(String id, Long stockActual, Long diasSinVender, Long totalVendido, int cluster) {
+    public Promocion(String id, Double stockActual, Double diasSinVender, Double totalVendido, int cluster) {
         this.id = id;
         this.stockActual = stockActual;
         this.diasSinVender = diasSinVender;
@@ -37,27 +37,27 @@ public class Promocion {
         this.id = id;
     }
 
-    public Long getStockActual() {
+    public Double getStockActual() {
         return stockActual;
     }
 
-    public void setStockActual(Long stockActual) {
+    public void setStockActual(Double stockActual) {
         this.stockActual = stockActual;
     }
 
-    public Long getDiasSinVender() {
+    public Double getDiasSinVender() {
         return diasSinVender;
     }
 
-    public void setDiasSinVender(Long diasSinVender) {
+    public void setDiasSinVender(Double diasSinVender) {
         this.diasSinVender = diasSinVender;
     }
 
-    public Long getTotalVendido() {
+    public Double getTotalVendido() {
         return totalVendido;
     }
 
-    public void setTotalVendido(Long totalVendido) {
+    public void setTotalVendido(Double totalVendido) {
         this.totalVendido = totalVendido;
     }
 

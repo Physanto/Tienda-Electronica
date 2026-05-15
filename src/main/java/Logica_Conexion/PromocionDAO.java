@@ -29,8 +29,8 @@ public class PromocionDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                Promocion promocion = new Promocion(resultSet.getString("id"), resultSet.getLong("stock"),
-                        resultSet.getLong("diasSinVender"), resultSet.getLong("totalVendido"), -1);
+                Promocion promocion = new Promocion(resultSet.getString("id"), resultSet.getDouble("stock"),
+                        resultSet.getDouble("diasSinVender"), resultSet.getDouble("totalVendido"), -1);
 
                 listaPromocion.add(promocion);
             }

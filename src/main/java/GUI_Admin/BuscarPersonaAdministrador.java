@@ -116,13 +116,13 @@ public class BuscarPersonaAdministrador extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         long inicio = System.currentTimeMillis();
-        lspersonasnube = HelperGestorBD.CargarPersonaGeneral();
+        //lspersonasnube = HelperGestorBD.CargarPersonaGeneral();
         //se cambia el metodo por el general, haciendo cambios
         //lspersonasnube = PersonaProvider.CargarInfoPersona();
         long fin = System.currentTimeMillis();
         HelperTiempo.RetornarTiempo(fin, inicio);
         String codigo = jTextField1.getText();
-        objper = HelperGestorBD.CargarPersonaGeneral(codigo);
+        //objper = HelperGestorBD.CargarPersonaGeneral(codigo);
 
         if (objper == null) {
             jTextField1.setBorder(new LineBorder(Color.RED, 2));
