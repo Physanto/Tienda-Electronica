@@ -10,6 +10,13 @@ public class Promocion {
 
     public Promocion() {}
 
+    public Promocion(String id, Double stockActual, Double diasSinVender, Double totalVendido) {
+        this.id = id;
+        this.stockActual = stockActual;
+        this.diasSinVender = diasSinVender;
+        this.totalVendido = totalVendido;
+    }
+
     public Promocion(String id, Double stockActual, Double diasSinVender, Double totalVendido, int cluster) {
         this.id = id;
         this.stockActual = stockActual;
