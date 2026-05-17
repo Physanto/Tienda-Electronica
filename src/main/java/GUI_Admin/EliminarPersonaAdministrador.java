@@ -119,12 +119,12 @@ public class EliminarPersonaAdministrador extends javax.swing.JFrame {
 
         String uid = jTextField1.getText();
         //se cambio el metodo para funcionar el linea
-        //if(HelperGestorBD.elim("Cliente", uid)) {
-        //   jTextPane1.setText("Persona eliminado");
-        //}
-        //else {
-         //   JOptionPane.showMessageDialog(null, "Persona no encontrado");
-        //}
+        if(HelperGestorBD.EliminarPersonaGeneral("Cliente", uid)) {
+            jTextPane1.setText("Persona eliminado");
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Persona no encontrado");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

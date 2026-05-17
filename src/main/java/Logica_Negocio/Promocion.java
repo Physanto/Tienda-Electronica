@@ -3,12 +3,12 @@ package Logica_Negocio;
 public class Promocion {
 
     private String id;
-    private Double stockActual;
-    private Double diasSinVender;
-    private Double totalVendido;
+    private Long stockActual;
+    private Long diasSinVender;
+    private Long totalVendido;
     private int cluster;
 
-    public Promocion() {}
+    public Promocion(){ }
 
     public Promocion(String id, Double stockActual, Double diasSinVender, Double totalVendido) {
         this.id = id;
@@ -18,13 +18,6 @@ public class Promocion {
     }
 
     public Promocion(String id, Double stockActual, Double diasSinVender, Double totalVendido, int cluster) {
-        this.id = id;
-        this.stockActual = stockActual;
-        this.diasSinVender = diasSinVender;
-        this.totalVendido = totalVendido;
-        this.cluster = cluster;
-    }
-
     @Override
     public String toString() {
         return "Promocion{" +
@@ -44,27 +37,27 @@ public class Promocion {
         this.id = id;
     }
 
-    public Double getStockActual() {
+    public Long getStockActual() {
         return stockActual;
     }
 
-    public void setStockActual(Double stockActual) {
+    public void setStockActual(Long stockActual) {
         this.stockActual = stockActual;
     }
 
-    public Double getDiasSinVender() {
+    public Long getDiasSinVender() {
         return diasSinVender;
     }
 
-    public void setDiasSinVender(Double diasSinVender) {
+    public void setDiasSinVender(Long diasSinVender) {
         this.diasSinVender = diasSinVender;
     }
 
-    public Double getTotalVendido() {
+    public Long getTotalVendido() {
         return totalVendido;
     }
 
-    public void setTotalVendido(Double totalVendido) {
+    public void setTotalVendido(Long totalVendido) {
         this.totalVendido = totalVendido;
     }
 
