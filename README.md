@@ -17,7 +17,7 @@ Una aplicación de escritorio desarrollada en **Java (Swing)** que implementa un
 
 ## 🛠️ Tecnologías y Herramientas
 
-*   **Lenguaje:** Java (JDK X.X)
+*   **Lenguaje:** Java
 *   **Bases de Datos:**
     *   **Nube:** Google Firebase (Firestore) a través del Firebase Admin SDK.
     *   **Local:** MySQL (JDBC Driver).
