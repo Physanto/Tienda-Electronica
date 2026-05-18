@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package CapaPresentacion.GUI_Admin;
  
 import CapaPresentacion.GUI_Cliente.MenuCliente;
@@ -11,9 +7,7 @@ import CapaLogicaNegocio.Logica_Negocio.Administrador;
 import CapaLogicaNegocio.Logica_Negocio.Persona;
 import CapaLogicaNegocio.Logica_Negocio.Usuario;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -38,13 +32,13 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
     Usuario usuCliente;
  
     // Paleta de colores centralizada para mantener coherencia visual
-    private static final Color COLOR_BOTON       = new Color(0, 0, 255);
+    private static final Color COLOR_BOTON       = new Color(0, 95,115);
     private static final Color COLOR_LINEA       = Color.WHITE;
     private static final Color COLOR_ERROR       = Color.RED;
  
     public InicioSesionAdministrador() {
         initComponents();
-        centerFrame();
+        setLocationRelativeTo(null);
         aplicarEstilosCampos();   // Estilos visuales de los campos (bordes, colores, transparencia)
         aplicarEstiloBoton();     // Estilo del botón "Iniciar Sesión"
         addPlaceholders();        // Textos de ayuda en los campos vacíos
@@ -52,24 +46,14 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
         s = Paths.get("").toAbsolutePath().toString();
         establecerFondo();
         establecerIconoUsuario();
-        establecerLogo();
       
         OSHelper.setImage(fondo, "Fondo.png");
         OSHelper.setImage(icono_user, "usuario.png");
-        OSHelper.setImage(logo, "LogoF.png");
  
         // Forzar el foco al frame para evitar que un campo quede activo al abrir
         javax.swing.Timer timer = new javax.swing.Timer(100, e -> requestFocusInWindow());
         timer.setRepeats(false);
         timer.start();
-    }
- 
-    /**
-     * Centra el JFrame en la pantalla al momento de mostrarse.
-     */
-    private void centerFrame() {
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
     }
  
     /**
@@ -192,7 +176,7 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
         } else if (usuAdmin instanceof Administrador) {
             if (usuAdmin.LogOn(cifrarusu, cifrarcontra)) {
                 JOptionPane.showMessageDialog(null, "Bienvenido Administrador");
-                new MenuAdministrador().setVisible(true);
+                new Menu_Admin().setVisible(true);
                 dispose();
             } else {
                 mostrarErrorCampos();
@@ -216,7 +200,7 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
     public void establecerFondo() {
         Image img = null;
         try {
-            String pathC = s + "\\Images\\" + "Fondo" + ".png";
+            String pathC = s + "\\Images\\" + "imgFondo2" + ".png";
             img = ImageIO.read(new File(pathC));
             fondo.setIcon(new ImageIcon(img));
         } catch (IOException ioexception) {
@@ -230,23 +214,9 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
     public void establecerIconoUsuario() {
         Image img = null;
         try {
-            String pathIcono = s + "\\Images\\" + "usuario" + ".png";
+            String pathIcono = s + "\\Images\\" + "user" + ".png";
             img = ImageIO.read(new File(pathIcono));
             icono_user.setIcon(new ImageIcon(img));
-        } catch (IOException ioexception) {
-            System.err.println(ioexception);
-        }
-    }
-    
-    /**
-     * Carga el la imagen del logo desde el sistema de archivos y la asigna al JLabel logo.
-     */
-    public void establecerLogo() {
-        Image img = null;
-        try {
-            String pathLogo = s + "\\Images\\" + "LogoF" + ".png";
-            img = ImageIO.read(new File(pathLogo));
-            logo.setIcon(new ImageIcon(img));
         } catch (IOException ioexception) {
             System.err.println(ioexception);
         }
@@ -260,28 +230,28 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
         tx_passwd = new javax.swing.JPasswordField();
         btn_login = new javax.swing.JButton();
         fondo = new javax.swing.JLabel();
-        logo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Iniciar Sesion Administrador");
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(icono_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 120, 110));
+        getContentPane().add(icono_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 160, 150));
 
-        tx_user.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        tx_user.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
         tx_user.setForeground(new java.awt.Color(0, 0, 0));
-        getContentPane().add(tx_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, 180, -1));
+        getContentPane().add(tx_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 270, 260, 40));
 
-        tx_passwd.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        tx_passwd.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
         tx_passwd.setForeground(new java.awt.Color(0, 0, 0));
         tx_passwd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tx_passwdActionPerformed(evt);
             }
         });
-        getContentPane().add(tx_passwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 260, 180, -1));
+        getContentPane().add(tx_passwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 330, 260, 40));
 
-        btn_login.setBackground(new java.awt.Color(0, 51, 204));
-        btn_login.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
+        btn_login.setBackground(new java.awt.Color(0, 204, 102));
+        btn_login.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
         btn_login.setForeground(new java.awt.Color(255, 255, 255));
         btn_login.setText("Iniciar Sesion");
         btn_login.addActionListener(new java.awt.event.ActionListener() {
@@ -289,9 +259,8 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
                 btn_loginActionPerformed(evt);
             }
         });
-        getContentPane().add(btn_login, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 320, 130, 40));
-        getContentPane().add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 370, 440));
-        getContentPane().add(logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 0, 370, 430));
+        getContentPane().add(btn_login, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 410, 120, 50));
+        getContentPane().add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -60, 480, 620));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -344,7 +313,6 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
     private javax.swing.JButton btn_login;
     private javax.swing.JLabel fondo;
     private javax.swing.JLabel icono_user;
-    private javax.swing.JLabel logo;
     private javax.swing.JPasswordField tx_passwd;
     private javax.swing.JTextField tx_user;
     // End of variables declaration//GEN-END:variables
