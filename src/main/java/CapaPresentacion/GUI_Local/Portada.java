@@ -4,7 +4,7 @@
  */
 package CapaPresentacion.GUI_Local;
 
-import CapaPresentacion.GUI_Admin.InicioSesionAdministrador;
+import CapaPresentacion.GUI_Admin.InicioSesion;
 import CapaLogicaNegocio.Helpers.HelperMonitorRed;
 import CapaLogicaNegocio.Helpers.HelperRed;
 import CapaLogicaNegocio.Helpers.OSHelper;
@@ -135,7 +135,7 @@ public class Portada extends javax.swing.JFrame {
 		if (usarNube) {
 			// Hay internet rápido -> Vamos a la Nube
 			JOptionPane.showMessageDialog(this, "Conexión óptima. Iniciando servicios en la Nube.");
-			InicioSesionAdministrador admin = new InicioSesionAdministrador();
+			InicioSesion admin = new InicioSesion();
 			admin.setVisible(true);
 		} else {
 			// No hay internet o es muy lento -> Vamos al modo Local
