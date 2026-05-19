@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
  *
  * @author Santiago Lopez
  */
-public class InicioSesionAdministrador extends javax.swing.JFrame {
+public class InicioSesion extends javax.swing.JFrame {
  
     public String pathc;
     public String s;
@@ -36,7 +36,7 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
     private static final Color COLOR_LINEA       = Color.WHITE;
     private static final Color COLOR_ERROR       = Color.RED;
  
-    public InicioSesionAdministrador() {
+    public InicioSesion() {
         initComponents();
         setLocationRelativeTo(null);
         aplicarEstilosCampos();   // Estilos visuales de los campos (bordes, colores, transparencia)
@@ -221,6 +221,7 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
             System.err.println(ioexception);
         }
     }
+
     
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -260,7 +261,9 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btn_login, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 410, 120, 50));
-        getContentPane().add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -60, 480, 620));
+
+        fondo.setText("jLabel1");
+        getContentPane().add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 480, 560));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -290,21 +293,23 @@ public class InicioSesionAdministrador extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InicioSesionAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InicioSesionAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InicioSesionAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InicioSesionAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new InicioSesionAdministrador().setVisible(true);
+                new InicioSesion().setVisible(true);
             }
         });
     }

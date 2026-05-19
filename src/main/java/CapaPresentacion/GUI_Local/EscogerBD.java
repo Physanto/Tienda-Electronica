@@ -4,7 +4,7 @@
  */
 package CapaPresentacion.GUI_Local;
 
-import CapaPresentacion.GUI_Admin.InicioSesionAdministrador;
+import CapaPresentacion.GUI_Admin.InicioSesion;
 import CapaDatos.Logica_Conexion.Conexion;
 import java.awt.Image;
 import java.io.File;
@@ -96,7 +96,7 @@ public class EscogerBD extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       InicioSesionAdministrador admin = new InicioSesionAdministrador();
+       InicioSesion admin = new InicioSesion();
        admin.setVisible(true);
        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
