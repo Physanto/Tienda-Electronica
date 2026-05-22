@@ -13,7 +13,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.UUID;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -51,7 +50,7 @@ public class Clientes extends javax.swing.JPanel {
     private static final Color COLOR_HOVER       = new Color(0x1A, 0x3D, 0x58);
  
     /** Color de texto principal — blanco. */
-    private static final Color COLOR_TEXTO       = Color.WHITE;
+    private static final Color COLOR_TEXTO       = new Color(0x1C, 0x1C, 0x1C);
  
     /** Color de texto secundario / placeholder. */
     private static final Color COLOR_TEXTO_MUTED = new Color(0x8A, 0xA5, 0xBE);
@@ -90,7 +89,6 @@ public class Clientes extends javax.swing.JPanel {
     private JTextField txtApellido;
     private JTextField txtCedula;
     private JTextField txtDireccion;
-    private JTextField txtUrlImg;
  
     /** Etiqueta que indica la operación activa en el panel lateral. */
     private JLabel lblTituloForm;
@@ -120,7 +118,7 @@ public class Clientes extends javax.swing.JPanel {
         construirToolbar();
         construirTabla();
         construirFormPanel();
-        cargarClientes(); // Carga inicial del listado
+        cargarClientes(); 
     }
  
     /**
@@ -137,15 +135,14 @@ public class Clientes extends javax.swing.JPanel {
  
         // Título del módulo
         JLabel lblModulo = new JLabel("Gestión de Clientes");
-        lblModulo.setFont(new Font("Segoe UI Light", Font.BOLD, 22));
-        lblModulo.setForeground(COLOR_TEXTO);
+        lblModulo.setFont(new Font("Segoe UI Light", Font.BOLD, 24));
+        lblModulo.setForeground(Color.WHITE);
         toolbar.add(lblModulo);
  
         // Separador visual
         toolbar.add(Box.createHorizontalStrut(24));
  
         // Botones de acción
-        toolbar.add(crearBotonAccion("Registrar Cliente", "REGISTRAR"));
         toolbar.add(crearBotonAccion("Buscar Cliente",            "BUSCAR"));
         toolbar.add(crearBotonAccion("Actualizar Cliente",        "ACTUALIZAR"));
         toolbar.add(crearBotonAccion("Eliminar Cliente",          "ELIMINAR"));
@@ -164,7 +161,7 @@ public class Clientes extends javax.swing.JPanel {
     private JButton crearBotonAccion(String etiqueta, String modo) {
         JButton btn = new JButton(etiqueta);
         btn.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
-        btn.setForeground(COLOR_TEXTO);
+        btn.setForeground(Color.WHITE);
         btn.setBackground(new Color(0x1A, 0x3D, 0x58));
         btn.setOpaque(true);
         btn.setBorderPainted(false);
@@ -199,7 +196,7 @@ public class Clientes extends javax.swing.JPanel {
      */
     private void construirTabla() {
         // Columnas del modelo (NO editables directamente en la tabla)
-        String[] columnas = {"ID", "Nombre", "Apellido", "Cédula", "Dirección", "URL Imagen"};
+        String[] columnas = {"ID", "Nombre", "Apellido", "Cédula", "Dirección"};
         tableModel = new DefaultTableModel(columnas, 0) {
             /**
              * Deshabilita la edición directa de celdas en la tabla.
@@ -243,7 +240,6 @@ public class Clientes extends javax.swing.JPanel {
         tablaClientes.getColumnModel().getColumn(2).setPreferredWidth(130);
         tablaClientes.getColumnModel().getColumn(3).setPreferredWidth(110);
         tablaClientes.getColumnModel().getColumn(4).setPreferredWidth(200);
-        tablaClientes.getColumnModel().getColumn(5).setPreferredWidth(180);
  
         JScrollPane scroll = new JScrollPane(tablaClientes);
         scroll.setBackground(COLOR_TABLE_BG);
@@ -286,20 +282,19 @@ public class Clientes extends javax.swing.JPanel {
         formPanel.setVisible(false); // Oculto por defecto
  
         // ── Título dinámico del formulario ──
-        lblTituloForm = new JLabel("Registrar Cliente");
+        lblTituloForm = new JLabel("Buscar Cliente");
         lblTituloForm.setFont(new Font("Segoe UI Light", Font.BOLD, 18));
-        lblTituloForm.setForeground(COLOR_TEXTO);
+        lblTituloForm.setForeground(Color.WHITE);
         lblTituloForm.setAlignmentX(Component.LEFT_ALIGNMENT);
         formPanel.add(lblTituloForm);
         formPanel.add(Box.createVerticalStrut(20));
  
         // ── Campos del formulario ──
-        txtId        = crearCampoForm("ID (auto-generado)");
+        txtId        = crearCampoForm("ID");
         txtNombre    = crearCampoForm("Nombre");
         txtApellido  = crearCampoForm("Apellido");
         txtCedula    = crearCampoForm("Cédula");
         txtDireccion = crearCampoForm("Dirección");
-        txtUrlImg    = crearCampoForm("URL Imagen");
  
         formPanel.add(crearFilaCampo("ID",         txtId));
         formPanel.add(Box.createVerticalStrut(10));
@@ -311,8 +306,6 @@ public class Clientes extends javax.swing.JPanel {
         formPanel.add(Box.createVerticalStrut(10));
         formPanel.add(crearFilaCampo("Dirección",  txtDireccion));
         formPanel.add(Box.createVerticalStrut(10));
-        formPanel.add(crearFilaCampo("URL Imagen", txtUrlImg));
-        formPanel.add(Box.createVerticalStrut(24));
  
         // ── Botón confirmar ──
         btnConfirmar = new JButton("Guardar");
@@ -369,7 +362,7 @@ public class Clientes extends javax.swing.JPanel {
  
         JLabel lbl = new JLabel(etiqueta);
         lbl.setFont(new Font("Segoe UI Light", Font.PLAIN, 12));
-        lbl.setForeground(COLOR_TEXTO);
+        lbl.setForeground(Color.WHITE);
         lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
  
         fila.add(lbl);
@@ -386,7 +379,7 @@ public class Clientes extends javax.swing.JPanel {
      */
     private void estilizarBotonForm(JButton btn, Color color) {
         btn.setBackground(color);
-        btn.setForeground(COLOR_TEXTO);
+        btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         btn.setOpaque(true);
         btn.setBorderPainted(false);
@@ -428,22 +421,15 @@ public class Clientes extends javax.swing.JPanel {
         limpiarFormulario();
  
         switch (modo) {
-            case "REGISTRAR":
-                lblTituloForm.setText("Registrar Cliente");
-                btnConfirmar.setText("Guardar");
-                txtId.setText(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-                txtId.setEnabled(false); // ID auto-generado, no editable
-                habilitarCampos(true);
-                break;
  
-            case "BUSCAR":
+            case "BUSCAR" -> {
                 lblTituloForm.setText("Buscar Cliente");
                 btnConfirmar.setText("Buscar");
                 habilitarCampos(false);
                 txtId.setEnabled(true);
-                break;
+            }
  
-            case "ACTUALIZAR":
+            case "ACTUALIZAR" -> {
                 lblTituloForm.setText("Actualizar Cliente");
                 btnConfirmar.setText("Actualizar");
                 habilitarCampos(true);
@@ -451,12 +437,12 @@ public class Clientes extends javax.swing.JPanel {
                     cargarFilaEnFormulario(tablaClientes.getSelectedRow());
                 } else {
                     JOptionPane.showMessageDialog(this,
-                        "Selecciona un cliente de la tabla para actualizar.",
-                        "Sin selección", JOptionPane.WARNING_MESSAGE);
+                            "Selecciona un cliente de la tabla para actualizar.",
+                            "Sin selección", JOptionPane.WARNING_MESSAGE);
                 }
-                break;
+            }
  
-            case "ELIMINAR":
+            case "ELIMINAR" -> {
                 lblTituloForm.setText("Eliminar Cliente");
                 btnConfirmar.setText("Confirmar Eliminación");
                 habilitarCampos(false); // Solo lectura en modo eliminar
@@ -464,10 +450,10 @@ public class Clientes extends javax.swing.JPanel {
                     cargarFilaEnFormulario(tablaClientes.getSelectedRow());
                 } else {
                     JOptionPane.showMessageDialog(this,
-                        "Selecciona un cliente de la tabla para eliminar.",
-                        "Sin selección", JOptionPane.WARNING_MESSAGE);
+                            "Selecciona un cliente de la tabla para eliminar.",
+                            "Sin selección", JOptionPane.WARNING_MESSAGE);
                 }
-                break;
+            }
         }
  
         formPanel.setVisible(true);
@@ -496,43 +482,9 @@ public class Clientes extends javax.swing.JPanel {
      */
     private void ejecutarOperacion() {
         switch (modoActual) {
-            case "REGISTRAR":  registrarCliente();  break;
-            case "BUSCAR":     buscarCliente();     break;
-            case "ACTUALIZAR": actualizarCliente(); break;
-            case "ELIMINAR":   eliminarCliente();   break;
-        }
-    }
- 
-    /**
-     * Registra un nuevo cliente en la base de datos con los datos
-     * ingresados en el formulario lateral.
-     *
-     * <p>Valida que los campos obligatorios (Nombre, Apellido, Cédula)
-     * no estén vacíos antes de persistir. Refresca la tabla al finalizar.
-     */
-    private void registrarCliente() {
-        if (!validarCamposObligatorios()) return;
- 
-        Cliente cliente = new Cliente(
-            txtId.getText().trim(),
-            txtNombre.getText().trim(),
-            txtApellido.getText().trim(),
-            txtCedula.getText().trim(),
-            txtDireccion.getText().trim(),
-            txtUrlImg.getText().trim()
-        );
- 
-        boolean exito = clienteDAO.agregar(cliente);
-        if (exito) {
-            JOptionPane.showMessageDialog(this,
-                "Cliente registrado exitosamente.", "Éxito",
-                JOptionPane.INFORMATION_MESSAGE);
-            cargarClientes();
-            ocultarFormulario();
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "No se pudo registrar el cliente. Verifique los datos.",
-                "Error", JOptionPane.ERROR_MESSAGE);
+            case "BUSCAR" -> buscarCliente();
+            case "ACTUALIZAR" -> actualizarCliente();
+            case "ELIMINAR" -> eliminarCliente();
         }
     }
  
@@ -553,7 +505,7 @@ public class Clientes extends javax.swing.JPanel {
         if (cliente != null) {
             tableModel.addRow(new Object[]{
                 cliente.getId(), cliente.getNombre(), cliente.getApellido(),
-                cliente.getCedula(), cliente.getDireccion(), cliente.getUrlImg()
+                cliente.getCedula(), cliente.getDireccion()
             });
         } else {
             JOptionPane.showMessageDialog(this,
@@ -582,8 +534,7 @@ public class Clientes extends javax.swing.JPanel {
             txtNombre.getText().trim(),
             txtApellido.getText().trim(),
             txtCedula.getText().trim(),
-            txtDireccion.getText().trim(),
-            txtUrlImg.getText().trim()
+            txtDireccion.getText().trim()
         );
  
         boolean exito = clienteDAO.actualizar(cliente);
@@ -648,7 +599,7 @@ public class Clientes extends javax.swing.JPanel {
         for (Cliente c : clientes) {
             tableModel.addRow(new Object[]{
                 c.getId(), c.getNombre(), c.getApellido(),
-                c.getCedula(), c.getDireccion(), c.getUrlImg()
+                c.getCedula(), c.getDireccion()
             });
         }
     }
@@ -665,7 +616,6 @@ public class Clientes extends javax.swing.JPanel {
         txtApellido.setText((String) tableModel.getValueAt(rowIndex, 2));
         txtCedula.setText((String) tableModel.getValueAt(rowIndex, 3));
         txtDireccion.setText((String) tableModel.getValueAt(rowIndex, 4));
-        txtUrlImg.setText((String) tableModel.getValueAt(rowIndex, 5));
     }
  
     /**
@@ -677,7 +627,6 @@ public class Clientes extends javax.swing.JPanel {
         txtApellido.setText("");
         txtCedula.setText("");
         txtDireccion.setText("");
-        txtUrlImg.setText("");
     }
  
     /**
@@ -691,7 +640,6 @@ public class Clientes extends javax.swing.JPanel {
         txtApellido.setEnabled(habilitar);
         txtCedula.setEnabled(habilitar);
         txtDireccion.setEnabled(habilitar);
-        txtUrlImg.setEnabled(habilitar);
     }
  
     /**
@@ -713,10 +661,7 @@ public class Clientes extends javax.swing.JPanel {
         }
         return true;
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
-     */
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

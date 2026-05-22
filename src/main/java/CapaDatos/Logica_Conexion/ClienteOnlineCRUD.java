@@ -36,7 +36,6 @@ public class ClienteOnlineCRUD implements IOnlineCRUD<Cliente> {
         datos.put("apellido", cliente.getApellido());
         datos.put("direccion", cliente.getDireccion());
         datos.put("cedula", cliente.getCedula());
-        datos.put("urlImg", cliente.getUrlImg());
         long m = System.currentTimeMillis();
         GeneralOnlineProviderCRUD.guardar("Cliente", id, datos);
         long n = System.currentTimeMillis();
@@ -92,7 +91,6 @@ public class ClienteOnlineCRUD implements IOnlineCRUD<Cliente> {
         datos.put("apellido", id);
         datos.put("direccion", id);
         datos.put("cedula", id);
-        datos.put("urlImg", id);
 
         return GeneralOnlineProviderCRUD.actualizar("Cliente", id, datos);
     }

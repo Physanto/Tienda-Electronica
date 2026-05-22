@@ -40,7 +40,7 @@ public class Conexion {
     
     public static Connection getConnection() {
         String url = "jdbc:mysql://localhost:3306/Tienda_Electronica";
-        String user = "init";
+        String user = "root";
         String pass = "root";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

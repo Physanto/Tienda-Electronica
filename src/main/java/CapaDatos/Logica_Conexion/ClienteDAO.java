@@ -24,7 +24,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
     @Override
     public boolean agregar(Cliente cliente){
         String query
-                = "INSERT INTO Cliente (id,nombre,apellido,direccion,cedula,urlImg)"
+                = "INSERT INTO Cliente (id,nombre,apellido,direccion,cedula)"
                 + " VALUES (?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
@@ -34,7 +34,6 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             preparedStatement.setString(3, cliente.getApellido());
             preparedStatement.setString(4, cliente.getDireccion());
             preparedStatement.setString(5, cliente.getCedula());
-            preparedStatement.setString(6, cliente.getUrlImg());
 
             return preparedStatement.executeUpdate() >= 1;
         }
@@ -83,11 +82,10 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
                         resultSet.getString("nombre"),
                         resultSet.getString("apellido"),
                         resultSet.getString("cedula"),
-                        resultSet.getString("direccion"),
-                        resultSet.getString("urlImg"));
+                        resultSet.getString("direccion"));
             }
         }
-        catch (Exception ex){
+        catch (SQLException ex){
             System.out.println("Fallo algo en la base de datos: "+ ex.getMessage());
         }
         return cliente;
@@ -111,12 +109,11 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
                         resultSet.getString("nombre"),
                         resultSet.getString("apellido"),
                         resultSet.getString("cedula"),
-                        resultSet.getString("direccion"),
-                        resultSet.getString("urlImg"));
+                        resultSet.getString("direccion"));
                 listaClientes.add(cliente);
             }
         }
-        catch (Exception ex){
+        catch (SQLException ex){
             System.out.println("Error: " + ex.getMessage());
         }
         return listaClientes;
@@ -125,11 +122,12 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
     /**
      * Actualiza el registro del cliente que se le pase por argumento
      * @param cliente es el registro que se quiere actualizar
+     * @return 
      */
     @Override
     public boolean actualizar(Cliente cliente){
          String query
-            = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?,urlImg=?"
+            = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?"
               + " WHERE id = ?";
         try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
@@ -138,12 +136,11 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             preparedStatement.setString(2, cliente.getApellido());
             preparedStatement.setString(3, cliente.getDireccion());
             preparedStatement.setString(4, cliente.getCedula());
-            preparedStatement.setString(5, cliente.getUrlImg());
             preparedStatement.setString(6, cliente.getId());
 
             return preparedStatement.executeUpdate() >= 1;
         }
-        catch (Exception ex){
+        catch (SQLException ex){
             System.out.println("Error: " + ex.getMessage());
         }
        return false;
@@ -157,7 +154,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
         try{
             con.close();
         }
-        catch (Exception ex){
+        catch (SQLException ex){
             System.out.println("Error:" + ex.getMessage());
         }
     }
