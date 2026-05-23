@@ -1,5 +1,7 @@
 package CapaDatos.Logica_Conexion;
 
+import CapaLogicaNegocio.Excepciones.ExcepcionSQL;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -12,10 +14,10 @@ import java.util.ArrayList;
  */
 public interface ILocalCRUD<T> {
     
-    public boolean agregar(T object);
-    public boolean eliminar(String id);
-    public T obtener(String id);
-    public ArrayList<T> obteners();
-    public boolean actualizar(T object);
-    public void cerrarConexion();
+    public boolean agregar(T object) throws ExcepcionSQL;
+    public boolean eliminar(String id) throws ExcepcionSQL;
+    public T obtener(String id) throws ExcepcionSQL;
+    public ArrayList<T> obteners() throws ExcepcionSQL;
+    public boolean actualizar(T object) throws ExcepcionSQL;
+    public void cerrarConexion() throws ExcepcionSQL;
 }

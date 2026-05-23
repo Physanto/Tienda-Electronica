@@ -38,17 +38,10 @@ public class Conexion {
         }
     }
     
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException{
         String url = "jdbc:mysql://localhost:3306/Tienda_Electronica";
         String user = "root";
         String pass = "root";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conexion = DriverManager.getConnection(url, user, pass);
-        }
-        catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-        return conexion;
+        return DriverManager.getConnection(url, user, pass);
     }
 }
