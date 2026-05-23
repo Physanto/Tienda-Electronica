@@ -1,5 +1,3 @@
-DROP DATABASE IF EXISTS Tienda_Electronica;
-
 CREATE DATABASE Tienda_Electronica;
 USE Tienda_Electronica;
 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package CapaPresentacion.Logica_Cliente;
 
 import CapaLogicaNegocio.Helpers.HelperImpresion;
@@ -264,7 +260,7 @@ public class Main {
 
                     int id = (int) (Math.random() * 100000);
 
-                    objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion, nom_img);
+                    objper = new Cliente(String.valueOf(id), nombre, apellido, cedula, direccion);
                     //objper.setProductos(lsproduglobal);
                     lspersonalocal.add(objper);
                     //HelperRegistro.RegistrarPersonaNube(objper);

@@ -176,7 +176,7 @@ public class InicioSesion extends javax.swing.JFrame {
         } else if (usuAdmin instanceof Administrador) {
             if (usuAdmin.LogOn(cifrarusu, cifrarcontra)) {
                 JOptionPane.showMessageDialog(null, "Bienvenido Administrador");
-                new Menu_Admin().setVisible(true);
+                new MenuAdmin().setVisible(true);
                 dispose();
             } else {
                 mostrarErrorCampos();
@@ -234,6 +234,8 @@ public class InicioSesion extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Iniciar Sesion Administrador");
+        setMinimumSize(new java.awt.Dimension(490, 560));
+        setPreferredSize(new java.awt.Dimension(490, 560));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         getContentPane().add(icono_user, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 160, 150));
@@ -265,7 +267,7 @@ public class InicioSesion extends javax.swing.JFrame {
         fondo.setText("jLabel1");
         getContentPane().add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 480, 560));
 
-        pack();
+        setBounds(0, 0, 494, 597);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tx_passwdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_passwdActionPerformed

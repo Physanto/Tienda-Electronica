@@ -13,13 +13,12 @@ public class Cliente {
 
     public Cliente(){}
 
-	public Cliente(String id, String nombre, String apellido, String cedula, String direccion, String urlImg) {
+	public Cliente(String id, String nombre, String apellido, String cedula, String direccion) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.cedula = cedula;
         this.direccion = direccion;
-        this.urlImg=urlImg;
     }
 
     public String getNombre() {
@@ -60,13 +59,5 @@ public class Cliente {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUrlImg() {
-        return urlImg;
-    }
-
-    public void setUrlImg(String urlImg) {
-        this.urlImg = urlImg;
     }
 }

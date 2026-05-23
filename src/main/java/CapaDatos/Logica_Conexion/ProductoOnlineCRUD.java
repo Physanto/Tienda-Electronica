@@ -37,7 +37,6 @@ public class ProductoOnlineCRUD implements IOnlineCRUD<Producto> {
         datos.put("stock", producto.getStock());
         datos.put("precioActual", producto.getPrecioActual());
         datos.put("fechaVencimiento", producto.getFechaVencimiento());
-        datos.put("urlImg", producto.getUrlImg());
         datos.put("idCategoria", producto.getIdCategoria());
 
         return GeneralOnlineProviderCRUD.guardar("Producto", id, datos);
@@ -94,7 +93,6 @@ public class ProductoOnlineCRUD implements IOnlineCRUD<Producto> {
         datos.put("stock", producto.getStock());
         datos.put("precioActual", producto.getPrecioActual());
         datos.put("fechaVencimiento", producto.getFechaVencimiento());
-        datos.put("urlImg", producto.getUrlImg());
         datos.put("idCategoria", producto.getIdCategoria());
 
         return GeneralOnlineProviderCRUD.actualizar("Producto", id, datos);

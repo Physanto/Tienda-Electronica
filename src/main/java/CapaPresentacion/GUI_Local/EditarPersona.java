@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package CapaPresentacion.GUI_Local;
 
 import CapaDatos.Logica_Conexion.ClienteDAO;
@@ -165,7 +161,7 @@ public class EditarPersona extends javax.swing.JFrame {
         String nombreimg = jTextField7.getText();
         
         try {
-            per = new Cliente(uid, nombre, apellido, cedula, direccion, nombreimg);
+            per = new Cliente(uid, nombre, apellido, cedula, direccion);
             ClienteDAO dao = new ClienteDAO();
             dao.actualizar(per);
             JOptionPane.showMessageDialog(null, "Actualizar Exitoso");
@@ -192,7 +188,6 @@ public class EditarPersona extends javax.swing.JFrame {
             jTextField3.setText(cliente.getApellido());
             jTextField4.setText(cliente.getDireccion());
             jTextField5.setText(cliente.getCedula());
-            jTextField7.setText(cliente.getUrlImg());
             jButton2.setVisible(true);
             jTextField1.setEditable(false);
             

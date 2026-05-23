@@ -24,7 +24,7 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
     @Override
     public boolean agregar(Producto producto){
         String query = "INSERT INTO Producto (id, codigo, nombre, marca, serie, stock," +
-                "precioActual, fechaVencimiento, urlImg, idCategoria) " +
+                "precioActual, fechaVencimiento, idCategoria) " +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -36,7 +36,6 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
             preparedStatement.setLong(6, producto.getStock());
             preparedStatement.setDouble(7, producto.getPrecioActual());
             preparedStatement.setTimestamp(8, new Timestamp(producto.getFechaVencimiento().getTime()));
-            preparedStatement.setString(9, producto.getUrlImg());
             preparedStatement.setString(10, producto.getIdCategoria());
 
             return preparedStatement.executeUpdate() >= 1;
@@ -88,7 +87,7 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
                         resultSet.getString("nombre"), resultSet.getString("marca"),
                         resultSet.getString("serie"), resultSet.getLong("stock"),
                         resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
-                        resultSet.getString("urlImg"), resultSet.getString("idCategoria")
+                        resultSet.getString("idCategoria")
                 );
             }
         }
@@ -116,7 +115,7 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
                         resultSet.getString("nombre"), resultSet.getString("marca"),
                         resultSet.getString("serie"), resultSet.getLong("stock"),
                         resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
-                        resultSet.getString("urlImg"), resultSet.getString("idCategoria")
+                        resultSet.getString("idCategoria")
                 );
                 listaProductos.add(producto);
             }
@@ -147,7 +146,6 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
             preparedStatement.setLong(5, producto.getStock());
             preparedStatement.setDouble(6, producto.getPrecioActual());
             preparedStatement.setTimestamp(7, new Timestamp(producto.getFechaVencimiento().getTime()));
-            preparedStatement.setString(8, producto.getUrlImg());
             preparedStatement.setString(9, producto.getIdCategoria());
             preparedStatement.setString(10, producto.getId());
 

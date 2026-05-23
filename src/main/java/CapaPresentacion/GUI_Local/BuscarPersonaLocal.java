@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package CapaPresentacion.GUI_Local;
 
 import CapaDatos.Logica_Conexion.ClienteDAO;
@@ -150,8 +146,6 @@ public class BuscarPersonaLocal extends javax.swing.JFrame {
             }
             String im = CapaLogicaNegocio.Helpers.HelperImpresion.ImprimirInfoInterfazLocal(cliente);
             jTextPane1.setText(im);
-            pathc = s + "\\Images\\" + cliente.getUrlImg() + ".jpg";
-            establecerImagen();
 
         } catch (Exception e) {
             System.out.println("Excepcion" + e);

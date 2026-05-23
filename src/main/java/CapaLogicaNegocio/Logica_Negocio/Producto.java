@@ -15,7 +15,7 @@ public class Producto {
 
     public Producto() { }
 
-    public Producto(String id, String codigo, String nombre, String marca, String serie, Long stock, Double precioActual, Date fechaVencimiento, String urlImg, String idCategoria) {
+    public Producto(String id, String codigo, String nombre, String marca, String serie, Long stock, Double precioActual, Date fechaVencimiento, String idCategoria) {
         this.id = id;
         this.stock = stock;
         this.precioActual = precioActual;
@@ -23,7 +23,6 @@ public class Producto {
         this.nombre = nombre;
         this.marca = marca;
         this.serie = serie;
-        this.urlImg = urlImg;
         this.fechaVencimiento = fechaVencimiento;
         this.idCategoria = idCategoria;
     }
@@ -82,14 +81,6 @@ public class Producto {
 
     public void setSerie(String serie) {
         this.serie = serie;
-    }
-
-    public String getUrlImg() {
-        return urlImg;
-    }
-
-    public void setUrlImg(String nombreImg) {
-        this.urlImg = nombreImg;
     }
 
     public Date getFechaVencimiento() {
