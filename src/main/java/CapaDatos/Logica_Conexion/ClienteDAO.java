@@ -1,7 +1,8 @@
 package CapaDatos.Logica_Conexion;
 
+import CapaLogicaNegocio.Excepciones.ExcepcionSQL;
+import CapaLogicaNegocio.Helpers.HelperExcepciones;
 import CapaLogicaNegocio.Logica_Negocio.Cliente;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,21 +15,20 @@ import java.util.ArrayList;
  */
 public class ClienteDAO implements ILocalCRUD<Cliente> {
 
-    public static Connection con = Conexion.getConnection();
-
     /**
      * Agrega un nuevo cliente a la base de datos
      * @param cliente el cliente que quiere agregar a la base de datos
      * @return 0 si no modifico ninguna fila, o mayor a 0 (cantidad de filas que modifico)
+     * @throws ExcepcionSQL si se genera una
      */
     @Override
-    public boolean agregar(Cliente cliente){
+    public boolean agregar(Cliente cliente) throws ExcepcionSQL {
         String query
                 = "INSERT INTO Cliente (id,nombre,apellido,direccion,cedula)"
                 + " VALUES (?, ?, ?, ?, ?, ?)";
-        try{
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(Connection con= Conexion.getConnection()){
 
+            PreparedStatement preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, cliente.getId());
             preparedStatement.setString(2, cliente.getNombre());
             preparedStatement.setString(3, cliente.getApellido());
@@ -37,8 +37,8 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
 
             return preparedStatement.executeUpdate() >= 1;
         }
-        catch (Exception ex){
-            System.out.println("Error: " + ex.getMessage());
+        catch (SQLException e){
+            HelperExcepciones.capturarExSQL(e);
         }
         return false;
     }
@@ -49,18 +49,19 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * @return true si elimina el registro, de lo contrario false
      */
     @Override
-    public boolean eliminar(String id){
+    public boolean eliminar(String id) throws ExcepcionSQL{
         String query = "DELETE FROM Cliente WHERE id = ?";
-        try{
+
+        try(Connection con= Conexion.getConnection()){
             PreparedStatement preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, id);
-
             return preparedStatement.executeUpdate() >= 1;
         }
-        catch (Exception ex){
-            System.out.println("Error: " + ex.getMessage());
-        }
-       return false;
+       catch (SQLException e){
+            HelperExcepciones.capturarExSQL(e);
+       }
+        return false;
+
     }
 
     /**
@@ -69,10 +70,12 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * @return un objeto de tipo Cliente con toda la informacion del cliente o null si no encuentra nada.
      */
     @Override
-    public Cliente obtener(String id) {
+    public Cliente obtener(String id) throws ExcepcionSQL{
         String query = "SELECT * FROM Cliente WHERE id = ?";
         Cliente cliente = null;
-        try{
+
+
+        try(Connection con= Conexion.getConnection()){
             PreparedStatement preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, id);
 
@@ -85,8 +88,8 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
                         resultSet.getString("direccion"));
             }
         }
-        catch (SQLException ex){
-            System.out.println("Fallo algo en la base de datos: "+ ex.getMessage());
+        catch (SQLException e){
+            HelperExcepciones.capturarExSQL(e);
         }
         return cliente;
     }
@@ -96,10 +99,11 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * @return una lista con los clientes registrados en la base de datos o una lista vacia sino existen clientes
      */
     @Override
-    public ArrayList<Cliente> obteners(){
+    public ArrayList<Cliente> obteners() throws ExcepcionSQL{
         String query = "SELECT * FROM Cliente";
         ArrayList<Cliente> listaClientes = new ArrayList<>();
-        try{
+
+        try(Connection con= Conexion.getConnection()){
             PreparedStatement preparedStatement = con.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -113,8 +117,8 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
                 listaClientes.add(cliente);
             }
         }
-        catch (SQLException ex){
-            System.out.println("Error: " + ex.getMessage());
+        catch (SQLException e){
+            HelperExcepciones.capturarExSQL(e);
         }
         return listaClientes;
     }
@@ -125,11 +129,11 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * @return 
      */
     @Override
-    public boolean actualizar(Cliente cliente){
-         String query
-            = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?"
-              + " WHERE id = ?";
-        try{
+    public boolean actualizar(Cliente cliente) throws ExcepcionSQL {
+
+            String query = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?"
+                    + " WHERE id = ?";
+        try (Connection con = Conexion.getConnection()) {
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
             preparedStatement.setString(1, cliente.getNombre());
@@ -140,10 +144,10 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
 
             return preparedStatement.executeUpdate() >= 1;
         }
-        catch (SQLException ex){
-            System.out.println("Error: " + ex.getMessage());
+        catch (SQLException e) {
+            HelperExcepciones.capturarExSQL(e);
         }
-       return false;
+        return false;
     }
 
     /**
@@ -151,11 +155,5 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      */
     @Override
     public void cerrarConexion(){
-        try{
-            con.close();
-        }
-        catch (SQLException ex){
-            System.out.println("Error:" + ex.getMessage());
-        }
     }
 }
