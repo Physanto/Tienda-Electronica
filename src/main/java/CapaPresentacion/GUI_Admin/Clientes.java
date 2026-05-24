@@ -135,7 +135,7 @@ public class Clientes extends javax.swing.JPanel {
  
         // Título del módulo
         JLabel lblModulo = new JLabel("Gestión de Clientes");
-        lblModulo.setFont(new Font("Segoe UI Light", Font.BOLD, 24));
+        lblModulo.setFont(new Font("Segoe UI Light", Font.BOLD, 26));
         lblModulo.setForeground(Color.WHITE);
         toolbar.add(lblModulo);
  
@@ -661,7 +661,6 @@ public class Clientes extends javax.swing.JPanel {
         }
         return true;
     }
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
