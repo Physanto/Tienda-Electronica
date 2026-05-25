@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class PromocionDAO {
 
-    private static Connection connection = Conexion.getConnection();
+    private static Connection connection = Conexion.getConexionLocal();
 
     public ArrayList<Promocion> getDataset(){
         String query = "SELECT p.id, p.stock, " +

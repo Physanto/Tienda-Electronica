@@ -30,9 +30,6 @@ Sino se hace esto se deberia hacer basicamente un CRUD para cada objeto, con est
  */
 public class GeneralOnlineProviderCRUD {
 
-    CollectionReference reference;
-    public static Firestore db;
-
     /**
      * Metodo generico que se encarga de guardar un registro en el contenedor especificado por argumento en la base de datos de firebase
      * @param coleccion es el contenedor donde se almacenan los datos ("la tabla")
@@ -41,8 +38,8 @@ public class GeneralOnlineProviderCRUD {
      * @return true si guarda correctamente el registro, de lo contrario false;
      */
     public static boolean guardar(String coleccion, String documento, Map<String, Object> registro) {
-        db = FirestoreClient.getFirestore();
         try {
+            Firestore db = Conexion.getConexionNube();
             DocumentReference docRef = db.collection(coleccion).document(documento);
             WriteResult result = docRef.set(registro).get(); // tener cuidado: operacion asincrona sin get()
             System.out.println("Guardado Correctamente");
@@ -61,7 +58,8 @@ public class GeneralOnlineProviderCRUD {
      */
     private static QuerySnapshot cargarDatos(String coleccion){
         try {
-            CollectionReference clienteFirestore = Conexion.db.collection(coleccion);
+            Firestore db = Conexion.getConexionNube();
+            CollectionReference clienteFirestore = db.collection(coleccion);
             return clienteFirestore.get().get(); // tener cuidado: operacion asincrona sin get()
         }
         catch (Exception e) {
@@ -141,8 +139,8 @@ public class GeneralOnlineProviderCRUD {
      * @return true si el registro fue eliminado correctamente, de lo contrario false
      */
     public static boolean eliminar(String coleccion, String documento) {
-        db = FirestoreClient.getFirestore();
         try {
+            Firestore db = Conexion.getConexionNube();
             DocumentReference docref = db.collection(coleccion).document(documento);
             WriteResult result = docref.delete().get(); // tener cuidado: operacion asincrona sin get()
             System.out.println("Eliminado exitosamente");
@@ -162,8 +160,8 @@ public class GeneralOnlineProviderCRUD {
      * @return true si actualiza correctamente el registro, de lo contrario false;
      */
     public static boolean actualizar(String coleccion, String documento, Map<String, Object> registro){
-        db = FirestoreClient.getFirestore();
         try{
+            Firestore db = Conexion.getConexionNube();
             DocumentReference documentReference = db.collection(coleccion) .document(documento);
             WriteResult result = documentReference.update(registro).get(); // tener cuidado: operacion asincrona sin get()
             return true;

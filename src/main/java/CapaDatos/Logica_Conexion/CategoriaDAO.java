@@ -4,7 +4,6 @@ import CapaLogicaNegocio.Logica_Negocio.Categoria;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -16,8 +15,6 @@ import java.util.ArrayList;
  */
 public class CategoriaDAO implements ILocalCRUD<Categoria> {
 
-    public static Connection conexion = Conexion.getConnection();
-
     /**
      * Agrega una nueva categoria a la base de datos
      * @param categoria la categoria que quiere agregar a la base de datos
@@ -26,6 +23,10 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
     @Override
     public boolean agregar(Categoria categoria){
         String query = "INSERT INTO Categoria (id, nombre) VALUES (?,?)";
+        Connection conexion = Conexion.getConexionLocal();
+
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -35,7 +36,7 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
             return preparedStatement.executeUpdate() >= 1;
         }
         catch(Exception ex){
-            System.out.println("Error: " + ex.getMessage());
+            System.out.println("Error CategoriaDAO: " + ex.getMessage());
         }
        return false;
     }
@@ -47,6 +48,10 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
     @Override
     public boolean eliminar(String id){
         String query = "DELETE FROM Categoria WHERE id = ?";
+        Connection conexion = Conexion.getConexionLocal();
+
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, id);
@@ -67,6 +72,10 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
     public Categoria obtener(String id){
         String query = "SELECT * FROM Categoria WHERE id = ?";
         Categoria categoria = null;
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return categoria; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -92,6 +101,10 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
     public ArrayList<Categoria> obteners(){
         String query = "SELECT * FROM Categoria";
         ArrayList<Categoria> listaCategorias = new ArrayList<>();
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return listaCategorias; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -115,6 +128,9 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
     @Override
     public boolean actualizar(Categoria categoria){
         String query = "UPDATE Categoria SET nombre = ? WHERE id = ?";
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, categoria.getNombre());
@@ -126,17 +142,5 @@ public class CategoriaDAO implements ILocalCRUD<Categoria> {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
-    }
-    /**
-     * se encarga de cerrar la conexion con la base de datos
-     */
-    @Override
-    public void cerrarConexion(){
-        try{
-            conexion.close();
-        }
-        catch(Exception ex){
-            System.out.println("Error: " + ex.getMessage());
-        }
     }
 }

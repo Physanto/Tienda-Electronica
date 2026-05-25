@@ -1,5 +1,6 @@
 package CapaDatos.Logica_Conexion;
 
+import CapaLogicaNegocio.Excepciones.ExcepcionSQL;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
@@ -17,31 +18,53 @@ import java.sql.SQLException;
  */
 public class Conexion {
 
-    public static Firestore db;
-    public static Connection conexion = null;
+    private static Firestore db;
+    private static Connection conexion;
 
     private Conexion(){ }
 
-    public static void Conectar() {
-        try {
-            FileInputStream as = new FileInputStream("tienda-electronica-v2.json");
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(as))
-                    .build();
+    /**
+     * Intenta establecer la conexión con Firebase.
+     * Empuja la excepción IOException hacia arriba si el archivo de credenciales falla.
+     */
+    public static Firestore getConexionNube() throws IOException {
 
-            FirebaseApp.initializeApp(options);
-            db= FirestoreClient.getFirestore();
-            System.out.println("Conexion Exitosa");
-            
-        } catch (IOException e) {
-            System.out.println("Error:" + e.getMessage());
+        if (db != null) {
+            return db;
         }
+
+        try{
+            if (FirebaseApp.getApps().isEmpty()) {
+                System.out.println("Inicializando Firebase por primera vez...");
+                FileInputStream as = new FileInputStream("tienda-electronica-v2.json");
+
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(as))
+                        .build();
+                FirebaseApp.initializeApp(options);
+            }
+        }
+        catch (Exception e){
+            System.out.println("Fallo la conexion con la nube");
+        }
+        db = FirestoreClient.getFirestore();
+        System.out.println("Conexión Exitosa a Firestore.");
+        return db;
     }
-    
-    public static Connection getConnection() throws SQLException{
+
+    public static Connection getConexionLocal(){
         String url = "jdbc:mysql://localhost:3306/Tienda_Electronica";
         String user = "root";
         String pass = "root";
-        return DriverManager.getConnection(url, user, pass);
+
+        if(conexion != null) return conexion;
+
+        try{
+            return DriverManager.getConnection(url, user, pass);
+        }
+        catch (SQLException e){
+            System.out.println("Error en la conexion" + e.getMessage());
+        }
+        return null;
     }
 }

@@ -19,8 +19,6 @@ import java.util.ArrayList;
  */
 public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
 
-    public static Connection con = Conexion.getConnection();
-
     @Override
     public boolean agregar(DetalleVenta detalleVenta) {
 
@@ -29,8 +27,10 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
                 + "(id,cantidad,subtotal,precioVenta,idProducto,idVenta) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try {
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
 
+        try {
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
             preparedStatement.setString(1, detalleVenta.getId());
@@ -43,10 +43,8 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
             return preparedStatement.executeUpdate() >= 1;
 
         } catch (Exception ex) {
-
             System.out.println("Error: " + ex.getMessage());
         }
-
         return false;
     }
 
@@ -55,19 +53,18 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
 
         String query = "DELETE FROM DetalleVenta WHERE id = ?";
 
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
+
         try {
-
             PreparedStatement preparedStatement = con.prepareStatement(query);
-
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
-
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return false;
     }
 
@@ -75,19 +72,17 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
     public DetalleVenta obtener(String id) {
 
         String query = "SELECT * FROM DetalleVenta WHERE id = ?";
-
         DetalleVenta detalleVenta = null;
 
-        try {
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return null; }
 
+        try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
-
             preparedStatement.setString(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
-
                 detalleVenta = new DetalleVenta(
                         resultSet.getString("id"),
                         resultSet.getLong("cantidad"),
@@ -97,12 +92,10 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
                         resultSet.getString("idVenta")
                 );
             }
-
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return detalleVenta;
     }
 
@@ -110,17 +103,16 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
     public ArrayList<DetalleVenta> obteners() {
 
         String query = "SELECT * FROM DetalleVenta";
-
         ArrayList<DetalleVenta> lista = new ArrayList<>();
 
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return lista; }
+
         try {
-
             PreparedStatement preparedStatement = con.prepareStatement(query);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
-
                 DetalleVenta detalleVenta = new DetalleVenta(
                         resultSet.getString("id"),
                         resultSet.getLong("cantidad"),
@@ -129,15 +121,12 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
                         resultSet.getString("idProducto"),
                         resultSet.getString("idVenta")
                 );
-
                 lista.add(detalleVenta);
             }
-
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return lista;
     }
 
@@ -149,10 +138,11 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
                 + "SET cantidad=?, subtotal=?, precioVenta=?, idProducto=?, idVenta=? "
                 + "WHERE id=?";
 
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
+
         try {
-
             PreparedStatement preparedStatement = con.prepareStatement(query);
-
             preparedStatement.setLong(1, detalleVenta.getCantidad());
             preparedStatement.setDouble(2, detalleVenta.getSubtotal());
             preparedStatement.setDouble(3, detalleVenta.getPrecioVenta());
@@ -161,25 +151,10 @@ public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
             preparedStatement.setString(6, detalleVenta.getId());
 
             return preparedStatement.executeUpdate() >= 1;
-
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return false;
-    }
-
-    @Override
-    public void cerrarConexion() {
-
-        try {
-
-            con.close();
-
-        } catch (Exception ex) {
-
-            System.out.println("Error: " + ex.getMessage());
-        }
     }
 }

@@ -14,8 +14,6 @@ import java.util.ArrayList;
  */
 public class ProductoDAO implements ILocalCRUD<Producto> {
 
-    public static Connection conexion = Conexion.getConnection();
-
     /**
      * Agrega una nuevo registro a la base de datos
      * @param producto el producto que quiere agregar a la base de datos
@@ -26,6 +24,10 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
         String query = "INSERT INTO Producto (id, codigo, nombre, marca, serie, stock," +
                 "precioActual, fechaVencimiento, idCategoria) " +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, producto.getId());
@@ -54,6 +56,10 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
     @Override
     public boolean eliminar(String id){
         String query = "DELETE FROM Producto WHERE id = ?";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, id);
@@ -75,11 +81,13 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
     public Producto obtener(String id){
         String query = "SELECT * FROM Producto WHERE id = ?";
         Producto producto = null;
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return null; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
             preparedStatement.setString(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
@@ -105,9 +113,12 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
     public ArrayList<Producto> obteners(){
         String query = "SELECT * FROM Producto";
         ArrayList<Producto> listaProductos= new ArrayList<>();
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return listaProductos; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
@@ -136,6 +147,10 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
         String query = "UPDATE Producto SET codigo = ?, nombre = ?, marca = ?, " +
                 "serie = ?, stock = ?, precioActual = ?, " +
                 "fechaVencimiento = ?, urlImg = ?, idCategoria = ? WHERE id = ?";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -155,18 +170,5 @@ public class ProductoDAO implements ILocalCRUD<Producto> {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
-    }
-
-    /**
-     * se encarga de cerrar la conexion con la base de datos
-     */
-    @Override
-    public void cerrarConexion(){
-        try{
-            conexion.close();
-        }
-        catch(Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-        }
     }
 }

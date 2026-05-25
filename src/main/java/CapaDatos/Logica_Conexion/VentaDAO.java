@@ -1,12 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package CapaDatos.Logica_Conexion;
 
 import CapaLogicaNegocio.Logica_Negocio.Venta;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -19,8 +16,6 @@ import java.util.ArrayList;
  */
 public class VentaDAO implements ILocalCRUD<Venta> {
 
-    public static Connection con = Conexion.getConnection();
-
     /**
      * Agrega una nueva venta a la base de datos.
      */
@@ -31,33 +26,25 @@ public class VentaDAO implements ILocalCRUD<Venta> {
                 "INSERT INTO Venta (id,fechaVenta,totalVenta,metodoPago,idCliente) "
                 + "VALUES (?, ?, ?, ?, ?)";
 
-        try {
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
 
+        try {
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
             preparedStatement.setString(1, venta.getId());
-
-            preparedStatement.setDate(
-                    2,
-                    new java.sql.Date(venta.getFechaVenta().getTime())
-            );
-
+            //preparedStatement.setDate(2, new java.sql.Date(venta.getFechaVenta().getTime()));
+            preparedStatement.setDate(2, (Date) venta.getFechaVenta());
             preparedStatement.setDouble(3, venta.getTotalVenta());
-
-            preparedStatement.setString(
-                    4,
-                    venta.getMetodoPago().toString()
-            );
-
+            preparedStatement.setString(4, venta.getMetodoPago().name());
             preparedStatement.setString(5, venta.getIdCliente());
 
             return preparedStatement.executeUpdate() >= 1;
 
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return false;
     }
 
@@ -66,22 +53,21 @@ public class VentaDAO implements ILocalCRUD<Venta> {
      */
     @Override
     public boolean eliminar(String id) {
-
         String query = "DELETE FROM Venta WHERE id = ?";
 
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
+
         try {
-
             PreparedStatement preparedStatement = con.prepareStatement(query);
-
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
 
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return false;
     }
 
@@ -92,19 +78,17 @@ public class VentaDAO implements ILocalCRUD<Venta> {
     public Venta obtener(String id) {
 
         String query = "SELECT * FROM Venta WHERE id = ?";
-
         Venta venta = null;
 
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return null; }
+
         try {
-
             PreparedStatement preparedStatement = con.prepareStatement(query);
-
             preparedStatement.setString(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
-
                 venta = new Venta(
                         resultSet.getString("id"),
                         resultSet.getDate("fechaVenta"),
@@ -116,11 +100,10 @@ public class VentaDAO implements ILocalCRUD<Venta> {
                 );
             }
 
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return venta;
     }
 
@@ -134,14 +117,14 @@ public class VentaDAO implements ILocalCRUD<Venta> {
 
         ArrayList<Venta> listaVentas = new ArrayList<>();
 
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return listaVentas; }
+
         try {
-
             PreparedStatement preparedStatement = con.prepareStatement(query);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
-
                 Venta venta = new Venta(
                         resultSet.getString("id"),
                         resultSet.getDate("fechaVenta"),
@@ -151,15 +134,13 @@ public class VentaDAO implements ILocalCRUD<Venta> {
                         ),
                         resultSet.getString("idCliente")
                 );
-
                 listaVentas.add(venta);
             }
 
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return listaVentas;
     }
 
@@ -168,54 +149,27 @@ public class VentaDAO implements ILocalCRUD<Venta> {
      */
     @Override
     public boolean actualizar(Venta venta) {
-
         String query =
                 "UPDATE Venta SET fechaVenta=?, totalVenta=?, metodoPago=?, idCliente=? "
                 + "WHERE id=?";
 
-        try {
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
 
+        try {
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
-            preparedStatement.setDate(
-                    1,
-                    new java.sql.Date(venta.getFechaVenta().getTime())
-            );
-
+            preparedStatement.setDate(1, (Date)venta.getFechaVenta());
             preparedStatement.setDouble(2, venta.getTotalVenta());
-
-            preparedStatement.setString(
-                    3,
-                    venta.getMetodoPago().toString()
-            );
-
+            preparedStatement.setString(3, venta.getMetodoPago().name());
             preparedStatement.setString(4, venta.getIdCliente());
-
             preparedStatement.setString(5, venta.getId());
 
             return preparedStatement.executeUpdate() >= 1;
-
-        } catch (Exception ex) {
-
+        }
+        catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-
         return false;
-    }
-
-    /**
-     * Cierra la conexion con la base de datos.
-     */
-    @Override
-    public void cerrarConexion() {
-
-        try {
-
-            con.close();
-
-        } catch (Exception ex) {
-
-            System.out.println("Error: " + ex.getMessage());
-        }
     }
 }

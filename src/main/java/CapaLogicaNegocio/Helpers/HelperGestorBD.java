@@ -10,6 +10,8 @@ import CapaDatos.Logica_Conexion.ClienteDAO;
 import com.google.gson.Gson;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
@@ -70,38 +72,55 @@ public class HelperGestorBD {
      * </pre>
      */
      //tratando de realizar una implementacion generica para guardar cualquier tipo de registro
+    // este metodo se puede refactorizar haciendo submetodos para tareas especificas ya que aqui hay code smell
     public static <T> boolean guardarRegistro(T object, String coleccion, String id, Supplier<Boolean> metodoGuardarLocal, Supplier<Boolean> metodoGuardarNube){
-        boolean exito = true;
+        boolean exitoLocal = false;
+        boolean subidoExitosamente = false;
         boolean online = HelperMonitorRed.estaUsandoNube();
 
-        try{
-            if(Conexion.conexion == null && Conexion.db == null){
-               guardarRedundancia(object);
-               return false;
-            }
-            if(!metodoGuardarLocal.get()){
+            Connection conexion = Conexion.getConexionLocal();
+            if (conexion == null) {
                 guardarRedundancia(object);
-                exito = false;
+                return false;
             }
-            boolean subidoExitosamente = false;
-            if (online) {
+
+        try {
+            exitoLocal = metodoGuardarLocal.get();
+        }
+        catch (Exception e) {
+            System.err.println("Fallo el guardado local. Causa: " + e.getMessage());
+            guardarRedundancia(object);
+        }
+
+        if (online && exitoLocal) {
+            try {
                 subidoExitosamente = metodoGuardarNube.get();
                 if (subidoExitosamente) {
                     System.out.println("Guardado exitoso en Local y Nube.");
                 }
             }
-            if (!online || !subidoExitosamente) {
-                String registroJson = new Gson().toJson(object);
-                String idSync = java.util.UUID.randomUUID().toString();
-                new SincronizadoraDAO().agregar(new Sincronizadora(idSync, Sincronizadora.Accion.INSERT,
-                        coleccion, id, registroJson, "0"));
-                System.out.println("Registro enviado a la cola de sincronización (INSERT).");
+            catch (Exception e) {
+                System.err.println("Fallo el guardado en la nube. Causa: " + e.getMessage());
+                subidoExitosamente = false;
             }
         }
-        catch(Exception e){
-            System.out.println("Error faltal en la insercion de datos " + e.getMessage());
+
+        if (!online || !subidoExitosamente) {
+            try {
+                String registroJson = new Gson().toJson(object);
+                String idSync = java.util.UUID.randomUUID().toString();
+
+                new SincronizadoraDAO().agregar(new Sincronizadora(idSync, Sincronizadora.Accion.INSERT,
+                        coleccion, id, registroJson, "0"));
+
+                System.out.println("Registro enviado a la cola de sincronización (INSERT).");
+            }
+            catch (Exception e) {
+                System.err.println("Fallo la cola de sincronización. Causa: " + e.getMessage());
+                throw new RuntimeException("Error fatal: No se pudo respaldar la información.", e);
+            }
         }
-        return exito;
+        return exitoLocal;
     }
     /**
      * Metodo que se encarga de cargar todos los registros de la base de datos que este disponible y en operacion en ese momento
@@ -297,13 +316,12 @@ public class HelperGestorBD {
      */
     public static boolean eliminarRegistroBidireccional(String id, String coleccion, Supplier<Boolean> metodoEliminarLocal,
                                                         Supplier<Boolean> metodoEliminarNube) {
-
         boolean online = HelperMonitorRed.estaUsandoNube();
         boolean exitoLocal = false;
         boolean exitoNube = false;
 
         try {
-            if (Conexion.conexion != null) {
+            if (Conexion.getConexionLocal() != null) {
                 exitoLocal = metodoEliminarLocal.get();
             }
         }
