@@ -164,6 +164,7 @@ public class HelperGestorBD {
      * () -> new ClienteOnlineCRUD().obtenerNube(Cliente.class, id)); // es cualquier metodo para cargar un registro de la bd nube
      * }
      * </pre>
+     * @return el objeto con el id asignado
      */
     public static <T> T cargarRegistro(Supplier<T> metodoCargarLocal, Supplier<T> metodoCargarNube){
         boolean online = HelperMonitorRed.estaUsandoNube();

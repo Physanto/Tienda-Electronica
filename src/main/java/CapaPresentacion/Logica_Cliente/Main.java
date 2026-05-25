@@ -22,7 +22,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Conexion.Conectar();
+        Conexion.getConexionLocal();
 
         int opc = 0, num_pcs = 0;
 
