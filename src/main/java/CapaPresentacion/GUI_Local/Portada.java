@@ -38,7 +38,7 @@ public class Portada extends javax.swing.JFrame {
         HelperMonitorRed monitor = new HelperMonitorRed();
         monitor.setDaemon(true);
         monitor.start();
-        Conexion.Conectar();
+        Conexion.getConexionLocal();
         Path currentRelativePath = Paths.get("");
         s = currentRelativePath.toAbsolutePath().toString();
         establecerFondo();

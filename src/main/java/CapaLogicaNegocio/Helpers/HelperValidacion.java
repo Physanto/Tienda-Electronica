@@ -20,6 +20,7 @@ public class HelperValidacion {
      * @return 0 si la cadena no contiene numeros, 1 si contiene al menos un numero
      */
     public static int RetornarValor(String cadena) {
+        cadena = cadena.trim();
         for (int i = 0; i < cadena.length(); i++) {
             if (Character.isDigit(cadena.charAt(i))) { return 1; }
         }
@@ -33,6 +34,7 @@ public class HelperValidacion {
      */
     public static int RetornarCEV2(String cadena) {
         //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
+        cadena = cadena.trim();
         char[] listaCaracteres = new char[8];
         listaCaracteres[0] = '@';
         listaCaracteres[1] = '/';
@@ -56,6 +58,7 @@ public class HelperValidacion {
 
     public static int RetornarCEDireccion(String cadena) {
         //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
+        cadena = cadena.trim();
         char[] listaCaracteres = new char[6];
         listaCaracteres[0] = '@';
         listaCaracteres[1] = '/';
@@ -77,6 +80,7 @@ public class HelperValidacion {
 
     public static int RetornarCEContrasenha(String cadena) {
         //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
+        cadena = cadena.trim();
         char[] listaCaracteres = new char[7];
         listaCaracteres[1] = '/';
         listaCaracteres[2] = ';';
@@ -111,7 +115,7 @@ public class HelperValidacion {
      */
     public static int RetornarLetra(String cadena ) {
         for (int i = 0; i < cadena.length(); i++) {
-             if(Character.isLetter(cadena.charAt(i))) {
+             if(!Character.isLetter(cadena.charAt(i))) {
                 return 1;
              }
         }
@@ -125,6 +129,19 @@ public class HelperValidacion {
      */
     public static int ValidarCantidadRango(int cantidad) {
        return (cantidad > 0 && cantidad < 1000) ? 1 : 0;
+    }
+
+    /**
+     * Verifica si la cadena pasada por argumento contiene numeros
+     * @param cadena es la cadena que se quiere verificar
+     * @return 0 si la toda la cadena contiene numeros, 1 si no contiene numeros
+     */
+    public static int validarNumero(String cadena) {
+        cadena = cadena.trim();
+        for (int i = 0; i < cadena.length(); i++) {
+            if (!Character.isDigit(cadena.charAt(i))) { return 1; }
+        }
+        return 0;
     }
 
     /**
@@ -154,7 +171,7 @@ public class HelperValidacion {
         return ValidarVacio(cadena)+RetornarValor(cadena)+RetornarCEV2(cadena);
     }
     /**
-     * Valida si la cadena pasada por argumento no esta vacia, no contiene letras y ademas no contiene caracteres especiales
+     * Valida si la cadena pasada por argumento no esta vacia, contiene solo letras y ademas no contiene caracteres especiales
      * @param cadena es la cadena que se quiere verificar
      * @return 0 si cumple lo anterior, 1 si no lo cumple
      */
@@ -184,6 +201,15 @@ public class HelperValidacion {
      */
     public static int ValidarTodoContrasenha(String cadena) {
        return ValidarVacio(cadena)+RetornarCEV2Contrasenha(cadena);
+    }
+
+    /**
+     * Verifica si la cadena pasada por parametro contiene solo numeros
+     * @param cadena es la cadena a ser evaluada
+     * @return 0 si contiene puros numeros, de lo contrario 1
+     */
+    public static int ValidarTodoNumero(String cadena) {
+        return validarNumero(cadena);
     }
 }
 
