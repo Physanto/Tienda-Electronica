@@ -32,7 +32,7 @@ import javax.swing.table.JTableHeader;
  *   - Tarjeta de total de ingresos de todos los clientes
  *   - Tarjeta de ventas por categoría
  *
- * @author Generated for Tienda Electronica
+ * @author Marlon Vargas
  */
 public class Ventas extends javax.swing.JPanel {
  
@@ -265,19 +265,19 @@ public class Ventas extends javax.swing.JPanel {
         panelTotales.setBorder(new EmptyBorder(8, 16, 8, 16));
  
         JLabel ltsTes = new JLabel("Total sesión:");
-        ltsTes.setForeground(COLOR_TEXTO_MUTED);
+        ltsTes.setForeground(COLOR_TEXTO);
         ltsTes.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
  
         lblTotalSesion = new JLabel("$0");
-        lblTotalSesion.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
+        lblTotalSesion.setFont(new Font("Segoe UI Light", Font.BOLD, 16));
         lblTotalSesion.setForeground(COLOR_ACENTO);
  
         JLabel ltsAcu = new JLabel("Total acumulado:");
-        ltsAcu.setForeground(COLOR_TEXTO_MUTED);
+        ltsAcu.setForeground(COLOR_TEXTO);
         ltsAcu.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
  
         lblTotalCliente = new JLabel("$0");
-        lblTotalCliente.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
+        lblTotalCliente.setFont(new Font("Segoe UI Light", Font.BOLD, 16));
         lblTotalCliente.setForeground(COLOR_CARD_3);
  
         panelTotales.add(ltsTes);
@@ -645,6 +645,7 @@ public class Ventas extends javax.swing.JPanel {
         });
         return btn;
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

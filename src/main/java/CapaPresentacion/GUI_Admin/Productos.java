@@ -21,29 +21,7 @@ import java.util.UUID;
 /**
  * Panel principal del módulo <b>Productos</b> dentro del JFrame {@code Menu_Admin}.
  *
- * <p>Implementa el patrón de diseño <b>Sidebar + BorderLayout</b> consistente
- * con el módulo {@link Clientes}, dividido en tres zonas funcionales:
- * <ol>
- *   <li><b>NORTH — Toolbar</b>: botones de acción CRUD
- *       (Registrar Producto, Buscar, Actualizar, Eliminar).</li>
- *   <li><b>CENTER — Tabla de inventario</b>: {@link JTable} con scroll que
- *       muestra todos los productos registrados en la base de datos. Las columnas
- *       reflejan exactamente los campos de la entidad {@link Producto}.</li>
- *   <li><b>EAST — Panel lateral de formulario</b>: visible u oculto dinámicamente.
- *       Contiene los campos de captura para la operación activa, incluyendo un
- *       {@link JSpinner} para {@code fechaVencimiento} y un {@link JComboBox}
- *       para seleccionar la categoría desde {@link CategoriaDAO}.</li>
- * </ol>
- *
- * <p><b>Campos de la entidad Producto mapeados:</b>
- * {@code id}, {@code codigo}, {@code nombre}, {@code marca}, {@code serie},
- * {@code stock}, {@code precioActual}, {@code fechaVencimiento},
- * {@code urlImg}, {@code idCategoria}.
- *
- * @author Tienda-Electronica Team
- * @version 1.0
- * @see ProductoDAO
- * @see CategoriaDAO
+ * @author Marlon Vargas
  */
 public class Productos extends JPanel {
 
@@ -62,7 +40,7 @@ public class Productos extends JPanel {
     /** Texto principal — blanco. */
     private static final Color COLOR_TEXTO       = Color.WHITE;
     /** Texto secundario / etiquetas de campo. */
-    private static final Color COLOR_TEXTO_MUTED = Color.BLACK;
+    private static final Color COLOR_TEXTO_MUTED = Color.WHITE;
     /** Fondo de la tabla de inventario. */
     private static final Color COLOR_TABLE_BG    = new Color(0x10, 0x14, 0x1E);
     /** Fondo de la fila seleccionada (verde semitransparente). */
@@ -176,7 +154,7 @@ public class Productos extends JPanel {
         toolbar.setBorder(new EmptyBorder(8, 16, 8, 16));
 
         JLabel lblModulo = new JLabel("Gestión de Productos / Inventario");
-        lblModulo.setFont(new Font("Segoe UI Light", Font.BOLD, 24));
+        lblModulo.setFont(new Font("Segoe UI Light", Font.BOLD, 26));
         lblModulo.setForeground(COLOR_TEXTO);
         toolbar.add(lblModulo);
 
@@ -320,7 +298,7 @@ public class Productos extends JPanel {
 
         lblTituloForm = new JLabel("Registrar Producto");
         lblTituloForm.setFont(new Font("Segoe UI Light", Font.BOLD, 18));
-        lblTituloForm.setForeground(COLOR_ACENTO);
+        lblTituloForm.setForeground(COLOR_TEXTO);
         header.add(lblTituloForm, BorderLayout.CENTER);
         formPanel.add(header, BorderLayout.NORTH);
 
@@ -951,6 +929,7 @@ public class Productos extends JPanel {
         @Override
         public String toString() { return nombre; }
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
