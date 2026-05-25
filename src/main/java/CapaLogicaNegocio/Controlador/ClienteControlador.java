@@ -17,17 +17,18 @@ public class ClienteControlador {
     }
 
     public RespuestaControlador agregarCliente(Cliente cliente) {
-        try {
-            HelperGestorBD.guardarRegistro(cliente, "Cliente", cliente.getId(),
-                    () -> new ClienteDAO().agregar(cliente),
-                    () -> new ClienteOnlineCRUD().registrarNube(cliente));
-        }
-        catch (ExcepcionSQL e) {
-            return new RespuestaControlador(false, e.getMessage());
-        }
+
+        boolean exito = HelperGestorBD.guardarRegistro(cliente, "Cliente", cliente.getId(),
+                () -> new ClienteDAO().agregar(cliente),
+                () -> new ClienteOnlineCRUD().registrarNube(cliente)
+        );
+
+        return (exito) ? new RespuestaControlador(false, "Cliente agregado con exito")
+                : new RespuestaControlador(false, "Cliente no agregado");
     }
 
     public RespuestaControlador eliminarCliente(){
 
+        return null;
     }
 }

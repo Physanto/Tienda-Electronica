@@ -19,5 +19,4 @@ public interface ILocalCRUD<T> {
     public T obtener(String id) throws ExcepcionSQL;
     public ArrayList<T> obteners() throws ExcepcionSQL;
     public boolean actualizar(T object) throws ExcepcionSQL;
-    public void cerrarConexion() throws ExcepcionSQL;
 }

@@ -19,14 +19,17 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * Agrega un nuevo cliente a la base de datos
      * @param cliente el cliente que quiere agregar a la base de datos
      * @return 0 si no modifico ninguna fila, o mayor a 0 (cantidad de filas que modifico)
-     * @throws ExcepcionSQL si se genera una
      */
     @Override
-    public boolean agregar(Cliente cliente) throws ExcepcionSQL {
+    public boolean agregar(Cliente cliente){
         String query
                 = "INSERT INTO Cliente (id,nombre,apellido,direccion,cedula)"
                 + " VALUES (?, ?, ?, ?, ?, ?)";
-        try(Connection con= Conexion.getConnection()){
+
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
+
+        try{
 
             PreparedStatement preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, cliente.getId());
@@ -38,7 +41,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             return preparedStatement.executeUpdate() >= 1;
         }
         catch (SQLException e){
-            HelperExcepciones.capturarExSQL(e);
+            System.out.println("Error: " + e.getMessage());
         }
         return false;
     }
@@ -49,16 +52,19 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * @return true si elimina el registro, de lo contrario false
      */
     @Override
-    public boolean eliminar(String id) throws ExcepcionSQL{
+    public boolean eliminar(String id) {
         String query = "DELETE FROM Cliente WHERE id = ?";
 
-        try(Connection con= Conexion.getConnection()){
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
+
+        try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, id);
             return preparedStatement.executeUpdate() >= 1;
         }
        catch (SQLException e){
-            HelperExcepciones.capturarExSQL(e);
+           System.out.println("Error: " + e.getMessage());
        }
         return false;
 
@@ -70,12 +76,14 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * @return un objeto de tipo Cliente con toda la informacion del cliente o null si no encuentra nada.
      */
     @Override
-    public Cliente obtener(String id) throws ExcepcionSQL{
+    public Cliente obtener(String id) {
         String query = "SELECT * FROM Cliente WHERE id = ?";
         Cliente cliente = null;
 
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return null; }
 
-        try(Connection con= Conexion.getConnection()){
+        try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, id);
 
@@ -89,7 +97,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             }
         }
         catch (SQLException e){
-            HelperExcepciones.capturarExSQL(e);
+            System.out.println("Error: " + e.getMessage());
         }
         return cliente;
     }
@@ -99,11 +107,14 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
      * @return una lista con los clientes registrados en la base de datos o una lista vacia sino existen clientes
      */
     @Override
-    public ArrayList<Cliente> obteners() throws ExcepcionSQL{
+    public ArrayList<Cliente> obteners(){
         String query = "SELECT * FROM Cliente";
         ArrayList<Cliente> listaClientes = new ArrayList<>();
 
-        try(Connection con= Conexion.getConnection()){
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return listaClientes; }
+
+        try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -118,7 +129,7 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             }
         }
         catch (SQLException e){
-            HelperExcepciones.capturarExSQL(e);
+            System.out.println("Error: " + e.getMessage());
         }
         return listaClientes;
     }
@@ -126,14 +137,17 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
     /**
      * Actualiza el registro del cliente que se le pase por argumento
      * @param cliente es el registro que se quiere actualizar
-     * @return 
+     * @return true si actualiza correctamente, de lo contrario retorna false
      */
     @Override
-    public boolean actualizar(Cliente cliente) throws ExcepcionSQL {
+    public boolean actualizar(Cliente cliente){
 
-            String query = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?"
+        String query = "UPDATE Cliente SET nombre=?,apellido=?,direccion=?,cedula=?"
                     + " WHERE id = ?";
-        try (Connection con = Conexion.getConnection()) {
+        Connection con = Conexion.getConexionLocal();
+        if(con == null) { return false; }
+
+        try{
             PreparedStatement preparedStatement = con.prepareStatement(query);
 
             preparedStatement.setString(1, cliente.getNombre());
@@ -145,15 +159,8 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
             return preparedStatement.executeUpdate() >= 1;
         }
         catch (SQLException e) {
-            HelperExcepciones.capturarExSQL(e);
+            System.out.println("Error: " + e.getMessage());
         }
         return false;
-    }
-
-    /**
-     * se encarga de cerrar la conexion con la base de datos
-     */
-    @Override
-    public void cerrarConexion(){
     }
 }

@@ -16,8 +16,6 @@ import java.util.ArrayList;
  */
 public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
 
-    public static Connection conexion = Conexion.getConnection();
-
     /**
      * Agrega una nuevo registro a la base de datos
      * @param sincronizadora el producto que quiere agregar a la base de datos
@@ -28,6 +26,9 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
         String query = "INSERT INTO ColaSincronizadora (id, accion," +
                 "tablaAfectada, idRegistroAfectado, registroJson, estado) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
 
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -55,6 +56,10 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
     @Override
     public boolean eliminar(String id){
         String query = "DELETE FROM ColaSincronizadora WHERE id = ?";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             preparedStatement.setString(1, id);
@@ -76,11 +81,14 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
     public Sincronizadora obtener(String id){
         String query = "SELECT * FROM ColaSincronizadora WHERE id = ?";
         Sincronizadora sincronizadora = null;
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return null; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
             preparedStatement.setString(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
@@ -103,6 +111,10 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
     public ArrayList<Sincronizadora> obteners(){
         String query = "SELECT * FROM ColaSincronizadora";
         ArrayList<Sincronizadora> listaSincronizadora = new ArrayList<>();
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return listaSincronizadora; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -128,6 +140,10 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
     public boolean actualizar(Sincronizadora sincronizadora){
         String query = "UPDATE ColaSincronizadora SET accion = ?, tablaAfectada = ?," +
                 "idRegistroAfectado = ?, registroJson = ?, estado = ? WHERE id = ?";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -148,6 +164,10 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
 
     public boolean actualizarSincronizados(String id){
         String query = "UPDATE ColaSincronizadora SET estado = ? WHERE id = ?";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return false; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -165,6 +185,10 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
     public ArrayList<Sincronizadora> obtenerNoSincronizados(String estado){
         String query = "SELECT * FROM ColaSincronizadora WHERE estado = ?";
         ArrayList<Sincronizadora> listaNoSincronizados = new ArrayList<>();
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) { return listaNoSincronizados; }
+
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
 
@@ -183,18 +207,5 @@ public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
             System.out.println("Error: " + ex.getMessage());
         }
         return listaNoSincronizados;
-    }
-
-    /**
-     * se encarga de cerrar la conexion con la base de datos
-     */
-    @Override
-    public void cerrarConexion(){
-        try{
-            conexion.close();
-        }
-        catch(Exception ex){
-            System.out.println("Error: " + ex.getMessage());
-        }
     }
 }
