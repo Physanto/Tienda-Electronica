@@ -9,7 +9,7 @@ package CapaLogicaNegocio.Logica_Negocio;
  */
 public class Cliente {
 
-    private String id, nombre, apellido, direccion, cedula, urlImg;
+    private String id, nombre, apellido, direccion, cedula;
 
     public Cliente(){}
 

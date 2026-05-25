@@ -2,7 +2,6 @@ package CapaPresentacion.GUI_Admin;
 
 import CapaDatos.Logica_Conexion.ProductoDAO;
 import CapaDatos.Logica_Conexion.PromocionDAO;
-import CapaLogicaNegocio.Helpers.HelperKmeans;
 import CapaLogicaNegocio.Logica_Negocio.Producto;
 import CapaLogicaNegocio.Logica_Negocio.Promocion;
 import CapaDatos.Logica_Conexion.ClienteDAO;
@@ -312,7 +311,7 @@ public class Promociones extends javax.swing.JPanel {
         for (Producto p : productos) mapaProductos.put(p.getId(), p);
 
         // 3. Ejecutar K-Means (modifica in-place el campo cluster de cada Promocion)
-        HelperKmeans.clusters(dataset);
+        //HelperKmeans.clusters(dataset);
 
         // 4. Identificar el cluster "candidato a promoción":
         //    el que tenga mayor promedio de diasSinVender
