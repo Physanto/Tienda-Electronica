@@ -6,7 +6,7 @@ package CapaLogicaNegocio.Controlador;
  *
  * @param exito si la respuesta es true o false
  * @param mensaje el mensaje que se quiere almacenar
- * @param objeto si se quiere enviar un objeto con informacion mas detallada
+ * @param dato si se quiere enviar un objeto con informacion mas detallada
  * @param <T> generico de cualquier tipo de objeto
  */
-public record RespuestaControlador <T>(boolean exito, String mensaje, T objeto){ }
+public record RespuestaControlador <T>(boolean exito, String mensaje, T dato){ }
