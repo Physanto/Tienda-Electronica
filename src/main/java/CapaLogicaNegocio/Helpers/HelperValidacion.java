@@ -102,7 +102,7 @@ public class HelperValidacion {
         return 0;
     }
 
-    public static int validarUID(String id){
+    private static int validarUID(String id){
         if(id == null) return 1;
 
         id = id.trim();

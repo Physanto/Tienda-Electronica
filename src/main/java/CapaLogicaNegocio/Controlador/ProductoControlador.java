@@ -80,7 +80,7 @@ public class ProductoControlador {
                 fechaVencimiento, productoDTO.idCategoria()
         );
 
-        boolean exito = HelperGestorBD.guardarRegistro(producto, "Producto", producto.getId(),
+        boolean exito = HelperGestorBD.guardarRegistro(producto, "Producto", productoDTO.id(),
                 () -> productoDAO.agregar(producto),
                 () -> productoOnlineCRUD.registrarNube(producto)
         );

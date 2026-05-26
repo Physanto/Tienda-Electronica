@@ -163,4 +163,31 @@ public class ClienteDAO implements ILocalCRUD<Cliente> {
         }
         return false;
     }
+
+    public Long cantidadClientes(){
+
+        String query = "SELECT SUM(id) AS cantidad FROM Cliente";
+
+        Long total = 0l;
+
+        Connection conexion = Conexion.getConexionLocal();
+
+        if(conexion == null) return 0l;
+
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                total = resultSet.getLong("cantidad");
+
+                if(resultSet.wasNull()) return 0l;
+            }
+            return total;
+        }
+        catch(Exception e){
+            System.out.println("Error en obtener la cantidad de registros de ventas");
+        }
+        return 0l;
+    }
 }
