@@ -1,7 +1,6 @@
 package CapaPresentacion.Logica_Cliente;
 
 import CapaLogicaNegocio.Helpers.HelperImpresion;
-import CapaLogicaNegocio.Helpers.HelperRegistro;
 import CapaLogicaNegocio.Helpers.HelperTiempo;
 import CapaLogicaNegocio.Helpers.HelperValidacion;
 import CapaDatos.Logica_Conexion.Conexion;
@@ -75,12 +74,12 @@ public class Main {
 //                        rta = HelperValidacion.ValidarVacio(nombre);
 //                    }
 
-                    conteo = HelperValidacion.ValidarTodo(nombre);
+                    conteo = HelperValidacion.validarTodo(nombre);
 
                     while (conteo != 0) {
                         System.out.println("Digite el nombre de la persona");
                         nombre = scan.nextLine();
-                        conteo = HelperValidacion.ValidarTodo(nombre);
+                        conteo = HelperValidacion.validarTodo(nombre);
 
                     }
                     //Termina Nombre
@@ -96,12 +95,12 @@ public class Main {
                         apellido = scan.nextLine();
                         rta = HelperValidacion.ValidarVacio(apellido);
                     }
-                    conteo = HelperValidacion.ValidarTodo(apellido);
+                    conteo = HelperValidacion.validarTodo(apellido);
 
                     while (conteo != 0) {
                         System.out.println("Digite el apellido de la persona");
                         apellido = scan.nextLine();
-                        conteo = HelperValidacion.ValidarTodo(apellido);
+                        conteo = HelperValidacion.validarTodo(apellido);
 
                     }
                     //Termina Apellido
@@ -194,12 +193,12 @@ public class Main {
                                 nom_produ = scan.nextLine();
                                 rta = HelperValidacion.ValidarVacio(nom_produ);
                             }
-                            conteo = HelperValidacion.ValidarTodo(nom_produ);
+                            conteo = HelperValidacion.validarTodo(nom_produ);
 
                             while (conteo != 0) {
                                 System.out.println("Digite el nombre del producto" + "\t" + (i + 1));
                                 nom_produ = scan.nextLine();
-                                conteo = HelperValidacion.ValidarTodo(nom_produ);
+                                conteo = HelperValidacion.validarTodo(nom_produ);
 
                             }
                             //Termina nombre producto
@@ -213,12 +212,12 @@ public class Main {
                                 marca = scan.nextLine();
                                 rta = HelperValidacion.ValidarVacio(marca);
                             }
-                            conteo = HelperValidacion.ValidarTodo(marca);
+                            conteo = HelperValidacion.validarTodo(marca);
 
                             while (conteo != 0) {
                                 System.out.println("Digite la marca del producto" + "\t" + (i + 1));
                                 marca = scan.nextLine();
-                                conteo = HelperValidacion.ValidarTodo(marca);
+                                conteo = HelperValidacion.validarTodo(marca);
 
                             }
                             //Termina marca

@@ -144,7 +144,7 @@ public class InicioSesion extends javax.swing.JFrame {
         String usuario   = tx_user.getText();
         String contrasena = String.valueOf(tx_passwd.getPassword());
  
-        if (CapaLogicaNegocio.Helpers.HelperValidacion.ValidarTodo(usuario) != 0
+        if (CapaLogicaNegocio.Helpers.HelperValidacion.validarTodo(usuario) != 0
                 || CapaLogicaNegocio.Helpers.HelperValidacion.ValidarTodoContrasenha(contrasena) != 0) {
             mostrarErrorCampos();
             return;

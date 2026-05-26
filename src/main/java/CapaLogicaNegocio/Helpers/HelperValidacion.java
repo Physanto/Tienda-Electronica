@@ -5,6 +5,8 @@ package CapaLogicaNegocio.Helpers;
 // se pueden hacer 2 metodos que sean genericos
 // se puede optimizar un poco el metodo de validacion de caracteres especiales
 
+import java.util.UUID;
+
 /**
  * Clase que se encarga de construir las validaciones necesarias para que el sistema no falle
  * o si este es el caso entonces recuperarse y manejar los errores de forma correcta
@@ -99,6 +101,21 @@ public class HelperValidacion {
         }
         return 0;
     }
+
+    public static int validarUID(String id){
+        if(id == null) return 1;
+
+        id = id.trim();
+
+        try{
+            UUID.fromString(id);
+            return 0;
+        }
+        catch (IllegalArgumentException e){
+            System.out.println("No es del tipo UUID " + e.getMessage());
+            return 1;
+        }
+    }
     /**
      * Verifica si la cadena pasada por argumento esta vacia
      * @param cadena es la cadena que se quiere validar
@@ -167,7 +184,7 @@ public class HelperValidacion {
      * @param cadena es la cadena que se quiere verificar
      * @return 0 si cumple lo anterior, 1 si no lo cumple
      */
-    public static int ValidarTodo(String cadena) {
+    public static int validarTodo(String cadena) {
         return ValidarVacio(cadena)+RetornarValor(cadena)+RetornarCEV2(cadena);
     }
     /**
@@ -210,6 +227,24 @@ public class HelperValidacion {
      */
     public static int ValidarTodoNumero(String cadena) {
         return validarNumero(cadena);
+    }
+
+    /**
+     * Verifica si la cadena pasada por argumento tiene el formato UUID
+     * @param cadena es la cadena a ser evaluada
+     * @return 0 si tiene el formato correcto, de lo contrario 1
+     */
+    public static int validarUUID(String cadena) {
+        return validarUID(cadena);
+    }
+
+    /**
+     * Verifica si la cadena pasada por argumento no esta vacia y ademas no contiene ciertos caracteres especiales
+     * @param cadena es la cadena a ser evaluada
+     * @return 0 si tiene el formato correcto, de lo contrario 1
+     */
+    public static int validarTodoNombres(String cadena) {
+        return ValidarVacio(cadena) + RetornarCEDireccion(cadena);
     }
 }
 
