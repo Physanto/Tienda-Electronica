@@ -21,7 +21,7 @@ public class HelperValidacion {
      * @param cadena es la cadena que se quiere verificar
      * @return 0 si la cadena no contiene numeros, 1 si contiene al menos un numero
      */
-    public static int RetornarValor(String cadena) {
+    private static int RetornarValor(String cadena) {
         cadena = cadena.trim();
         for (int i = 0; i < cadena.length(); i++) {
             if (Character.isDigit(cadena.charAt(i))) { return 1; }
@@ -34,7 +34,7 @@ public class HelperValidacion {
      * @param cadena es la cadena que se quirer verificar
      * @return 0 si la cadena no contiene caracteres especiales, 1 si contiene al menos un caracter especial
      */
-    public static int RetornarCEV2(String cadena) {
+    private static int RetornarCEV2(String cadena) {
         //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
         cadena = cadena.trim();
         char[] listaCaracteres = new char[8];
@@ -58,7 +58,7 @@ public class HelperValidacion {
         return 0;
     }
 
-    public static int RetornarCEDireccion(String cadena) {
+    private static int RetornarCEDireccion(String cadena) {
         //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
         cadena = cadena.trim();
         char[] listaCaracteres = new char[6];
@@ -80,7 +80,7 @@ public class HelperValidacion {
         return 0;
     }
 
-    public static int RetornarCEContrasenha(String cadena) {
+    private static int RetornarCEContrasenha(String cadena) {
         //se podria usar un Set para hacer esta validacion ya que este tiene una complejidad de O(1)
         cadena = cadena.trim();
         char[] listaCaracteres = new char[7];
@@ -102,7 +102,7 @@ public class HelperValidacion {
         return 0;
     }
 
-    public static int validarUID(String id){
+    private static int validarUID(String id){
         if(id == null) return 1;
 
         id = id.trim();
