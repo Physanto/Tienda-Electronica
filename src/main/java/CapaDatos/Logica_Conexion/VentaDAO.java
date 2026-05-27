@@ -1,5 +1,6 @@
 package CapaDatos.Logica_Conexion;
 
+import CapaLogicaNegocio.DTOS.VentaPorCategoriaDTO;
 import CapaLogicaNegocio.Logica_Negocio.Venta;
 
 import java.sql.Connection;
@@ -171,5 +172,96 @@ public class VentaDAO implements ILocalCRUD<Venta> {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
+    }
+
+    public Double totalVentas(){
+
+        String query = "SELECT SUM(totalVenta) AS total FROM Venta";
+
+        Double total = 0.0;
+
+        Connection conexion = Conexion.getConexionLocal();
+
+        if(conexion == null) return 0.0;
+
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                total = resultSet.getDouble("total");
+
+                if(resultSet.wasNull()) return 0.0;
+            }
+            return total;
+        }
+        catch(Exception e){
+            System.out.println("Error en la obtencion de ventas");
+        }
+        return 0.0;
+    }
+
+    public Long cantidadVentas(){
+
+        String query = "SELECT SUM(id) AS cantidad FROM Venta";
+
+        Long total = 0l;
+
+        Connection conexion = Conexion.getConexionLocal();
+
+        if(conexion == null) return 0l;
+
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                total = resultSet.getLong("cantidad");
+
+                if(resultSet.wasNull()) return 0l;
+            }
+            return total;
+        }
+        catch(Exception e){
+            System.out.println("Error en obtener la cantidad de registros de ventas");
+        }
+        return 0l;
+    }
+
+    public ArrayList<VentaPorCategoriaDTO> ventasPorCategoria(){
+
+        String query = "SELECT c.nombre AS categoria," +
+                "    SUM(dt.cantidad) AS productosVendidos," +
+                "    SUM(dt.cantidad * p.precio) AS totalVentas," +
+                "    MIN(v.fechaVenta) AS primeraVenta," +
+                "    MAX(v.fechaVenta) AS ultimaVenta" +
+                "FROM Categoria c" +
+                "JOIN Producto p ON p.idCategoria = c.id" +
+                "JOIN DetalleVenta dt ON dt.idProducto = p.id" +
+                "JOIN Venta v ON v.id = dt.idVenta" +
+                "GROUP BY c.id, c.nombre;";
+
+        ArrayList<VentaPorCategoriaDTO> listaVentas = new ArrayList<>();
+        Connection conexion = Conexion.getConexionLocal();
+
+        if(conexion == null) return listaVentas;
+
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            VentaPorCategoriaDTO ventaPorCategoriaDTO;
+
+            while(resultSet.next()){
+                ventaPorCategoriaDTO = new VentaPorCategoriaDTO(resultSet.getString("categoria"),
+                        resultSet.getLong("productosVendidos"), resultSet.getDouble("totalVentas"),
+                        resultSet.getTimestamp("primeraVenta"), resultSet.getTimestamp("ultimaVenta"));
+                listaVentas.add(ventaPorCategoriaDTO);
+            }
+        }
+        catch (Exception e){
+            System.out.println("no se pudo ejecutar ventas por categoria");
+        }
+		return listaVentas;
     }
 }

@@ -213,6 +213,15 @@ public class ClienteControlador {
                 : new RespuestaControlador<>(false, "Error en la consulta de todos los clientes", null);
     }
 
+    public RespuestaControlador<Long> cantidadClientes(){
+
+        Long cantidadClientes = clienteDAO.cantidadClientes();
+
+        return cantidadClientes != null
+                ? new RespuestaControlador<>(true, "Se hizo la consulta satisfactoriamente", cantidadClientes)
+                : new RespuestaControlador<>(false, "Error en la consulta a la base de datos para la cantidad de clientes",null);
+    }
+
     /**
      * Metodo privado de soporte (Helper) interno del controlador.
      * Centraliza las validaciones de negocio, nulos y vacios requeridas antes de procesar el ClienteDTO.

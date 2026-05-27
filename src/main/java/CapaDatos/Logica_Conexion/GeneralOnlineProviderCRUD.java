@@ -103,21 +103,21 @@ public class GeneralOnlineProviderCRUD {
      */
     public static <T> ArrayList<T> obteners(String coleccion, Class<T> clase) {
 
-        ArrayList<T> listaClientes = new ArrayList<>();
+        ArrayList<T> listaObjetos = new ArrayList<>();
         QuerySnapshot datos = cargarDatos(coleccion);
 
         if(datos != null) {
             try {
                 for (DocumentSnapshot document : datos.getDocuments()) {
                     T registro = document.toObject(clase);
-                    listaClientes.add(registro);
+                    listaObjetos.add(registro);
                 }
             }
             catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
         }
-        return listaClientes;
+        return listaObjetos;
     }
 
     /**
