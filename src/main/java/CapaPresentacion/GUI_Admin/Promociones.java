@@ -43,7 +43,7 @@ public class Promociones extends javax.swing.JPanel {
     // ──────────────────────────────────────────────────────────────
     private static final Color COLOR_BG          = new Color(0x1A, 0x1E, 0x29);
     private static final Color COLOR_PANEL_SEC   = new Color(0x13, 0x2D, 0x46);
-    private static final Color COLOR_ACENTO      = new Color(0x01, 0xC3, 0x8E);
+    private static final Color COLOR_ACENTO      = new Color(1, 128, 95);
     private static final Color COLOR_PELIGRO     = new Color(0xEF, 0x44, 0x44);
     private static final Color COLOR_AMARILLO    = new Color(0xF5, 0x9E, 0x0B);
     private static final Color COLOR_TEXTO       = Color.WHITE;
@@ -280,6 +280,56 @@ public class Promociones extends javax.swing.JPanel {
 
         return seccion;
     }
+    
+     /**
+     * Carga la tabla de clientes con sus métricas calculadas desde el historial
+     * de ventas: total gastado, número de sesiones y días desde la última compra.
+     * Llámala en el constructor:  cargarTablaClientes();
+     */
+    private void cargarTablaClientes() {
+        modeloClientes.setRowCount(0);
+
+        ArrayList<Cliente>      clientes  = clienteDAO.obteners();
+        ArrayList<Venta>        ventas    = ventaDAO.obteners();
+        ArrayList<DetalleVenta> detalles  = detalleVentaDAO.obteners();
+
+        // Mapa idVenta → Venta (para cruzar con DetalleVenta)
+        Map<String, Venta> mapVentas = new HashMap<>();
+        for (Venta v : ventas) mapVentas.put(v.getId(), v);
+
+        long hoy = System.currentTimeMillis();
+
+        for (Cliente c : clientes) {
+            // Ventas del cliente
+            ArrayList<Venta> ventasCliente = new ArrayList<>();
+            for (Venta v : ventas) {
+                if (v.getIdCliente().equals(c.getId())) ventasCliente.add(v);
+            }
+
+            int    numSesiones   = ventasCliente.size();
+            double totalGastado  = 0;
+            long   fechaUltima   = 0;
+
+            for (Venta v : ventasCliente) {
+                totalGastado += v.getTotalVenta();
+                if (v.getFechaVenta().getTime() > fechaUltima)
+                    fechaUltima = v.getFechaVenta().getTime();
+            }
+
+            long diasDesdeUltima = (numSesiones == 0) ? 999
+                    : (hoy - fechaUltima) / (1000L * 60 * 60 * 24);
+
+            modeloClientes.addRow(new Object[]{
+                c.getId(),
+                c.getNombre(),
+                c.getApellido(),
+                c.getCedula(),
+                FMT_MONEDA.format(totalGastado),
+                numSesiones,
+                diasDesdeUltima == 999 ? "Sin compras" : diasDesdeUltima + " días"
+            });
+        }
+    }
 
     // ══════════════════════════════════════════════════════════════
     //  LÓGICA DE NEGOCIO
@@ -407,12 +457,13 @@ public class Promociones extends javax.swing.JPanel {
             double precioFinal    = precioOriginal * (1 - porcentaje / 100.0);
 
             // Vista previa
-            String mensaje = String.format(
-                    "Producto:        %s\n" +
-                    "Precio original: %s\n" +
-                    "Descuento:       %d%%\n" +
-                    "Precio final:    %s\n\n" +
-                    "¿Confirmar promoción?",
+            String mensaje = String.format("""
+                                           Producto:        %s
+                                           Precio original: %s
+                                           Descuento:       %d%%
+                                           Precio final:    %s
+                                           
+                                           \u00bfConfirmar promoci\u00f3n?""",
                     nombre,
                     FMT_MONEDA.format(precioOriginal),
                     porcentaje,
@@ -613,7 +664,7 @@ public class Promociones extends javax.swing.JPanel {
         // — Tabla de clientes —
         modeloClientes = new DefaultTableModel(
                 new String[]{"ID", "Nombre", "Apellido", "Cédula",
-                             "Total Compras", "Nº Sesiones", "Días últ. compra"}, 0) {
+                             "Total Compras", "Días últ. compra"}, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
 
@@ -674,55 +725,7 @@ public class Promociones extends javax.swing.JPanel {
         return seccion;
     }
 
-    /**
-     * Carga la tabla de clientes con sus métricas calculadas desde el historial
-     * de ventas: total gastado, número de sesiones y días desde la última compra.
-     * Llámala en el constructor:  cargarTablaClientes();
-     */
-    private void cargarTablaClientes() {
-        modeloClientes.setRowCount(0);
 
-        ArrayList<Cliente>      clientes  = clienteDAO.obteners();
-        ArrayList<Venta>        ventas    = ventaDAO.obteners();
-        ArrayList<DetalleVenta> detalles  = detalleVentaDAO.obteners();
-
-        // Mapa idVenta → Venta (para cruzar con DetalleVenta)
-        Map<String, Venta> mapVentas = new HashMap<>();
-        for (Venta v : ventas) mapVentas.put(v.getId(), v);
-
-        long hoy = System.currentTimeMillis();
-
-        for (Cliente c : clientes) {
-            // Ventas del cliente
-            ArrayList<Venta> ventasCliente = new ArrayList<>();
-            for (Venta v : ventas) {
-                if (v.getIdCliente().equals(c.getId())) ventasCliente.add(v);
-            }
-
-            int    numSesiones   = ventasCliente.size();
-            double totalGastado  = 0;
-            long   fechaUltima   = 0;
-
-            for (Venta v : ventasCliente) {
-                totalGastado += v.getTotalVenta();
-                if (v.getFechaVenta().getTime() > fechaUltima)
-                    fechaUltima = v.getFechaVenta().getTime();
-            }
-
-            long diasDesdeUltima = (numSesiones == 0) ? 999
-                    : (hoy - fechaUltima) / (1000L * 60 * 60 * 24);
-
-            modeloClientes.addRow(new Object[]{
-                c.getId(),
-                c.getNombre(),
-                c.getApellido(),
-                c.getCedula(),
-                FMT_MONEDA.format(totalGastado),
-                numSesiones,
-                diasDesdeUltima == 999 ? "Sin compras" : diasDesdeUltima + " días"
-            });
-        }
-    }
 
     /**
      * Analiza el cliente seleccionado en la tabla usando un K-Means de 3 clusters
@@ -877,16 +880,19 @@ public class Promociones extends javax.swing.JPanel {
         int porcentaje = (int) spinnerDescuentoCliente.getValue();
 
         // — Vista previa en JOptionPane personalizado —
-        String resumen = String.format(
-            "╔══════════════════════════════════════╗\n"
-          + "  RESUMEN DE PROMOCIÓN PERSONALIZADA\n"
-          + "╚══════════════════════════════════════╝\n\n"
-          + "  Cliente:   %s\n"
-          + "  Perfil:    %s\n"
-          + "  Descuento: %d%%\n\n"
-          + "  Esta promoción se aplicará a su próxima\n"
-          + "  compra según el perfil detectado.\n\n"
-          + "  ¿Confirmar y registrar la promoción?",
+        String resumen = String.format("""
+                                       \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
+                                         RESUMEN DE PROMOCI\u00d3N PERSONALIZADA
+                                       \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d
+                                       
+                                         Cliente:   %s
+                                         Perfil:    %s
+                                         Descuento: %d%%
+                                       
+                                         Esta promoci\u00f3n se aplicar\u00e1 a su pr\u00f3xima
+                                         compra seg\u00fan el perfil detectado.
+                                       
+                                         \u00bfConfirmar y registrar la promoci\u00f3n?""",
             clienteAnalizadoNombre,
             clienteAnalizadoPerfil,
             porcentaje

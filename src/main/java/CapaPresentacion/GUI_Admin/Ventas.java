@@ -41,7 +41,7 @@ public class Ventas extends javax.swing.JPanel {
     // ──────────────────────────────────────────────────────────────
     private static final Color COLOR_BG          = new Color(0x1A, 0x1E, 0x29);
     private static final Color COLOR_PANEL_SEC   = new Color(0x13, 0x2D, 0x46);
-    private static final Color COLOR_ACENTO      = new Color(0x01, 0xC3, 0x8E);
+    private static final Color COLOR_ACENTO      = new Color(1, 128, 95);
     private static final Color COLOR_HOVER       = new Color(0x1A, 0x3D, 0x58);
     private static final Color COLOR_TEXTO       = Color.WHITE;
     private static final Color COLOR_TEXTO_MUTED = new Color(0x8A, 0xA5, 0xBE);
@@ -264,9 +264,6 @@ public class Ventas extends javax.swing.JPanel {
         panelTotales.setBackground(COLOR_PANEL_SEC);
         panelTotales.setBorder(new EmptyBorder(8, 16, 8, 16));
  
-        JLabel ltsTes = new JLabel("Total sesión:");
-        ltsTes.setForeground(COLOR_TEXTO);
-        ltsTes.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
  
         lblTotalSesion = new JLabel("$0");
         lblTotalSesion.setFont(new Font("Segoe UI Light", Font.BOLD, 16));
@@ -280,8 +277,6 @@ public class Ventas extends javax.swing.JPanel {
         lblTotalCliente.setFont(new Font("Segoe UI Light", Font.BOLD, 16));
         lblTotalCliente.setForeground(COLOR_CARD_3);
  
-        panelTotales.add(ltsTes);
-        panelTotales.add(lblTotalSesion);
         panelTotales.add(Box.createHorizontalStrut(24));
         panelTotales.add(ltsAcu);
         panelTotales.add(lblTotalCliente);

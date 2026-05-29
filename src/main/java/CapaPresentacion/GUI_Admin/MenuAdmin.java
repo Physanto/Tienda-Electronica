@@ -38,84 +38,38 @@ import javax.swing.SwingConstants;
  *   <li>El {@code JPanel} derecho ({@code contentPanel}) usa {@link CardLayout}
  *       para intercambiar los sub-paneles sin abrir nuevas ventanas.</li>
  * </ul>
- *
- * <p><b>Paneles registrados en el CardLayout:</b>
- * <ol>
- *   <li>PRODUCTOS  → {@link Productos}</li>
- *   <li>CLIENTES   → {@link Clientes}</li>
- *   <li>VENTAS     → {@link Ventas}</li>
- *   <li>PROMOCIONES → {@link Promociones}</li>
- *   <li>SETTINGS   → {@link Settings}</li>
- * </ol>
- *
- * @author Tienda-Electronica
+ * @author Marlon Vargas
  */
 public class MenuAdmin extends JFrame {
  
 
-// ─────────────────────────────────────────────
-// Constantes de diseño — Paleta Sborg
-// ─────────────────────────────────────────────
-    /**
-     * Fondo principal de la sidebar (negro azulado).
-     */
     private static final Color COLOR_SIDEBAR_BG = new Color(0x1A, 0x1E, 0x29);
 
-    /**
-     * Color del botón en estado normal.
-     */
     private static final Color COLOR_BTN_NORMAL = new Color(0x13, 0x2D, 0x46);
 
-    /**
-     * Color del botón activo (sección seleccionada) — verde Sborg.
-     */
-    private static final Color COLOR_BTN_ACTIVO = new Color(0x01, 0xC3, 0x8E);
+    private static final Color COLOR_BTN_ACTIVO = new Color(1, 128, 95);
 
-    /**
-     * Color del botón en hover (intermedio entre normal y activo).
-     */
     private static final Color COLOR_BTN_HOVER = new Color(0x1A, 0x3D, 0x58);
 
-    /**
-     * Texto de los botones — blanco puro.
-     */
     private static final Color COLOR_TEXTO_BTN = new Color(0xFF, 0xFF, 0xFF);
 
-    /**
-     * Texto muted para etiquetas de sección y subtítulos.
-     */
     private static final Color COLOR_TITULO_SIDEBAR = new Color(0x8A, 0xA5, 0xBE);
 
-    /**
-     * Fondo del área de contenido (el más oscuro como base).
-     */
     private static final Color COLOR_CONTENIDO_BG = new Color(0x1A, 0x1E, 0x29);
  
     /** Ancho fijo de la sidebar en píxeles. */
     private static final int SIDEBAR_ANCHO = 245;
  
-    // ─────────────────────────────────────────────
-    // Claves para el CardLayout (identificadores)
-    // ─────────────────────────────────────────────
- 
-    /** Clave del panel Productos en el CardLayout. */
+
     private static final String CARD_PRODUCTOS   = "PRODUCTOS";
- 
-    /** Clave del panel Clientes en el CardLayout. */
+
     private static final String CARD_CLIENTES    = "CLIENTES";
- 
-    /** Clave del panel Ventas en el CardLayout. */
+
     private static final String CARD_VENTAS      = "VENTAS";
- 
-    /** Clave del panel Promociones en el CardLayout. */
+
     private static final String CARD_PROMOCIONES = "PROMOCIONES";
- 
-    /** Clave del panel Settings en el CardLayout. */
+
     private static final String CARD_SETTINGS    = "SETTINGS";
- 
-    // ─────────────────────────────────────────────
-    // Componentes principales
-    // ─────────────────────────────────────────────
  
     /** Panel izquierdo que contiene los botones de navegación. */
     private JPanel sidebarPanel;
@@ -132,38 +86,17 @@ public class MenuAdmin extends JFrame {
      */
     private CardLayout cardLayout;
  
-    // ─────────────────────────────────────────────
-    // Botones de la sidebar
-    // ─────────────────────────────────────────────
- 
-    /** Botón de navegación al panel Productos. */
+
     private JButton btnProductos;
- 
-    /** Botón de navegación al panel Clientes. */
     private JButton btnClientes;
- 
-    /** Botón de navegación al panel Ventas. */
     private JButton btnVentas;
- 
-    /** Botón de navegación al panel Promociones. */
     private JButton btnPromociones;
- 
-    /** Botón de navegación al panel Settings. */
     private JButton btnSettings;
  
-    /**
-     * Referencia al último botón activado.
-     * Se usa para restablecer su color al cambiar de sección.
-     */
     private JButton botonActivo;
-    // ─────────────────────────────────────────────
-    // Constructor
-    // ─────────────────────────────────────────────
+
     public String s;
-    /**
-     * Construye el JFrame principal del módulo Administrador.
-     * Inicializa la sidebar, el CardLayout y registra todos los sub-paneles.
-     */
+
     public MenuAdmin() {
         initComponents();
         s = Paths.get("").toAbsolutePath().toString();
@@ -192,22 +125,12 @@ public class MenuAdmin extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
  
-    // ─────────────────────────────────────────────
-    // Construcción de la Sidebar
-    // ─────────────────────────────────────────────
- 
     /**
      * Construye el panel lateral izquierdo (sidebar).
      */
     private void construirSidebar() {
         sidebarPanel = new JPanel() {
-            /**
-             * Sobrescribe paintComponent para aplicar un degradado vertical
-             * sutil en la sidebar, de COLOR_SIDEBAR_BG a un tono ligeramente
-             * más oscuro, añadiendo profundidad visual sin costo de rendimiento.
-             *
-             * @param g contexto gráfico del panel
-             */
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -224,7 +147,7 @@ public class MenuAdmin extends JFrame {
         };
  
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
-        sidebarPanel.setOpaque(false); // El degradado en paintComponent lo cubre
+        sidebarPanel.setOpaque(false); 
         sidebarPanel.setPreferredSize(new Dimension(SIDEBAR_ANCHO, 0));
         sidebarPanel.setMinimumSize(new Dimension(SIDEBAR_ANCHO, 0));
         sidebarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -385,9 +308,6 @@ public class MenuAdmin extends JFrame {
         return btn;
     }
  
-    // ─────────────────────────────────────────────
-    // Construcción del área de contenido
-    // ─────────────────────────────────────────────
  
     /**
      * Construye el panel de contenido dinámico usando {@link CardLayout}.
@@ -395,15 +315,6 @@ public class MenuAdmin extends JFrame {
      * <p>Cada sub-panel (JPanel hijo) se registra con una clave única de tipo
      * {@code String}. El CardLayout solo hace visible uno a la vez sin
      * destruir los demás, conservando su estado interno.
-     *
-     * <p>Paneles registrados:
-     * <ul>
-     *   <li>{@code CARD_PRODUCTOS}   → {@link Productos}</li>
-     *   <li>{@code CARD_CLIENTES}    → {@link Clientes}</li>
-     *   <li>{@code CARD_VENTAS}      → {@link Ventas}</li>
-     *   <li>{@code CARD_PROMOCIONES} → {@link Promociones}</li>
-     *   <li>{@code CARD_SETTINGS}    → {@link Settings}</li>
-     * </ul>
      */
     private void construirAreaContenido() {
         cardLayout   = new CardLayout();
@@ -418,10 +329,6 @@ public class MenuAdmin extends JFrame {
         contentPanel.add(new Settings(),    CARD_SETTINGS);
     }
  
-    // ─────────────────────────────────────────────
-    // Ensamblaje del layout principal
-    // ─────────────────────────────────────────────
- 
     /**
      * Ensambla la estructura final del JFrame:
      * <ul>
@@ -435,21 +342,9 @@ public class MenuAdmin extends JFrame {
         getContentPane().add(contentPanel,  BorderLayout.CENTER);
     }
  
-    // ─────────────────────────────────────────────
-    // Lógica de navegación
-    // ─────────────────────────────────────────────
- 
     /**
      * Muestra el panel indicado en el área de contenido y actualiza
      * el estado visual de los botones de la sidebar.
-     *
-     * <p>Pasos internos:
-     * <ol>
-     *   <li>Restaura el color normal del botón previamente activo.</li>
-     *   <li>Aplica {@code COLOR_BTN_ACTIVO} al nuevo botón.</li>
-     *   <li>Invoca {@code CardLayout.show()} con la clave del panel.</li>
-     *   <li>Actualiza la referencia {@code botonActivo}.</li>
-     * </ol>
      *
      * @param cardClave clave del panel a mostrar (debe coincidir con el nombre
      *                  registrado en {@link #construirAreaContenido()})
@@ -480,11 +375,7 @@ public class MenuAdmin extends JFrame {
         setPreferredSize(new java.awt.Dimension(1920, 1080));
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -506,15 +397,12 @@ public class MenuAdmin extends JFrame {
             java.util.logging.Logger.getLogger(MenuAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MenuAdmin().setVisible(true);
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }

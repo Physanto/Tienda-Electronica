@@ -25,30 +25,18 @@ import java.util.UUID;
  */
 public class Productos extends JPanel {
 
-    // ──────────────────────────────────────────────────────────────
-    // Paleta de colores — coherente con Menu_Admin y Clientes
-    // ──────────────────────────────────────────────────────────────
 
-    /** Fondo general del panel. */
     private static final Color COLOR_BG          = new Color(0x1A, 0x1E, 0x29);
-    /** Fondo de toolbar y panel lateral. */
     private static final Color COLOR_PANEL_SEC   = new Color(0x13, 0x2D, 0x46);
-    /** Color de acento — verde Sborg. */
-    private static final Color COLOR_ACENTO      = new Color(0x01, 0xC3, 0x8E);
-    /** Color hover de botones. */
+    private static final Color COLOR_ACENTO      = new Color(1, 128, 95);
     private static final Color COLOR_HOVER       = new Color(0x1A, 0x3D, 0x58);
-    /** Texto principal — blanco. */
     private static final Color COLOR_TEXTO       = Color.WHITE;
-    /** Texto secundario / etiquetas de campo. */
     private static final Color COLOR_TEXTO_MUTED = Color.WHITE;
-    /** Fondo de la tabla de inventario. */
     private static final Color COLOR_TABLE_BG    = new Color(0x10, 0x14, 0x1E);
-    /** Fondo de la fila seleccionada (verde semitransparente). */
     private static final Color COLOR_ROW_SEL     = new Color(0x01, 0xC3, 0x8E, 80);
-    /** Fondo de celdas de entrada del formulario. */
     private static final Color COLOR_INPUT_BG    = new Color(0x0D, 0x12, 0x1E);
 
-    /** Ancho fijo del panel lateral de formulario en píxeles. */
+    /** Ancho fijo de la sidebar en píxeles. */
     private static final int FORM_PANEL_WIDTH = 340;
 
     // ──────────────────────────────────────────────────────────────
@@ -108,25 +96,13 @@ public class Productos extends JPanel {
 
     /** Etiqueta dinámica del título del panel lateral. */
     private JLabel lblTituloForm;
-
-    /** Botón de confirmación — su texto cambia según la operación activa. */
     private JButton btnConfirmar;
-
-    /** Modo de operación activo: REGISTRAR | BUSCAR | ACTUALIZAR | ELIMINAR. */
     private String modoActual = "";
 
     /** Ruta base del proyecto para cargar recursos. */
     public String s;
 
-    // ──────────────────────────────────────────────────────────────
-    // Constructor
-    // ──────────────────────────────────────────────────────────────
 
-    /**
-     * Construye el panel de gestión de productos e inicializa todos
-     * sus sub-componentes: toolbar, tabla de inventario y panel lateral.
-     * Ejecuta la carga inicial de registros desde la base de datos.
-     */
     public Productos() {
         s = Paths.get("").toAbsolutePath().toString();
         setLayout(new BorderLayout());
@@ -139,9 +115,6 @@ public class Productos extends JPanel {
         cargarProductos();
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Zona NORTH — Toolbar de acciones
-    // ──────────────────────────────────────────────────────────────
 
     /**
      * Construye la barra superior con el título del módulo y los cuatro
@@ -161,9 +134,9 @@ public class Productos extends JPanel {
         toolbar.add(Box.createHorizontalStrut(24));
 
         toolbar.add(crearBotonAccion("Registrar Producto", "REGISTRAR"));
-        toolbar.add(crearBotonAccion("Buscar",             "BUSCAR"));
-        toolbar.add(crearBotonAccion("Actualizar",         "ACTUALIZAR"));
-        toolbar.add(crearBotonAccion("Eliminar",           "ELIMINAR"));
+        toolbar.add(crearBotonAccion("Buscar Producto",             "BUSCAR"));
+        toolbar.add(crearBotonAccion("Actualizar Producto",         "ACTUALIZAR"));
+        toolbar.add(crearBotonAccion("Eliminar Producto",           "ELIMINAR"));
 
         add(toolbar, BorderLayout.NORTH);
     }
@@ -195,10 +168,6 @@ public class Productos extends JPanel {
         return btn;
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Zona CENTER — Tabla de inventario
-    // ──────────────────────────────────────────────────────────────
-
     /**
      * Construye el panel de inventario con un {@link JTable} dentro de un
      * {@link JScrollPane}. Las columnas reflejan los campos de la entidad
@@ -210,17 +179,10 @@ public class Productos extends JPanel {
     private void construirTabla() {
         String[] columnas = {
             "ID", "Código", "Nombre", "Marca", "Serie",
-            "Stock", "Precio", "Vencimiento", "ID Categoría"
+            "Stock", "Precio", "Vencimiento", "Categoría"
         };
 
         tableModel = new DefaultTableModel(columnas, 0) {
-            /**
-             * Deshabilita la edición directa de celdas en la tabla.
-             *
-             * @param row    índice de la fila
-             * @param column índice de la columna
-             * @return siempre {@code false}
-             */
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
         };
@@ -249,7 +211,6 @@ public class Productos extends JPanel {
             }
         });
 
-        // Ajuste de anchos de columna
         int[] anchos = {70, 90, 140, 110, 100, 60, 80, 110, 160};
         for (int i = 0; i < anchos.length; i++) {
             tablaProductos.getColumnModel().getColumn(i).setPreferredWidth(anchos[i]);
@@ -266,10 +227,6 @@ public class Productos extends JPanel {
 
         add(wrapper, BorderLayout.CENTER);
     }
-
-    // ──────────────────────────────────────────────────────────────
-    // Zona EAST — Panel lateral de formulario
-    // ──────────────────────────────────────────────────────────────
 
     /**
      * Construye el panel lateral derecho con todos los controles del formulario.
@@ -341,7 +298,7 @@ public class Productos extends JPanel {
         cargarCategorias();
 
         // Agregar filas al contenedor
-        camposContainer.add(crearFilaCampo("ID (auto-generado)", txtId));
+        camposContainer.add(crearFilaCampo("ID", txtId));
         camposContainer.add(Box.createVerticalStrut(8));
         camposContainer.add(crearFilaCampo("Código", txtCodigo));
         camposContainer.add(Box.createVerticalStrut(8));
@@ -857,9 +814,6 @@ public class Productos extends JPanel {
      * ni con formato incorrecto. Muestra un {@link JOptionPane} de advertencia
      * si falla la validación.
      *
-     * <p>Campos obligatorios: Código, Nombre, Stock (numérico entero),
-     * Precio (numérico decimal).
-     *
      * @return {@code true} si todos los campos obligatorios son válidos,
      *         {@code false} en caso contrario
      */
@@ -882,10 +836,6 @@ public class Productos extends JPanel {
         return true;
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Clase interna — ítem del ComboBox de categorías
-    // ──────────────────────────────────────────────────────────────
-
     /**
      * Clase interna que encapsula el {@code id} y el {@code nombre} de una
      * {@link Categoria} para ser usada como ítem en el {@link JComboBox}.
@@ -895,16 +845,11 @@ public class Productos extends JPanel {
      * necesario para la FK {@code idCategoria} en la tabla {@code Producto}.
      */
     private static class CategoriaItem {
-
-        /** Identificador único de la categoría. */
         private final String id;
-
-        /** Nombre legible de la categoría, mostrado en el ComboBox. */
         private final String nombre;
 
         /**
          * Construye un ítem de categoría para el ComboBox.
-         *
          * @param id     identificador único de la categoría
          * @param nombre nombre legible de la categoría
          */
@@ -913,19 +858,8 @@ public class Productos extends JPanel {
             this.nombre = nombre;
         }
 
-        /**
-         * Retorna el identificador único de la categoría.
-         *
-         * @return {@code String} con el ID de la categoría
-         */
         public String getId() { return id; }
-
-        /**
-         * Retorna el nombre de la categoría, usado por el {@link JComboBox}
-         * como texto visible en la lista desplegable.
-         *
-         * @return nombre de la categoría
-         */
+        
         @Override
         public String toString() { return nombre; }
     }

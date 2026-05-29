@@ -18,9 +18,6 @@ import javax.swing.JOptionPane;
  
 /**
  * Formulario de inicio de sesión.
- * Rediseñado visualmente para coincidir con el estilo de la imagen de referencia:
- * fondo degradado azul, ícono circular oscuro, título espaciado, campos con
- * solo línea inferior y botón ancho de color azul oscuro.
  *
  * @author Santiago Lopez
  */
@@ -39,9 +36,9 @@ public class InicioSesion extends javax.swing.JFrame {
     public InicioSesion() {
         initComponents();
         setLocationRelativeTo(null);
-        aplicarEstilosCampos();   // Estilos visuales de los campos (bordes, colores, transparencia)
-        aplicarEstiloBoton();     // Estilo del botón "Iniciar Sesión"
-        addPlaceholders();        // Textos de ayuda en los campos vacíos
+        aplicarEstilosCampos();   
+        aplicarEstiloBoton();     
+        addPlaceholders();        
  
         s = Paths.get("").toAbsolutePath().toString();
         establecerFondo();
@@ -49,8 +46,7 @@ public class InicioSesion extends javax.swing.JFrame {
       
         OSHelper.setImage(fondo, "Fondo.png");
         OSHelper.setImage(icono_user, "usuario.png");
- 
-        // Forzar el foco al frame para evitar que un campo quede activo al abrir
+
         javax.swing.Timer timer = new javax.swing.Timer(100, e -> requestFocusInWindow());
         timer.setRepeats(false);
         timer.start();
@@ -64,10 +60,9 @@ public class InicioSesion extends javax.swing.JFrame {
     private void aplicarEstilosCampos() {
         for (javax.swing.JComponent campo : new javax.swing.JComponent[]{tx_user, tx_passwd}) {
             campo.setOpaque(false);
-            campo.setBackground(new Color(0, 0, 0, 0)); // Alpha 0 = completamente transparente
+            campo.setBackground(new Color(0, 0, 0, 0)); 
             campo.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_LINEA));
             campo.setForeground(COLOR_LINEA);
-            // Fuerza transparencia cuando Nimbus sobreescribe el fondo del campo
             javax.swing.UIManager.put("TextField.background", new Color(0, 0, 0, 0));
             javax.swing.UIManager.put("PasswordField.background", new Color(0, 0, 0, 0));
         }
@@ -278,11 +273,7 @@ public class InicioSesion extends javax.swing.JFrame {
         InicioSesion();
     }//GEN-LAST:event_btn_loginActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -304,11 +295,6 @@ public class InicioSesion extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new InicioSesion().setVisible(true);
