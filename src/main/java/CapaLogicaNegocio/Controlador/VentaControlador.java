@@ -238,7 +238,7 @@ public class VentaControlador {
 
         return !listaVentas.isEmpty()
                 ? new RespuestaControlador<>(true, "Imprimiendo todas las ventas", listaVentas)
-                : new RespuestaControlador<>(false, "Error en la consulta de todas de las ventas", null);
+                : new RespuestaControlador<>(false, "Error en la consulta de todas de las ventas", null); // se podria retornar la lista vacia en vez de null
     }
 
     /**

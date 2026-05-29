@@ -213,6 +213,11 @@ public class ClienteControlador {
                 : new RespuestaControlador<>(false, "Error en la consulta de todos los clientes", null);
     }
 
+    /**
+     * Devuelve la cantidad de clientes que existen en la base de datos, este los saca de la base de datos local
+     * @return objeto con un campo booleano si se ejecuto correctamente la consulta o no, un mensaje informativo y por ultimo un campo
+     * que contiene la cantidad de clientes que existen en la base de datos
+     */
     public RespuestaControlador<Long> cantidadClientes(){
 
         Long cantidadClientes = clienteDAO.cantidadClientes();

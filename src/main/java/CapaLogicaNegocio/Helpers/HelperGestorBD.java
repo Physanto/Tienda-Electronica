@@ -126,6 +126,7 @@ public class HelperGestorBD {
      * Metodo que se encarga de cargar todos los registros de la base de datos que este disponible y en operacion en ese momento
      * @param metodoCargarLocal es el metodo para cargar todos registros de la base de datos local
      * @param metodoCargarNube es el metodo para cargar todos registros de la base de datos de la nube
+     * @return una lista la cual contiene los registros consultados a una de la base de datos
      * @example Ejemplo de como usar el metodo
      * <pre>{@code
      * cargarRegistros(() -> new ClienteDAO().obteners(), // es cualquier metodo para cargar registros de la bd local

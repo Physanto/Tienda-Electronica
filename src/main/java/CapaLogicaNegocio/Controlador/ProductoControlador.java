@@ -251,7 +251,7 @@ public class ProductoControlador {
 
         return !listaProductos.isEmpty()
                 ? new RespuestaControlador<>(true, "Imprimiendo todos los productos", listaProductos)
-                : new RespuestaControlador<>(false, "Error en la consulta de todos los productos o lista vacía", null);
+                : new RespuestaControlador<>(false, "La lista esta vacia", null); // se podria retornar la propia lista vacia ya que en si no es un error
     }
 
     /**
