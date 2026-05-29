@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class HelperIA {
 
+    private static SimpleKMeans kmeans;
     /**
      * Metodo que convierte la lista de tipo promocion en una lista que pueda entender Weka para poder procesar los datos el modelo
      * no supervisado
@@ -74,10 +75,10 @@ public class HelperIA {
         lista.add(new Promocion("C973", 908.0, 27.0, 470.0));
         lista.add(new Promocion("D084", 375.0, 510.0, 189.0));
 
-       analizarMetodoDelCodo(lista, 10);
+       analizarMetodoDelCodo(lista,10);
 
         System.out.println("\n\n\n agrupacion");
-        agruparProductos(lista, 3);
+        agruparProductos(lista, 2);
     }
 
     public static void analizarMetodoDelCodo(ArrayList<Promocion> lista, int maxClustersAProbar) {
@@ -109,11 +110,11 @@ public class HelperIA {
      * @param lista la lista que se quiere convertir internamente
      * @param numeroClusters es la cantidad de cluster que queremos manejar para nuestros datos
      */
-    public static void agruparProductos(ArrayList<Promocion> lista, int numeroClusters) {
+    public static ArrayList<Promocion> agruparProductos(ArrayList<Promocion> lista, int numeroClusters) {
         try {
             Instances dataset = convertirDatosAWeka(lista);
 
-            SimpleKMeans kmeans = new SimpleKMeans();
+            kmeans = new SimpleKMeans();
             kmeans.setNumClusters(numeroClusters);
 
             ManhattanDistance manhattan = new ManhattanDistance();
@@ -128,62 +129,119 @@ public class HelperIA {
             for (int i = 0; i < lista.size(); i++) {
                 lista.get(i).setCluster(asignaciones[i]);
             }
-
-            System.out.println("\n¡Agrupamiento exitoso! Los productos ya tienen su clúster asignado.");
-
-            calcularCentroides(kmeans);
+            calcularCentroides();
         }
         catch (Exception e) {
             System.out.println("Error ejecutando K-Means: " + e.getMessage());
         }
+        return lista;
     }
 
     /**
      * Metodo que me dice cada cluster que significa, es decir como tenemos 3 cluster
      * entonces este metodo me dice que significa el cluster0, cluester1, cluster2
-     * por ejemplo: el cluster0 = Productos con buena rotacion
+     * por ejemplo:
+     * el cluster0 = Productos con buena rotacion
      * cluster1 = productos con mas o menos rotacion
-     * cluster2 = productos que se venden muy pocos
-     * @param kmeans es la instancia que obtenemos en el metodo agruparProductos para saber en que cluster se encuentran
-     * los productos
      */
-    private static void calcularCentroides(SimpleKMeans kmeans){
+    public static int[] calcularCentroides(){
+        if (kmeans == null) {
+            System.out.println("Error: Ejecuta agruparProductos primero.");
+            return new int[0];
+        }
 
         Instances centroides = kmeans.getClusterCentroids();
 
         int idClusterEstrella = -1;
         int idClusterEstancado = -1;
-        int idClusterRegular = -1;
 
-        double maxVentas = -1;
-        double maxDias = -1;
+        double diasCluster0 = centroides.instance(0).value(1);
+        double diasCluster1 = centroides.instance(1).value(1);
 
-        for (int i = 0; i < centroides.numInstances(); i++) {
-            double promedioDias = centroides.instance(i).value(1);
-            double promedioVentas = centroides.instance(i).value(2);
-
-            System.out.println("Perfil del Clúster " + i + " -> Promedio Días: " + Math.round(promedioDias) + " | Promedio Ventas: " + Math.round(promedioVentas));
-
-            if (promedioVentas > maxVentas) {
-                maxVentas = promedioVentas;
-                idClusterEstrella = i;
-            }
-
-            if (promedioDias > maxDias) {
-                maxDias = promedioDias;
-                idClusterEstancado = i;
-            }
+        if (diasCluster0 > diasCluster1) {
+            idClusterEstancado = 0;
+            idClusterEstrella = 1;
+        } else {
+            idClusterEstancado = 1;
+            idClusterEstrella = 0;
         }
 
-        for (int i = 0; i < 3; i++) {
-            if (i != idClusterEstrella && i != idClusterEstancado) {
-                idClusterRegular = i;
-            }
+        for (int i = 0; i < 2; i++) {
+            System.out.println("Perfil del Clúster " + i +
+                    " -> Promedio Días: " + Math.round(centroides.instance(i).value(1)) +
+                    " | Promedio Ventas: " + Math.round(centroides.instance(i).value(2)));
         }
 
-        System.out.println("\n--- CONCLUSIÓN DEL SISTEMA ---");
-        System.out.println("El Clúster de ESTRELLAS es el número: " + idClusterEstrella);
-        System.out.println("El Clúster ESTANCADO (Para Promociones) es el número: " + idClusterEstancado);
-        System.out.println("El Clúster REGULAR es el número: " + idClusterRegular);
+        int[] cluster = new int[2];
+        cluster[0] = idClusterEstrella;
+        cluster[1] = idClusterEstancado;
+
+        System.out.println("\n--- CONCLUSIÓN DEL SISTEMA (2 CLÚSTERES) ---");
+        System.out.println("El Clúster de PRODUCTOS ACTIVOS/ESTRELLAS es: " + idClusterEstrella);
+        System.out.println("El Clúster de PRODUCTOS ESTANCADOS (Para Promoción) es: " + idClusterEstancado);
+
+        return cluster;
     }
+//    public static int[] calcularCentroides() {
+//        if (kmeans == null) {
+//            System.out.println("Error: No puedes calcular centroides sin antes haber agrupado los productos.");
+//            return new int[0];
+//        }
+//
+//        Instances centroides = kmeans.getClusterCentroids();
+//
+//        int idClusterEstrella = -1;
+//        int idClusterEstancado = -1;
+//        int idClusterRegular = -1;
+//
+//        double maxDias = -1;
+//
+//        // PASO 1: Encontrar el clúster MÁS ESTANCADO (por días sin vender)
+//        for (int i = 0; i < centroides.numInstances(); i++) {
+//            double promedioDias = centroides.instance(i).value(1); // 1 = diasSinVender
+//
+//            if (promedioDias > maxDias) {
+//                maxDias = promedioDias;
+//                idClusterEstancado = i;
+//            }
+//        }
+//
+//        // PASO 2: De los dos clústeres restantes, ver cuál tiene más ventas para ser la Estrella
+//        double maxVentasRestantes = -1;
+//        for (int i = 0; i < centroides.numInstances(); i++) {
+//            if (i != idClusterEstancado) { // Ignoramos al estancado
+//                double promedioVentas = centroides.instance(i).value(2); // 2 = ventas
+//
+//                if (promedioVentas > maxVentasRestantes) {
+//                    maxVentasRestantes = promedioVentas;
+//                    idClusterEstrella = i;
+//                }
+//            }
+//        }
+//
+//        // PASO 3: El que no es ni Estancado ni Estrella, es el Regular
+//        for (int i = 0; i < 2; i++) {
+//            if (i != idClusterEstancado && i != idClusterEstrella) {
+//                idClusterRegular = i;
+//                break;
+//            }
+//        }
+//
+//        // Imprimir los perfiles para auditoría
+//        for (int i = 0; i < centroides.numInstances(); i++) {
+//            System.out.println("Perfil del Clúster " + i + " -> Promedio Días: " + Math.round(centroides.instance(i).value(1)) + " | Promedio Ventas: " + Math.round(centroides.instance(i).value(2)));
+//        }
+//
+//        int[] cluster = new int[3];
+//        cluster[0] = idClusterEstrella;
+//        cluster[1] = idClusterRegular;
+//        cluster[2] = idClusterEstancado;
+//
+//        System.out.println("\n--- CONCLUSIÓN DEL SISTEMA (CORREGIDA) ---");
+//        System.out.println("El Clúster de ESTRELLAS es el número: " + idClusterEstrella); // Debería dar 2
+//        System.out.println("El Clúster ESTANCADO (Para Promociones) es el número: " + idClusterEstancado); // Debería dar 1
+//        System.out.println("El Clúster REGULAR es el número: " + idClusterRegular); // Debería dar 0
+//
+//        return cluster;
+//    }
 }
