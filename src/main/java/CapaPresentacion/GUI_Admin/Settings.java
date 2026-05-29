@@ -21,7 +21,7 @@ public class Settings extends javax.swing.JPanel {
     // ──────────────────────────────────────────────────────────────
     private static final Color COLOR_BG        = new Color(0x1A, 0x1E, 0x29);
     private static final Color COLOR_PANEL_SEC = new Color(0x13, 0x2D, 0x46);
-    private static final Color COLOR_ACENTO    = new Color(0x01, 0xC3, 0x8E);
+    private static final Color COLOR_ACENTO    = new Color(1, 128, 95);
     private static final Color COLOR_HOVER     = new Color(0x1A, 0x3D, 0x58);
     private static final Color COLOR_PELIGRO   = new Color(0xEF, 0x44, 0x44);
     private static final Color COLOR_TEXTO     = Color.WHITE;
@@ -166,10 +166,10 @@ public class Settings extends javax.swing.JPanel {
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
  
         TitledBorder borde = BorderFactory.createTitledBorder(
-            BorderFactory.createMatteBorder(1, 0, 0, 0, COLOR_ACENTO),
+            BorderFactory.createMatteBorder(1, 0, 0, 0, Color.WHITE),
             "  " + titulo + "  ",
             TitledBorder.LEFT, TitledBorder.TOP,
-            new Font("Segoe UI Light", Font.BOLD, 14), COLOR_ACENTO
+            new Font("Segoe UI Light", Font.BOLD, 18), Color.WHITE
         );
         card.setBorder(BorderFactory.createCompoundBorder(
             borde, new EmptyBorder(10, 18, 16, 18)
@@ -195,7 +195,7 @@ public class Settings extends javax.swing.JPanel {
  
         JLabel lbl = new JLabel(etiqueta);
         lbl.setForeground(COLOR_TEXTO);
-        lbl.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+        lbl.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
  
         fila.add(lbl);
         fila.add(spinner);
@@ -211,7 +211,7 @@ public class Settings extends javax.swing.JPanel {
     private static JCheckBox crearCheck(String texto, boolean seleccionado) {
         JCheckBox chk = new JCheckBox(texto, seleccionado);
         chk.setForeground(Color.WHITE);
-        chk.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+        chk.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
         chk.setOpaque(false);
         chk.setAlignmentX(Component.LEFT_ALIGNMENT);
         chk.setFocusPainted(false);
@@ -231,7 +231,7 @@ public class Settings extends javax.swing.JPanel {
         sp.setPreferredSize(new Dimension(80, 30));
         sp.setBackground(new Color(0x0D, 0x12, 0x1E));
         sp.setForeground(Color.WHITE);
-        sp.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+        sp.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
         JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) sp.getEditor();
         editor.getTextField().setBackground(new Color(0x0D, 0x12, 0x1E));
         editor.getTextField().setForeground(Color.WHITE);

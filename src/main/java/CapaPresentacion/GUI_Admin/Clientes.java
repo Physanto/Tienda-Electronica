@@ -1,6 +1,8 @@
 package CapaPresentacion.GUI_Admin;
 
-import CapaDatos.Logica_Conexion.ClienteDAO;
+import CapaLogicaNegocio.Controlador.ClienteControlador;
+import CapaLogicaNegocio.Controlador.RespuestaControlador;
+import CapaLogicaNegocio.DTOS.ClienteDTO;
 import CapaLogicaNegocio.Logica_Negocio.Cliente;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,48 +35,30 @@ import javax.swing.table.JTableHeader;
  */
 public class Clientes extends javax.swing.JPanel {
 
-    // ──────────────────────────────────────────────────────────────
-    // Paleta de colores (coherente con Menu_Admin)
-    // ──────────────────────────────────────────────────────────────
- 
-    /** Fondo general del panel (igual que COLOR_CONTENIDO_BG en Menu_Admin). */
     private static final Color COLOR_BG          = new Color(0x1A, 0x1E, 0x29);
- 
-    /** Fondo de la toolbar y del panel lateral. */
+
     private static final Color COLOR_PANEL_SEC   = new Color(0x13, 0x2D, 0x46);
- 
-    /** Color de acento / botón activo — verde Sborg. */
-    private static final Color COLOR_ACENTO      = new Color(0x01, 0xC3, 0x8E);
- 
-    /** Color hover de botones. */
+
+    private static final Color COLOR_ACENTO      = new Color(1, 128, 95);
+
     private static final Color COLOR_HOVER       = new Color(0x1A, 0x3D, 0x58);
- 
-    /** Color de texto principal — blanco. */
+
     private static final Color COLOR_TEXTO       = new Color(0x1C, 0x1C, 0x1C);
- 
-    /** Color de texto secundario / placeholder. */
+
     private static final Color COLOR_TEXTO_MUTED = new Color(0x8A, 0xA5, 0xBE);
- 
-    /** Color de fondo de la tabla. */
+
     private static final Color COLOR_TABLE_BG= new Color(0x10, 0x14, 0x1E);
  
-    /** Color de fila seleccionada. */
     private static final Color COLOR_ROW_SEL     = new Color(0x01, 0xC3, 0x8E, 80);
- 
-    /** Ancho fijo del panel lateral de formulario en píxeles. */
+
+    /** Ancho fijo de la sidebar en píxeles. */
     private static final int FORM_PANEL_WIDTH    = 320;
  
-    // ──────────────────────────────────────────────────────────────
-    // Componentes principales
-    // ──────────────────────────────────────────────────────────────
- 
-    /** DAO para operaciones CRUD sobre la entidad {@link Cliente}. */
-    private final ClienteDAO clienteDAO = new ClienteDAO();
- 
-    /** Modelo de datos de la tabla de clientes. */
+    private final ClienteControlador clienteControlador = new ClienteControlador();
+
+
     private DefaultTableModel tableModel;
- 
-    /** Tabla que muestra el listado de clientes. */
+
     private JTable tablaClientes;
  
     /**
@@ -82,34 +66,20 @@ public class Clientes extends javax.swing.JPanel {
      * Se muestra u oculta según el botón presionado.
      */
     private JPanel formPanel;
- 
-    // ── Campos del formulario ──
+
     private JTextField txtId;
     private JTextField txtNombre;
     private JTextField txtApellido;
     private JTextField txtCedula;
     private JTextField txtDireccion;
- 
-    /** Etiqueta que indica la operación activa en el panel lateral. */
+
     private JLabel lblTituloForm;
- 
-    /** Botón de confirmación dentro del formulario (cambia según la operación). */
     private JButton btnConfirmar;
- 
-    /** Modo de operación activo: REGISTRAR | BUSCAR | ACTUALIZAR | ELIMINAR. */
     private String modoActual = "";
- 
-    /** Ruta base del proyecto (para cargar recursos). */
+
     public String s;
- 
-    // ──────────────────────────────────────────────────────────────
-    // Constructor
-    // ──────────────────────────────────────────────────────────────
- 
-    /**
-     * Construye el panel de gestión de clientes e inicializa todos
-     * sus sub-componentes: toolbar, tabla y panel lateral.
-     */
+
+    
     public Clientes() {
         s = Paths.get("").toAbsolutePath().toString();
         setLayout(new BorderLayout());
@@ -133,16 +103,13 @@ public class Clientes extends javax.swing.JPanel {
         toolbar.setBackground(COLOR_PANEL_SEC);
         toolbar.setBorder(new EmptyBorder(8, 16, 8, 16));
  
-        // Título del módulo
         JLabel lblModulo = new JLabel("Gestión de Clientes");
         lblModulo.setFont(new Font("Segoe UI Light", Font.BOLD, 26));
         lblModulo.setForeground(Color.WHITE);
         toolbar.add(lblModulo);
  
-        // Separador visual
         toolbar.add(Box.createHorizontalStrut(24));
  
-        // Botones de acción
         toolbar.add(crearBotonAccion("Buscar Cliente",            "BUSCAR"));
         toolbar.add(crearBotonAccion("Actualizar Cliente",        "ACTUALIZAR"));
         toolbar.add(crearBotonAccion("Eliminar Cliente",          "ELIMINAR"));
@@ -178,19 +145,11 @@ public class Clientes extends javax.swing.JPanel {
         return btn;
     }
  
-    // ──────────────────────────────────────────────────────────────
-    // Construcción de la Tabla (zona CENTER)
-    // ──────────────────────────────────────────────────────────────
- 
     /**
      * Construye el panel de la tabla de clientes con un {@link JScrollPane}.
      *
      * <p>Las columnas corresponden exactamente a los campos de la entidad
      * {@link Cliente} en la base de datos:
-     * <ul>
-     *   <li>ID, Nombre, Apellido, Cédula, Dirección, URL Imagen</li>
-     * </ul>
-     *
      * <p>Al seleccionar una fila, los datos se cargan automáticamente
      * en el formulario lateral mediante {@link #cargarFilaEnFormulario(int)}.
      */
@@ -198,13 +157,6 @@ public class Clientes extends javax.swing.JPanel {
         // Columnas del modelo (NO editables directamente en la tabla)
         String[] columnas = {"ID", "Nombre", "Apellido", "Cédula", "Dirección"};
         tableModel = new DefaultTableModel(columnas, 0) {
-            /**
-             * Deshabilita la edición directa de celdas en la tabla.
-             *
-             * @param row    fila de la celda
-             * @param column columna de la celda
-             * @return siempre {@code false}
-             */
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
         };
@@ -255,23 +207,11 @@ public class Clientes extends javax.swing.JPanel {
         add(tableWrapper, BorderLayout.CENTER);
     }
  
-    // ──────────────────────────────────────────────────────────────
-    // Construcción del Panel Lateral de Formulario (zona EAST)
-    // ──────────────────────────────────────────────────────────────
- 
     /**
      * Construye el panel lateral derecho que contiene el formulario CRUD.
      *
      * <p>Inicialmente se crea <b>oculto</b> ({@code setVisible(false)}).
      * Se hace visible al invocar {@link #mostrarFormulario(String)}.
-     *
-     * <p>El panel contiene:
-     * <ul>
-     *   <li>Título dinámico según la operación</li>
-     *   <li>Campos: ID, Nombre, Apellido, Cédula, Dirección, URL Imagen</li>
-     *   <li>Botón de confirmación (Guardar / Buscar / Actualizar / Eliminar)</li>
-     *   <li>Botón Cancelar para ocultar el panel</li>
-     * </ul>
      */
     private void construirFormPanel() {
         formPanel = new JPanel();
@@ -390,28 +330,13 @@ public class Clientes extends javax.swing.JPanel {
         btn.setBorder(new EmptyBorder(8, 0, 8, 0));
     }
  
-    // ──────────────────────────────────────────────────────────────
-    // Lógica de navegación y visibilidad del formulario
-    // ──────────────────────────────────────────────────────────────
- 
     /**
      * Muestra el panel lateral con el formulario configurado según el modo
      * de operación solicitado, o lo oculta si se presiona el mismo botón
      * que está activo actualmente (comportamiento toggle).
-     *
-     * <p>Modos soportados:
-     * <ul>
-     *   <li>{@code "REGISTRAR"} — habilita todos los campos, genera ID automático</li>
-     *   <li>{@code "BUSCAR"}    — habilita solo el campo ID, deshabilita los demás</li>
-     *   <li>{@code "ACTUALIZAR"} — requiere selección en tabla, todos los campos editables</li>
-     *   <li>{@code "ELIMINAR"} — requiere selección en tabla, solo muestra datos</li>
-     * </ul>
-     *
-     * @param modo operación a activar ({@code "REGISTRAR"}, {@code "BUSCAR"},
-     *             {@code "ACTUALIZAR"}, {@code "ELIMINAR"})
      */
+    
     private void mostrarFormulario(String modo) {
-        // Toggle: si se presiona el mismo modo activo, ocultar
         if (modoActual.equals(modo) && formPanel.isVisible()) {
             ocultarFormulario();
             return;
@@ -485,6 +410,8 @@ public class Clientes extends javax.swing.JPanel {
             case "BUSCAR" -> buscarCliente();
             case "ACTUALIZAR" -> actualizarCliente();
             case "ELIMINAR" -> eliminarCliente();
+            default -> {
+            }
         }
     }
  
@@ -493,24 +420,34 @@ public class Clientes extends javax.swing.JPanel {
      * Si el ID está vacío, recarga todos los registros.
      */
     private void buscarCliente() {
-        String id = txtId.getText().trim();
-        if (id.isEmpty()) {
-            cargarClientes();
-            return;
-        }
- 
-        Cliente cliente = clienteDAO.obtener(id);
-        tableModel.setRowCount(0); // Limpiar tabla
- 
-        if (cliente != null) {
-            tableModel.addRow(new Object[]{
-                cliente.getId(), cliente.getNombre(), cliente.getApellido(),
-                cliente.getCedula(), cliente.getDireccion()
-            });
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "No se encontró un cliente con el ID: " + id,
-                "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            String id = txtId.getText().trim();
+
+            if (id.isEmpty()) {
+                cargarClientes();
+                return;
+            }
+
+            RespuestaControlador<Cliente> respuesta = clienteControlador.buscarClienteId(id);
+
+            tableModel.setRowCount(0);
+
+            if (respuesta.exito() && respuesta.dato() != null) {
+                Cliente c = respuesta.dato();
+                tableModel.addRow(new Object[]{
+                    c.getId(),
+                    c.getNombre(),
+                    c.getApellido(),
+                    c.getCedula(),
+                    c.getDireccion()
+                });
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Sin resultados",JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"Error inesperado al buscar cliente: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
  
@@ -521,33 +458,36 @@ public class Clientes extends javax.swing.JPanel {
      * Valida campos obligatorios antes de ejecutar la actualización.
      */
     private void actualizarCliente() {
-        if (txtId.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Selecciona un cliente de la tabla para actualizar.",
-                "Sin selección", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!validarCamposObligatorios()) return;
- 
-        Cliente cliente = new Cliente(
-            txtId.getText().trim(),
-            txtNombre.getText().trim(),
-            txtApellido.getText().trim(),
-            txtCedula.getText().trim(),
-            txtDireccion.getText().trim()
-        );
- 
-        boolean exito = clienteDAO.actualizar(cliente);
-        if (exito) {
-            JOptionPane.showMessageDialog(this,
-                "Cliente actualizado correctamente.", "Éxito",
-                JOptionPane.INFORMATION_MESSAGE);
-            cargarClientes();
-            ocultarFormulario();
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "No se pudo actualizar el cliente.",
-                "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            String id = txtId.getText().trim();
+
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this,"Selecciona un cliente de la tabla para actualizar.","Sin selección",JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            ClienteDTO dto = new ClienteDTO(
+                    id,
+                    txtNombre.getText().trim(),
+                    txtApellido.getText().trim(),
+                    txtCedula.getText().trim(),
+                    txtDireccion.getText().trim()
+            );
+
+            RespuestaControlador<Cliente> respuesta = clienteControlador.actualizarCliente(dto);
+
+            if (respuesta.exito()) {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Éxito",JOptionPane.INFORMATION_MESSAGE
+                );
+                cargarClientes();  ocultarFormulario();
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Error de validación",JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"Error inesperado al actualizar cliente: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
  
@@ -556,51 +496,71 @@ public class Clientes extends javax.swing.JPanel {
      * previa confirmación del usuario mediante un diálogo.
      */
     private void eliminarCliente() {
-        String id = txtId.getText().trim();
-        if (id.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Selecciona un cliente de la tabla para eliminar.",
-                "Sin selección", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
- 
-        int confirmacion = JOptionPane.showConfirmDialog(this,
-            "¿Está seguro de eliminar al cliente con ID: " + id + "?",
-            "Confirmar eliminación",
-            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
- 
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            boolean exito = clienteDAO.eliminar(id);
-            if (exito) {
-                JOptionPane.showMessageDialog(this,
-                    "Cliente eliminado correctamente.", "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE);
-                cargarClientes();
-                ocultarFormulario();
-            } else {
-                JOptionPane.showMessageDialog(this,
-                    "No se pudo eliminar el cliente.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            String id = txtId.getText().trim();
+
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Selecciona un cliente de la tabla para eliminar.","Sin selección",JOptionPane.WARNING_MESSAGE
+                );
+                return;
             }
+
+            int confirmacion = JOptionPane.showConfirmDialog(
+                    this,
+                    "¿Está seguro de eliminar al cliente con ID: " + id + "?",
+                    "Confirmar eliminación",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE
+            );
+
+            if (confirmacion != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            RespuestaControlador<Cliente> respuesta = clienteControlador.eliminarCliente(id);
+
+            if (respuesta.exito()) {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Éxito",JOptionPane.INFORMATION_MESSAGE
+                );
+                cargarClientes();  ocultarFormulario();
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Error al eliminar",JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error inesperado al eliminar cliente: " + ex.getMessage(),
+                    "Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
- 
-    // ──────────────────────────────────────────────────────────────
-    // Métodos utilitarios
-    // ──────────────────────────────────────────────────────────────
  
     /**
      * Carga todos los clientes desde la base de datos y los muestra en la tabla.
      * Limpia el modelo previo antes de insertar las nuevas filas.
      */
     public void cargarClientes() {
-        tableModel.setRowCount(0);
-        ArrayList<Cliente> clientes = clienteDAO.obteners();
-        for (Cliente c : clientes) {
-            tableModel.addRow(new Object[]{
-                c.getId(), c.getNombre(), c.getApellido(),
-                c.getCedula(), c.getDireccion()
-            });
+        try {
+            RespuestaControlador<ArrayList<Cliente>> respuesta = clienteControlador.buscarTodos();
+
+            tableModel.setRowCount(0);
+
+            if (respuesta.exito() && respuesta.dato() != null) {
+                for (Cliente c : respuesta.dato()) {
+                    tableModel.addRow(new Object[]{
+                        c.getId(),
+                        c.getNombre(),
+                        c.getApellido(),
+                        c.getCedula(),
+                        c.getDireccion()
+                    });
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Información",JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"Error inesperado al cargar clientes: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
  
@@ -645,9 +605,6 @@ public class Clientes extends javax.swing.JPanel {
     /**
      * Valida que los campos obligatorios del formulario no estén vacíos.
      * Muestra un mensaje de advertencia si alguno falta.
-     *
-     * @return {@code true} si todos los campos obligatorios tienen valor,
-     *         {@code false} en caso contrario
      */
     private boolean validarCamposObligatorios() {
         if (txtNombre.getText().trim().isEmpty() ||
