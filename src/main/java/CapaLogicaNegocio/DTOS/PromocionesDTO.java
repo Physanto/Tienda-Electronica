@@ -2,7 +2,7 @@ package CapaLogicaNegocio.DTOS;
 
 
 /**
- * Clase que encapsule los record para el transporte de informacion entre la vista-controlador-modelo
+ * Clase que encapsule los record para el transporte de informacion entre modelo-controlador-vista
  *
  * @author Manuel Figueroa (Physanto)
  */
@@ -31,10 +31,23 @@ public class PromocionesDTO {
      */
     public record PromocionAplicadaDTO(String id, String nombre, String marca, String Stock, String PrecioActual, String diasSinVenta, String totalVendido) {}
 
+    /**
+     * Record que modela la entidad para la aplicacion de una promcion a un cliente especifico
+     * este modelo es de una entidad de la base de datos
+     * @param id id de la entidad para la base de datos
+     * @param idPromocion id de la promocion
+     * @param idCliente id del cliente que se le va aplicar la promocion
+     */
     public record PromocionClienteDTO(String id, String idPromocion, String idCliente){ }
 
-    public record PromocionKmeansDTO(String id, Double stockActual, Double diasSinVender, Double totalVendido) {}
-
+    /**
+     * Record que modela la entidad para la aplicacion de una promcion a un producto especifico
+     * este modelo es de una entidad de la base de datos
+     *
+     * @param id id de la entidad para la base de datos
+     * @param idPromocion id de la promocion
+     * @param idProducto id del producto que se le va aplicar la promocion
+     */
     public record PromocionProductoDTO(String id, String idPromocion, String idProducto){ }
 
     /**

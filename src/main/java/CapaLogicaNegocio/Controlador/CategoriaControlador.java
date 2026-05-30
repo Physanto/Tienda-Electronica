@@ -6,7 +6,13 @@ import CapaLogicaNegocio.Helpers.HelperGestorBD;
 import CapaLogicaNegocio.Logica_Negocio.Categoria;
 
 import java.util.ArrayList;
-
+/**
+ * Clase que implementa las buenas practicas del MVC para disenar un controlador
+ * el cual es capaz de hacer la comunicacion efectiva entre la vista y el modelo
+ * Este es para el movimiento general de las promociones del sistema
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
 public class CategoriaControlador {
 
     private CategoriaDAO categoriaDAO;

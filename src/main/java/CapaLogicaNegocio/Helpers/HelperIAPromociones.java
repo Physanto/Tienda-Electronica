@@ -8,18 +8,19 @@ import weka.core.Instances;
 import weka.core.ManhattanDistance;
 import java.util.ArrayList;
 
+/**
+ * Clase que desarrolla un modelo no supervisado para un sistema de promociones
+ * esta hace uso de la libreria Weka para toda la matematica asociada ya que se usa
+ * Kmeans para la solucion
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
 public class HelperIAPromociones {
 
     private static SimpleKMeans kmeans;
-    /**
-     * Metodo que convierte la lista de tipo promocion en una lista que pueda entender Weka para poder procesar los datos el modelo
-     * no supervisado
-     * @param listaPromocion es la lista de Promocion que contiene id_producto, stock, diasSinVender, totalVendido
-     * @return un dataset del tipo que puede entender weka
-     */
-    private static Instances convertirDatosAWeka(ArrayList<Promocion> listaPromocion) {
 
-        if(listaPromocion.isEmpty()){
+    private static Instances convertirDatosAWeka(ArrayList<Promocion> listaPromocion) {
+        if (listaPromocion == null || listaPromocion.isEmpty()) {
             return null;
         }
 
@@ -41,86 +42,17 @@ public class HelperIAPromociones {
         return datasetWeka;
     }
 
-    public static void main(String[] args){
-
-        ArrayList<Promocion> lista = new ArrayList<>();
-        lista.add(new Promocion("A091", 148.0, 12.0, 335.0));
-        lista.add(new Promocion("B204", 927.0, 63.0, 114.0));
-        lista.add(new Promocion("C317", 451.0, 29.0, 782.0 ));
-        lista.add(new Promocion("D428", 88.0, 745.0, 16.0 ));
-        lista.add(new Promocion("E539", 612.0, 98.0, 430.0 ));
-        lista.add(new Promocion("F640", 301.0, 555.0, 72.0 ));
-        lista.add(new Promocion("G751", 799.0, 44.0, 920.0 ));
-        lista.add(new Promocion("H862", 15.0, 287.0, 631.0 ));
-        lista.add(new Promocion("I973", 564.0, 701.0, 93.0 ));
-        lista.add(new Promocion("J084", 243.0, 18.0, 856.0 ));
-        lista.add(new Promocion("K195", 999.0, 332.0, 120.0));
-        lista.add(new Promocion("L206", 407.0, 84.0, 541.0));
-        lista.add(new Promocion("M317", 76.0, 918.0, 267.0));
-        lista.add(new Promocion("N428", 650.0, 39.0, 704.0));
-        lista.add(new Promocion("O539", 182.0, 473.0, 56.0));
-        lista.add(new Promocion("P640", 811.0, 207.0, 995.0));
-        lista.add(new Promocion("Q751", 523.0, 11.0, 389.0));
-        lista.add(new Promocion("R862", 95.0, 640.0, 248.0));
-        lista.add(new Promocion("S973", 734.0, 53.0, 817.0));
-        lista.add(new Promocion("T084", 268.0, 124.0, 690.0));
-        lista.add(new Promocion("U195", 419.0, 876.0, 31.0));
-        lista.add(new Promocion("V206", 557.0, 290.0, 143.0));
-        lista.add(new Promocion("W317", 61.0, 722.0, 502.0));
-        lista.add(new Promocion("X428", 890.0, 15.0, 333.0));
-        lista.add(new Promocion("Y539", 346.0, 480.0, 77.0));
-        lista.add(new Promocion("Z640", 214.0, 999.0, 615.0));
-        lista.add(new Promocion("A751", 785.0, 54.0, 294.0));
-        lista.add(new Promocion("B862", 132.0, 661.0, 845.0));
-        lista.add(new Promocion("C973", 908.0, 27.0, 470.0));
-        lista.add(new Promocion("D084", 375.0, 510.0, 189.0));
-
-       analizarMetodoDelCodo(lista,10);
-
-        System.out.println("\n\n\n agrupacion");
-        agruparProductos(lista);
-    }
-
-    public static void analizarMetodoDelCodo(ArrayList<Promocion> lista, int maxClustersAProbar) {
-        try {
-            Instances dataset = convertirDatosAWeka(lista);
-
-            for (int k = 1; k <= maxClustersAProbar; k++) {
-
-                SimpleKMeans kmeans = new SimpleKMeans();
-                kmeans.setNumClusters(k);
-
-                // internamente la libreria weka cuando hace calculo de distancias usa la distancia euclidea
-
-                kmeans.buildClusterer(dataset);
-
-                double error = kmeans.getSquaredError();
-                System.out.printf("Para K = %d | El margen de error (SSE) es: %.4f%n", k, error);
-            }
-            System.out.println("Revisa dónde la caída de error se vuelve menos brusca (Ese es tu codo).");
-
-        } catch (Exception e) {
-            System.out.println("Error en el análisis del codo: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Metodo que se encarga de entrenar el modelo a partir de los datos ya convertidos
-     * este nos genera los productos que se encuentran en cada cluster.
-     * @param lista la lista que se quiere convertir internamente
-     * @return lista
-     */
     public static ArrayList<Promocion> agruparProductos(ArrayList<Promocion> lista) {
         try {
             Instances dataset = convertirDatosAWeka(lista);
-            int numeroClusters = 2;
+
+            int numeroClusters = 3;
 
             kmeans = new SimpleKMeans();
             kmeans.setNumClusters(numeroClusters);
 
             ManhattanDistance manhattan = new ManhattanDistance();
             kmeans.setDistanceFunction(manhattan);
-
             kmeans.setPreserveInstancesOrder(true);
 
             kmeans.buildClusterer(dataset);
@@ -129,8 +61,8 @@ public class HelperIAPromociones {
 
             for (int i = 0; i < lista.size(); i++) {
                 lista.get(i).setCluster(asignaciones[i]);
+                System.out.println(lista.get(i).toString());
             }
-            calcularCentroides();
         }
         catch (Exception e) {
             System.out.println("Error ejecutando K-Means: " + e.getMessage());
@@ -138,111 +70,106 @@ public class HelperIAPromociones {
         return lista;
     }
 
-    /**
-     * Metodo que me dice cada cluster que significa, es decir como tenemos 2 cluster
-     * entonces este metodo me dice que significa el cluster0, cluester1
-     * por ejemplo:
-     * el cluster0 = Productos con buena rotacion
-     * cluster1 = productos con mas o menos rotacion
-     */
-    public static int[] calcularCentroides(){
+    public static ArrayList<Promocion> clasificarInventario() {
+        ArrayList<Promocion> listaPerfiles = new ArrayList<>();
+
         if (kmeans == null) {
-            System.out.println("Error: Ejecuta agruparProductos primero.");
-            return new int[0];
+            System.out.println("Error: Ejecuta el K-Means primero.");
+            return listaPerfiles;
         }
 
-        Instances centroides = kmeans.getClusterCentroids();
+        try {
+            Instances centroides = kmeans.getClusterCentroids();
+            int totalClusters = kmeans.getNumClusters();
 
-        int idClusterEstrella = -1;
-        int idClusterEstancado = -1;
+            for (int i = 0; i < totalClusters; i++) {
+                double promStock = centroides.instance(i).value(0);
+                double promDias = centroides.instance(i).value(1);
+                double promVentas = centroides.instance(i).value(2);
 
-        double diasCluster0 = centroides.instance(0).value(1);
-        double diasCluster1 = centroides.instance(1).value(1);
+                listaPerfiles.add(new Promocion(i, promStock, promDias, promVentas));
+            }
 
-        if (diasCluster0 > diasCluster1) {
-            idClusterEstancado = 0;
-            idClusterEstrella = 1;
-        } else {
-            idClusterEstancado = 1;
-            idClusterEstrella = 0;
+            listaPerfiles.sort((p1, p2) -> Double.compare(p2.getPuntajeRiesgo(), p1.getPuntajeRiesgo()));
+
+            // 3. Asignamos la clasificación pura
+            System.out.println("\n--- CLASIFICACIÓN DE CLÚSTERES ---");
+            for (int pos = 0; pos < listaPerfiles.size(); pos++) {
+                Promocion perfil = listaPerfiles.get(pos);
+
+                if (pos == 0) {
+                    perfil.setClasificacion("ESTANCADO");
+                } else if (pos == listaPerfiles.size() - 1) {
+                    perfil.setClasificacion("ESTRELLA");
+                } else {
+                    perfil.setClasificacion("REGULAR");
+                }
+
+                System.out.printf("El Clúster ID [%d] de Weka es: %s (Stock Prom: %.0f | Días Inactivo Prom: %.0f)%n",
+                        perfil.getCluster(), perfil.getClasificacion(), perfil.getStockActual(), perfil.getDiasSinVender());
+            }
+        } catch (Exception e) {
+            System.out.println("Error en la clasificación: " + e.getMessage());
         }
-
-        for (int i = 0; i < 2; i++) {
-            System.out.println("Perfil del Clúster " + i +
-                    " -> Promedio Días: " + Math.round(centroides.instance(i).value(1)) +
-                    " | Promedio Ventas: " + Math.round(centroides.instance(i).value(2)));
-        }
-
-        int[] cluster = new int[2];
-        cluster[0] = idClusterEstrella;
-        cluster[1] = idClusterEstancado;
-
-        System.out.println("\n--- CONCLUSIÓN DEL SISTEMA (2 CLÚSTERES) ---");
-        System.out.println("El Clúster de PRODUCTOS ACTIVOS/ESTRELLAS es: " + idClusterEstrella);
-        System.out.println("El Clúster de PRODUCTOS ESTANCADOS (Para Promoción) es: " + idClusterEstancado);
-
-        return cluster;
+        return listaPerfiles;
     }
-//    public static int[] calcularCentroides() {
-//        if (kmeans == null) {
-//            System.out.println("Error: No puedes calcular centroides sin antes haber agrupado los productos.");
-//            return new int[0];
-//        }
-//
-//        Instances centroides = kmeans.getClusterCentroids();
-//
-//        int idClusterEstrella = -1;
-//        int idClusterEstancado = -1;
-//        int idClusterRegular = -1;
-//
-//        double maxDias = -1;
-//
-//        // PASO 1: Encontrar el clúster MÁS ESTANCADO (por días sin vender)
-//        for (int i = 0; i < centroides.numInstances(); i++) {
-//            double promedioDias = centroides.instance(i).value(1); // 1 = diasSinVender
-//
-//            if (promedioDias > maxDias) {
-//                maxDias = promedioDias;
-//                idClusterEstancado = i;
-//            }
-//        }
-//
-//        // PASO 2: De los dos clústeres restantes, ver cuál tiene más ventas para ser la Estrella
-//        double maxVentasRestantes = -1;
-//        for (int i = 0; i < centroides.numInstances(); i++) {
-//            if (i != idClusterEstancado) { // Ignoramos al estancado
-//                double promedioVentas = centroides.instance(i).value(2); // 2 = ventas
-//
-//                if (promedioVentas > maxVentasRestantes) {
-//                    maxVentasRestantes = promedioVentas;
-//                    idClusterEstrella = i;
-//                }
-//            }
-//        }
-//
-//        // PASO 3: El que no es ni Estancado ni Estrella, es el Regular
-//        for (int i = 0; i < 2; i++) {
-//            if (i != idClusterEstancado && i != idClusterEstrella) {
-//                idClusterRegular = i;
-//                break;
-//            }
-//        }
-//
-//        // Imprimir los perfiles para auditoría
-//        for (int i = 0; i < centroides.numInstances(); i++) {
-//            System.out.println("Perfil del Clúster " + i + " -> Promedio Días: " + Math.round(centroides.instance(i).value(1)) + " | Promedio Ventas: " + Math.round(centroides.instance(i).value(2)));
-//        }
-//
-//        int[] cluster = new int[3];
-//        cluster[0] = idClusterEstrella;
-//        cluster[1] = idClusterRegular;
-//        cluster[2] = idClusterEstancado;
-//
-//        System.out.println("\n--- CONCLUSIÓN DEL SISTEMA (CORREGIDA) ---");
-//        System.out.println("El Clúster de ESTRELLAS es el número: " + idClusterEstrella); // Debería dar 2
-//        System.out.println("El Clúster ESTANCADO (Para Promociones) es el número: " + idClusterEstancado); // Debería dar 1
-//        System.out.println("El Clúster REGULAR es el número: " + idClusterRegular); // Debería dar 0
-//
-//        return cluster;
-//    }
+
+    public static void analizarMetodoDelCodo(ArrayList<Promocion> lista, int maxClustersAProbar) {
+        try {
+            Instances dataset = convertirDatosAWeka(lista);
+
+            for (int k = 1; k <= maxClustersAProbar; k++) {
+                SimpleKMeans kmCodo = new SimpleKMeans();
+                kmCodo.setNumClusters(k);
+
+                // IMPORTANTE: Misma distancia que en el modelo principal
+                ManhattanDistance manhattan = new ManhattanDistance();
+                kmCodo.setDistanceFunction(manhattan);
+
+                kmCodo.buildClusterer(dataset);
+                double error = kmCodo.getSquaredError();
+                System.out.printf("Para K = %d | SSE (Error): %.4f%n", k, error);
+            }
+        } catch (Exception e) {
+            System.out.println("Error en el análisis del codo: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args){
+
+        ArrayList<Promocion> lista = new ArrayList<>();
+
+        lista.add(new Promocion("p1", 120.0, 3.0, 450.0, -1));
+        lista.add(new Promocion("p2", 15.0, 45.0, 80.0, -1));
+        lista.add(new Promocion("p3", 300.0, 0.0, 1200.0, -1));
+        lista.add(new Promocion("p4", 8.0, 60.0, 40.0, -1));
+        lista.add(new Promocion("p5", 75.0, 12.0, 320.0, -1));
+        lista.add(new Promocion("p6", 200.0, 5.0, 950.0, -1));
+        lista.add(new Promocion("p7", 5.0, 90.0, 15.0, -1));
+        lista.add(new Promocion("p8", 180.0, 8.0, 780.0, -1));
+        lista.add(new Promocion("p9", 25.0, 30.0, 140.0, -1));
+        lista.add(new Promocion("p10", 400.0, 1.0, 2100.0, -1));
+        lista.add(new Promocion("p11", 60.0, 18.0, 270.0, -1));
+        lista.add(new Promocion("p12", 12.0, 75.0, 55.0, -1));
+        lista.add(new Promocion("p13", 95.0, 10.0, 430.0, -1));
+        lista.add(new Promocion("p14", 250.0, 2.0, 1350.0, -1));
+        lista.add(new Promocion("p15", 18.0, 50.0, 90.0, -1));
+        lista.add(new Promocion("p16", 500.0, 0.0, 3500.0, -1));
+        lista.add(new Promocion("p17", 40.0, 22.0, 180.0, -1));
+        lista.add(new Promocion("p18", 7.0, 110.0, 20.0, -1));
+        lista.add(new Promocion("p19", 130.0, 6.0, 610.0, -1));
+        lista.add(new Promocion("p20", 35.0, 28.0, 160.0, -1));
+        lista.add(new Promocion("p21", 220.0, 4.0, 980.0, -1));
+        lista.add(new Promocion("p22", 10.0, 95.0, 30.0, -1));
+        lista.add(new Promocion("p23", 85.0, 14.0, 390.0, -1));
+        lista.add(new Promocion("p24", 160.0, 7.0, 720.0, -1));
+        lista.add(new Promocion("p25", 20.0, 40.0, 110.0, -1));
+        lista.add(new Promocion("p26", 350.0, 1.0, 1850.0, -1));
+        lista.add(new Promocion("p27", 55.0, 20.0, 250.0, -1));
+        lista.add(new Promocion("p28", 6.0, 130.0, 10.0, -1));
+        lista.add(new Promocion("p29", 145.0, 9.0, 680.0, -1));
+        lista.add(new Promocion("p30", 280.0, 3.0, 1420.0, -1));
+
+        agruparProductos(lista);
+    }
 }

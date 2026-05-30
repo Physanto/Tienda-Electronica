@@ -12,8 +12,18 @@ public class Promocion {
     private Double diasSinVender;
     private Double totalVendido;
     private int cluster;
+    double puntajeRiesgo;
+    String clasificacion;
 
     public Promocion() {}
+
+    public Promocion(int cluster, Double stockActual, Double diasSinVender, Double totalVendido){
+        this.cluster = cluster;
+        this.stockActual = stockActual;
+        this.diasSinVender = diasSinVender;
+        this.totalVendido = totalVendido;
+        puntajeRiesgo = stockActual * diasSinVender;
+    }
 
     public Promocion(String id, Double stockActual, Double diasSinVender, Double totalVendido) {
         this.id = id;
@@ -67,6 +77,22 @@ public class Promocion {
 
     public Double getTotalVendido() {
         return totalVendido;
+    }
+
+    public double getPuntajeRiesgo() {
+        return puntajeRiesgo;
+    }
+
+    public void setPuntajeRiesgo(double puntajeRiesgo) {
+        this.puntajeRiesgo = puntajeRiesgo;
+    }
+
+    public String getClasificacion() {
+        return clasificacion;
+    }
+
+    public void setClasificacion(String clasificacion) {
+        this.clasificacion = clasificacion;
     }
 
     public void setTotalVendido(Double totalVendido) {
