@@ -1,6 +1,8 @@
 package CapaDatos.Logica_Conexion;
 
 import CapaLogicaNegocio.DTOS.PromocionAplicadaDTO;
+import CapaLogicaNegocio.DTOS.PromocionClienteDTO;
+import CapaLogicaNegocio.DTOS.PromocionProductoDTO;
 import CapaLogicaNegocio.Logica_Negocio.Promocion;
 import CapaLogicaNegocio.Logica_Negocio.Promociones;
 
@@ -80,7 +82,7 @@ public class PromocionDAO {
     }
 
     public boolean agregarPromocionPersonalizada(Promociones promociones){
-        String query = "INSERT INTO Promociones (id, nombre, descuento, fechaInicio, fechaFin, tipo) " +
+        String query = "INSERT INTO Promocion (id, nombre, descuento, fechaInicio, fechaFin, tipo) " +
                 "VALUES (?, ?, ?, ?, ?, ?);";
 
         Connection conexion = Conexion.getConexionLocal();
@@ -100,6 +102,97 @@ public class PromocionDAO {
         }
         catch(Exception e) {
             System.out.println("Error consulta PromocionDAO, agregar" + e.getMessage());
+        }
+        return false;
+    }
+
+    public ArrayList<Promociones> obtenerPromocionesPersonalizadas(){
+        String query = "SELECT * FROM Promociones";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) return null;
+
+        ArrayList<Promociones> listaPromociones = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+
+                Promociones promociones = new Promociones(resultSet.getString("id"), resultSet.getString("nombre"),
+                       resultSet.getDouble("descuento"), resultSet.getDate("fechaInicio"),
+                        resultSet.getDate("fechaFin"), Promociones.TipoPromocion.valueOf(resultSet.getString("tipo").toUpperCase())
+                );
+                listaPromociones.add(promociones);
+            }
+        }
+        catch(Exception e) {
+            System.out.println("Error consulta PromocionDAO, obtener" + e.getMessage());
+        }
+        return listaPromociones;
+    }
+
+    public boolean desactivarPromocion(java.util.Date fechaActual, String idPromocion){
+        String query = "UPDATE Promocion SET fechaInicio=? WHERE id = ?";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) return false;
+
+        try {
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+
+            preparedStatement.setDate(1, (Date)fechaActual);
+            preparedStatement.setString(2, idPromocion);
+
+            return preparedStatement.executeUpdate() >= 1;
+        }
+        catch(Exception e) {
+            System.out.println("Error consulta PromocionDAO, desactivando" + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean agregarPromocionPersonalizadaCliente(PromocionClienteDTO promocionClienteDTO){
+        String query = "INSERT INTO PromocionCliente(id, idPromocion, idCliente) " +
+                "VALUES (?, ?, ?);";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) return false;
+
+        try {
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+
+            preparedStatement.setString(1, promocionClienteDTO.id());
+            preparedStatement.setString(2, promocionClienteDTO.idPromocion());
+            preparedStatement.setString(3, promocionClienteDTO.idCliente());
+
+            return preparedStatement.executeUpdate() >= 1;
+        }
+        catch(Exception e) {
+            System.out.println("Error consulta PromocionDAO" + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean agregarPromocionPersonalizadaProducto(PromocionProductoDTO promocionProductoDTO){
+        String query = "INSERT INTO PromocionProducto (id, idPromocion, idProducto) " +
+                "VALUES (?, ?, ?);";
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) return false;
+
+        try {
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+
+            preparedStatement.setString(1, promocionProductoDTO.id());
+            preparedStatement.setString(2, promocionProductoDTO.idPromocion());
+            preparedStatement.setString(3, promocionProductoDTO.idProducto());
+
+            return preparedStatement.executeUpdate() >= 1;
+        }
+        catch(Exception e) {
+            System.out.println("Error consulta PromocionDAO" + e.getMessage());
         }
         return false;
     }

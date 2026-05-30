@@ -52,11 +52,11 @@ public class VentaControlador {
      * }
      * </pre>
      */
-    public RespuestaControlador<Venta> agregarVenta(VentaDTO ventaDTO){
+    public RespuestaControlador<Boolean> agregarVenta(VentaDTO ventaDTO){
 
         if(ventaDTO == null) return new RespuestaControlador<>(false, "el objeto de la venta es nulo", null);
 
-        RespuestaControlador<Venta> respuestaControlador = validarCampos(ventaDTO);
+        RespuestaControlador<Boolean> respuestaControlador = validarCampos(ventaDTO);
 
         if(!respuestaControlador.exito()) return respuestaControlador;
 
@@ -146,11 +146,11 @@ public class VentaControlador {
      * }
      * </pre>
      */
-    public RespuestaControlador<Venta> actualizarVenta(VentaDTO ventaDTO){
+    public RespuestaControlador<Boolean> actualizarVenta(VentaDTO ventaDTO){
 
         if(ventaDTO == null) return new RespuestaControlador<>(false, "el objeto de la venta es nulo", null);
 
-        RespuestaControlador<Venta> respuestaControlador = validarCampos(ventaDTO);
+        RespuestaControlador<Boolean> respuestaControlador = validarCampos(ventaDTO);
 
         if(!respuestaControlador.exito()) return respuestaControlador;
 
@@ -290,7 +290,7 @@ public class VentaControlador {
      * @param ventaDTO El objeto con los datos crudos procedentes de la capa de presentacion.
      * @return RespuestaControlador indicando (false) qué regla falló exactamente, o (true) si todos los campos son aptos.
      */
-    public RespuestaControlador<Venta> validarCampos(VentaDTO ventaDTO){
+    public RespuestaControlador<Boolean> validarCampos(VentaDTO ventaDTO){
 
         if(ventaDTO.id() == null || ventaDTO.fechaVenta() == null || ventaDTO.totalVenta() == null
                 || ventaDTO.metodoPago() == null || ventaDTO.idCliente() == null){
