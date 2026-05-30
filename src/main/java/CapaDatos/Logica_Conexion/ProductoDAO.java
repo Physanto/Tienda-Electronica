@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public class ProductoDAO implements ILocalCRUD<Producto> {
+public class ProductoDAO implements ILocalDAO<Producto> {
 
     /**
      * Agrega una nuevo registro a la base de datos

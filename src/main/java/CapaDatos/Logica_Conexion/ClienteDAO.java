@@ -1,7 +1,5 @@
 package CapaDatos.Logica_Conexion;
 
-import CapaLogicaNegocio.Excepciones.ExcepcionSQL;
-import CapaLogicaNegocio.Helpers.HelperExcepciones;
 import CapaLogicaNegocio.Logica_Negocio.Cliente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Santiago Lopez
  */
-public class ClienteDAO implements ILocalCRUD<Cliente> {
+public class ClienteDAO implements ILocalDAO<Cliente> {
 
     /**
      * Agrega un nuevo cliente a la base de datos

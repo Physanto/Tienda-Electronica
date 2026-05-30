@@ -78,7 +78,7 @@ public class HelperIA {
        analizarMetodoDelCodo(lista,10);
 
         System.out.println("\n\n\n agrupacion");
-        agruparProductos(lista, 2);
+        agruparProductos(lista);
     }
 
     public static void analizarMetodoDelCodo(ArrayList<Promocion> lista, int maxClustersAProbar) {
@@ -108,11 +108,12 @@ public class HelperIA {
      * Metodo que se encarga de entrenar el modelo a partir de los datos ya convertidos
      * este nos genera los productos que se encuentran en cada cluster.
      * @param lista la lista que se quiere convertir internamente
-     * @param numeroClusters es la cantidad de cluster que queremos manejar para nuestros datos
+     * @return lista
      */
-    public static ArrayList<Promocion> agruparProductos(ArrayList<Promocion> lista, int numeroClusters) {
+    public static ArrayList<Promocion> agruparProductos(ArrayList<Promocion> lista) {
         try {
             Instances dataset = convertirDatosAWeka(lista);
+            int numeroClusters = 2;
 
             kmeans = new SimpleKMeans();
             kmeans.setNumClusters(numeroClusters);
@@ -138,8 +139,8 @@ public class HelperIA {
     }
 
     /**
-     * Metodo que me dice cada cluster que significa, es decir como tenemos 3 cluster
-     * entonces este metodo me dice que significa el cluster0, cluester1, cluster2
+     * Metodo que me dice cada cluster que significa, es decir como tenemos 2 cluster
+     * entonces este metodo me dice que significa el cluster0, cluester1
      * por ejemplo:
      * el cluster0 = Productos con buena rotacion
      * cluster1 = productos con mas o menos rotacion

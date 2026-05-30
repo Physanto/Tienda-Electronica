@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * 
  * @author hiTiimmy
  */
-public class DetalleVentaDAO implements ILocalCRUD<DetalleVenta> {
+public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
 
     @Override
     public boolean agregar(DetalleVenta detalleVenta) {

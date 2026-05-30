@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public class SincronizadoraDAO implements ILocalCRUD<Sincronizadora> {
+public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
 
     /**
      * Agrega una nuevo registro a la base de datos

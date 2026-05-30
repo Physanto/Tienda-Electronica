@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS Tienda_Electronica;
+
 CREATE DATABASE Tienda_Electronica;
 USE Tienda_Electronica;
 
@@ -60,6 +62,30 @@ CREATE TABLE DetalleVenta (
     FOREIGN KEY(idVenta) REFERENCES Venta(id)
 );
 
+CREATE TABLE Promocion (
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    descuento DOUBLE NOT NULL,
+    fechaInicio TIMESTAMP,
+    fechaFin TIMESTAMP,
+    tipo ENUM('GENERAL', 'ESPECIFICA') NOT NULL
+);
+
+CREATE TABLE PromocionCliente(
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    idPromocion VARCHAR(50) NOT NULL,
+    idCliente VARCHAR(50) NOT NULL,
+    FOREIGN KEY(idPromocion) REFERENCES Promocion(id),
+    FOREIGN KEY(idCliente) REFERENCES Cliente(id)
+);
+
+CREATE TABLE PromocionProducto(
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    idPromocion VARCHAR(50) NOT NULL,
+    idProducto VARCHAR(50) NOT NULL,
+    FOREIGN KEY(idPromocion) REFERENCES Promocion(id),
+    FOREIGN KEY(idProducto) REFERENCES Producto(id)
+);
 ----------------------------------------------------------
 
 --------- tabla encargada del registro de la sincronizacion
@@ -68,8 +94,8 @@ CREATE TABLE ColaSincronizadora(
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,
     tablaAfectada VARCHAR(50) NOT NULL,
-    idRegistroAfectado VARCHAR(50) NOT NULL,
-    registroJson VARCHAR(255) NOT NULL,
+    idRegistroAfectado VARCHAR(500) NOT NULL,
+    registroJson VARCHAR(MAX) NOT NULL,
     estado VARCHAR(2) NOT NULL
 );
 
