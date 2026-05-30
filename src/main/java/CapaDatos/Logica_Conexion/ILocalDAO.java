@@ -2,7 +2,6 @@ package CapaDatos.Logica_Conexion;
 
 import CapaLogicaNegocio.Excepciones.ExcepcionSQL;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +11,7 @@ import java.util.ArrayList;
  * @author Santiago Lopez
  * @author Manuel Figueroa (Physanto)
  */
-public interface ILocalCRUD<T> {
+public interface ILocalDAO<T> {
     
     public boolean agregar(T object) throws ExcepcionSQL;
     public boolean eliminar(String id) throws ExcepcionSQL;

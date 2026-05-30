@@ -1,5 +1,10 @@
 package CapaLogicaNegocio.Logica_Negocio;
 
+/**
+ * Clase que sirve para modelar los datos que se necesitan para la IA de las promociones
+ *
+ * @author Manuel Figueroa (Physanto)
+ */
 public class Promocion {
 
     private String id;

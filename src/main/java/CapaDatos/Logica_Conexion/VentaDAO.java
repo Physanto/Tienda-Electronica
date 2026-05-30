@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * 
  * @author hiTiimmy
  */
-public class VentaDAO implements ILocalCRUD<Venta> {
+public class VentaDAO implements ILocalDAO<Venta> {
 
     /**
      * Agrega una nueva venta a la base de datos.

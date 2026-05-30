@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public class CategoriaDAO implements ILocalCRUD<Categoria> {
+public class CategoriaDAO implements ILocalDAO<Categoria> {
 
     /**
      * Agrega una nueva categoria a la base de datos
