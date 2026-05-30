@@ -1,4 +1,4 @@
-package CapaLogicaNegocio.Logica_Negocio;
+package CapaLogicaNegocio.DTOS;
 
 import java.util.Date;
 

@@ -1,8 +1,9 @@
 package CapaDatos.Logica_Conexion;
 
 import CapaLogicaNegocio.DTOS.PromocionesDTO;
+import CapaLogicaNegocio.DTOS.AnalisisCliente;
 import CapaLogicaNegocio.Logica_Negocio.Promocion;
-import CapaLogicaNegocio.Logica_Negocio.Promociones;
+import CapaLogicaNegocio.DTOS.Promociones;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -226,5 +227,36 @@ public class PromocionDAO {
             System.out.println("Error consulta PromocionDAO" + e.getMessage());
         }
         return false;
+    }
+
+    public ArrayList<AnalisisCliente> getDatasetClientes(){
+        String query = "SELECT c.id, " +
+                " DATEDIFF(NOW(), MAX(v.fechaVenta)) AS recencia, " +
+                " COUNT(v.id) AS frecuencia, " +
+                " SUM(v.totalVenta) AS monetario FROM Cliente c " +
+                " JOIN Venta v ON c.id = v.idCliente" +
+                " GROUP BY c.id;";
+        ArrayList<AnalisisCliente> listaPromociones = new ArrayList<>();
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) return listaPromociones;
+
+        try {
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+
+                AnalisisCliente analisisCliente = new AnalisisCliente(resultSet.getString("id"),
+                        resultSet.getDouble("recencia"), resultSet.getDouble("frecuencia"),
+                        resultSet.getDouble("monetario")
+                );
+                listaPromociones.add(analisisCliente);
+            }
+        }
+        catch(Exception e) {
+            System.out.println("Error consulta PromocionDAO, obtener" + e.getMessage());
+        }
+        return listaPromociones;
     }
 }
