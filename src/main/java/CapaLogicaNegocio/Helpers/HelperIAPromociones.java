@@ -8,7 +8,7 @@ import weka.core.Instances;
 import weka.core.ManhattanDistance;
 import java.util.ArrayList;
 
-public class HelperIA {
+public class HelperIAPromociones {
 
     private static SimpleKMeans kmeans;
     /**

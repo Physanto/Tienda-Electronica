@@ -2,7 +2,7 @@ package CapaLogicaNegocio.Controlador;
 
 import CapaDatos.Logica_Conexion.ClienteDAO;
 import CapaDatos.Logica_Conexion.ClienteOnlineCRUD;
-import CapaLogicaNegocio.DTOS.ClienteDTO;
+import CapaLogicaNegocio.DTOS.ClientesDTO;
 import CapaLogicaNegocio.Helpers.HelperGestorBD;
 import CapaLogicaNegocio.Helpers.HelperValidacion;
 import CapaLogicaNegocio.Logica_Negocio.Cliente;
@@ -49,7 +49,7 @@ public class ClienteControlador {
      * }
      * </pre>
      */
-    public RespuestaControlador<Cliente> agregarCliente(ClienteDTO clienteDTO) {
+    public RespuestaControlador<Cliente> agregarCliente(ClientesDTO.ClienteDTO clienteDTO) {
 
         if(clienteDTO == null) return new RespuestaControlador<>(false, "El Objeto es nulo", null);
 
@@ -120,7 +120,7 @@ public class ClienteControlador {
      * @example Ejemplo de uso
      * <pre>{@code
      * // Construyes el DTO con los datos modificados en la pantalla
-     * ClienteDTO dto = new ClienteDTO(txtId.getText(), txtNombre.getText(), txtApellido.getText()...);
+     * ClientesDTO.ClienteDTO dto = new ClientesDTO.ClienteDTO(txtId.getText(), txtNombre.getText(), txtApellido.getText()...);
      *
      * // Llamas al controlador para procesar la actualizacion
      * RespuestaControlador<Cliente> respuesta = clControlador.actualizarCliente(dto);
@@ -133,7 +133,7 @@ public class ClienteControlador {
      * }
      * </pre>
      */
-    public RespuestaControlador<Cliente> actualizarCliente(ClienteDTO clienteDTO){
+    public RespuestaControlador<Cliente> actualizarCliente(ClientesDTO.ClienteDTO clienteDTO){
 
         if(clienteDTO == null) return new RespuestaControlador<>(false, "El objeto es nulo", null);
 
@@ -234,7 +234,7 @@ public class ClienteControlador {
      * * @param clienteDTO El objeto con los datos crudos procedentes de la capa de presentacion.
      * @return RespuestaControlador indicando (false) qué regla falló exactamente, o (true) si todos los campos son aptos.
      */
-    private RespuestaControlador<Cliente> validarCamposCliente(ClienteDTO clienteDTO) {
+    private RespuestaControlador<Cliente> validarCamposCliente(ClientesDTO.ClienteDTO clienteDTO) {
 
         if(clienteDTO.id() == null || clienteDTO.nombre() == null || clienteDTO.apellido() == null
         || clienteDTO.cedula() == null || clienteDTO.direccion() == null) return new RespuestaControlador<>(false, "Algun campo es nulo", null);
