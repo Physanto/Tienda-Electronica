@@ -2,8 +2,7 @@ package CapaLogicaNegocio.Controlador;
 
 import CapaDatos.Logica_Conexion.VentaDAO;
 import CapaDatos.Logica_Conexion.VentaOnlineCRUD;
-import CapaLogicaNegocio.DTOS.VentaDTO;
-import CapaLogicaNegocio.DTOS.VentaPorCategoriaDTO;
+import CapaLogicaNegocio.DTOS.VentasDTO;
 import CapaLogicaNegocio.Helpers.HelperGestorBD;
 import CapaLogicaNegocio.Helpers.HelperValidacion;
 import CapaLogicaNegocio.Logica_Negocio.Venta;
@@ -52,7 +51,7 @@ public class VentaControlador {
      * }
      * </pre>
      */
-    public RespuestaControlador<Boolean> agregarVenta(VentaDTO ventaDTO){
+    public RespuestaControlador<Boolean> agregarVenta(VentasDTO.VentaDTO ventaDTO){
 
         if(ventaDTO == null) return new RespuestaControlador<>(false, "el objeto de la venta es nulo", null);
 
@@ -146,7 +145,7 @@ public class VentaControlador {
      * }
      * </pre>
      */
-    public RespuestaControlador<Boolean> actualizarVenta(VentaDTO ventaDTO){
+    public RespuestaControlador<Boolean> actualizarVenta(VentasDTO.VentaDTO ventaDTO){
 
         if(ventaDTO == null) return new RespuestaControlador<>(false, "el objeto de la venta es nulo", null);
 
@@ -256,9 +255,9 @@ public class VentaControlador {
      */
      // NOTA: Este metodo NO usa sincronizacion con la nube, ya que se esta en la primera version de la APP.
 
-    public RespuestaControlador<ArrayList<VentaPorCategoriaDTO>> ventasPorCategoria(){
+    public RespuestaControlador<ArrayList<VentasDTO.VentaPorCategoriaDTO>> ventasPorCategoria(){
 
-        ArrayList<VentaPorCategoriaDTO> ventaPorCategoriaDTO = ventaDAO.ventasPorCategoria();
+        ArrayList<VentasDTO.VentaPorCategoriaDTO> ventaPorCategoriaDTO = ventaDAO.ventasPorCategoria();
 
         return !ventaPorCategoriaDTO.isEmpty()
                 ? new RespuestaControlador<>(true, "datos cargados correctamente", ventaPorCategoriaDTO)
@@ -290,7 +289,7 @@ public class VentaControlador {
      * @param ventaDTO El objeto con los datos crudos procedentes de la capa de presentacion.
      * @return RespuestaControlador indicando (false) qué regla falló exactamente, o (true) si todos los campos son aptos.
      */
-    public RespuestaControlador<Boolean> validarCampos(VentaDTO ventaDTO){
+    public RespuestaControlador<Boolean> validarCampos(VentasDTO.VentaDTO ventaDTO){
 
         if(ventaDTO.id() == null || ventaDTO.fechaVenta() == null || ventaDTO.totalVenta() == null
                 || ventaDTO.metodoPago() == null || ventaDTO.idCliente() == null){

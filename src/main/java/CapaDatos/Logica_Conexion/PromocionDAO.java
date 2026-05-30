@@ -1,16 +1,11 @@
 package CapaDatos.Logica_Conexion;
 
-import CapaLogicaNegocio.DTOS.PromocionAplicadaDTO;
-import CapaLogicaNegocio.DTOS.PromocionClienteDTO;
-import CapaLogicaNegocio.DTOS.PromocionProductoDTO;
+import CapaLogicaNegocio.DTOS.PromocionesDTO;
 import CapaLogicaNegocio.Logica_Negocio.Promocion;
 import CapaLogicaNegocio.Logica_Negocio.Promociones;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
-import java.sql.Date;
 
 public class PromocionDAO {
 
@@ -27,7 +22,7 @@ public class PromocionDAO {
 
         Connection conexion = Conexion.getConexionLocal();
 
-        if(conexion == null){ return null; }
+        if(conexion == null){ return listaPromocion; }
 
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -46,7 +41,7 @@ public class PromocionDAO {
         return listaPromocion;
     }
 
-    public ArrayList<PromocionAplicadaDTO> datosPromociones(){
+    public ArrayList<PromocionesDTO.PromocionAplicadaDTO> datosPromociones(){
         String query = "SELECT p.id, p.nombre, p.marca, p.stock, p.precioActual " +
                 "COALESCE(DATEDIFF(CURDATE(), MAX(v.fechaVenta)), 999) AS diasSinVender, " +
                 "COALESCE(SUM(dv.cantidad), 0) AS totalVendido " +
@@ -55,18 +50,18 @@ public class PromocionDAO {
                 "LEFT JOIN Venta v ON dv.id = v.id " +
                 "GROUP BY p.nombre, p.stock";
 
-        ArrayList<PromocionAplicadaDTO> listaPromocion = new ArrayList<>();
+        ArrayList<PromocionesDTO.PromocionAplicadaDTO> listaPromocion = new ArrayList<>();
 
         Connection conexion = Conexion.getConexionLocal();
 
-        if(conexion == null){ return null; }
+        if(conexion == null){ return listaPromocion; }
 
         try{
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                PromocionAplicadaDTO promocion = new PromocionAplicadaDTO(resultSet.getString("id"), resultSet.getString("nombre"),
+                PromocionesDTO.PromocionAplicadaDTO promocion = new PromocionesDTO.PromocionAplicadaDTO(resultSet.getString("id"), resultSet.getString("nombre"),
                         resultSet.getString("marca"), String.valueOf(resultSet.getLong("stock")),
                         String.valueOf(resultSet.getDouble("precioActual")), String.valueOf(resultSet.getLong("diasSinVender")),
                         String.valueOf(resultSet.getDouble("totalVendido"))
@@ -107,12 +102,13 @@ public class PromocionDAO {
     }
 
     public ArrayList<Promociones> obtenerPromocionesPersonalizadas(){
-        String query = "SELECT * FROM Promociones";
-
-        Connection conexion = Conexion.getConexionLocal();
-        if(conexion == null) return null;
+        String query = "SELECT * FROM Promocion";
 
         ArrayList<Promociones> listaPromociones = new ArrayList<>();
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) return listaPromociones;
+
 
         try {
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
@@ -153,7 +149,7 @@ public class PromocionDAO {
         return false;
     }
 
-    public boolean agregarPromocionPersonalizadaCliente(PromocionClienteDTO promocionClienteDTO){
+    public boolean agregarPromocionCliente(PromocionesDTO.PromocionClienteDTO promocionClienteDTO){
         String query = "INSERT INTO PromocionCliente(id, idPromocion, idCliente) " +
                 "VALUES (?, ?, ?);";
 
@@ -175,7 +171,42 @@ public class PromocionDAO {
         return false;
     }
 
-    public boolean agregarPromocionPersonalizadaProducto(PromocionProductoDTO promocionProductoDTO){
+    public ArrayList<PromocionesDTO.PromocioPersonalizadaCliente> obtenerResumeComprasCliente(){
+        String query =
+                "SELECT c.id, c.nombre, c.apellido, c.cedula, " +
+                        "COALESCE(SUM(v.totalVenta), 0) AS totalComprado, " +
+                        "MAX(v.fechaVenta) AS ultimaCompra " +
+                        "FROM Cliente c " +
+                        "LEFT JOIN Venta v ON v.idCliente = c.id " +
+                        "GROUP BY c.id, c.nombre, c.apellido, c.cedula";
+
+        ArrayList<PromocionesDTO.PromocioPersonalizadaCliente> listaPromociones = new ArrayList<>();
+
+        Connection conexion = Conexion.getConexionLocal();
+        if(conexion == null) return listaPromociones;
+
+
+        try {
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+
+                PromocionesDTO.PromocioPersonalizadaCliente promociones = new PromocionesDTO.PromocioPersonalizadaCliente(resultSet.getString("id"),
+                        resultSet.getString("nombre"), resultSet.getString("apellido"),
+                        resultSet.getString("cedula"), resultSet.getString("totalComprado"),
+                        resultSet.getString("ultimaCompra")
+                );
+                listaPromociones.add(promociones);
+            }
+        }
+        catch(Exception e) {
+            System.out.println("Error consulta PromocionDAO, obtener" + e.getMessage());
+        }
+        return listaPromociones;
+    }
+
+    public boolean agregarPromocionProducto(PromocionesDTO.PromocionProductoDTO promocionProductoDTO){
         String query = "INSERT INTO PromocionProducto (id, idPromocion, idProducto) " +
                 "VALUES (?, ?, ?);";
 

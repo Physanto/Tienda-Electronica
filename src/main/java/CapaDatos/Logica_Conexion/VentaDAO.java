@@ -1,8 +1,7 @@
 package CapaDatos.Logica_Conexion;
 
-import CapaLogicaNegocio.DTOS.VentaPorCategoriaDTO;
+import CapaLogicaNegocio.DTOS.VentasDTO;
 import CapaLogicaNegocio.Logica_Negocio.Venta;
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -223,7 +222,7 @@ public class VentaDAO implements ILocalDAO<Venta> {
         return 0l;
     }
 
-    public ArrayList<VentaPorCategoriaDTO> ventasPorCategoria(){
+    public ArrayList<VentasDTO.VentaPorCategoriaDTO> ventasPorCategoria(){
 
         String query = "SELECT c.nombre AS categoria," +
                 "    SUM(dt.cantidad) AS productosVendidos," +
@@ -236,7 +235,7 @@ public class VentaDAO implements ILocalDAO<Venta> {
                 "JOIN Venta v ON v.id = dt.idVenta" +
                 "GROUP BY c.id, c.nombre;";
 
-        ArrayList<VentaPorCategoriaDTO> listaVentas = new ArrayList<>();
+        ArrayList<VentasDTO.VentaPorCategoriaDTO> listaVentas = new ArrayList<>();
         Connection conexion = Conexion.getConexionLocal();
 
         if(conexion == null) return listaVentas;
@@ -245,10 +244,10 @@ public class VentaDAO implements ILocalDAO<Venta> {
             PreparedStatement preparedStatement = conexion.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            VentaPorCategoriaDTO ventaPorCategoriaDTO;
+            VentasDTO.VentaPorCategoriaDTO ventaPorCategoriaDTO;
 
             while(resultSet.next()){
-                ventaPorCategoriaDTO = new VentaPorCategoriaDTO(resultSet.getString("categoria"),
+                ventaPorCategoriaDTO = new VentasDTO.VentaPorCategoriaDTO(resultSet.getString("categoria"),
                         resultSet.getLong("productosVendidos"), resultSet.getDouble("totalVentas"),
                         resultSet.getTimestamp("primeraVenta"), resultSet.getTimestamp("ultimaVenta"));
                 listaVentas.add(ventaPorCategoriaDTO);

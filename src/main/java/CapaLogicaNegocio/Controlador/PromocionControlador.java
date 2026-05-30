@@ -1,11 +1,8 @@
 package CapaLogicaNegocio.Controlador;
 
 import CapaDatos.Logica_Conexion.PromocionDAO;
-import CapaLogicaNegocio.DTOS.PromocionAplicadaDTO;
-import CapaLogicaNegocio.DTOS.PromocionClienteDTO;
-import CapaLogicaNegocio.DTOS.PromocionProductoDTO;
 import CapaLogicaNegocio.DTOS.PromocionesDTO;
-import CapaLogicaNegocio.Helpers.HelperIA;
+import CapaLogicaNegocio.Helpers.HelperIAPromociones;
 import CapaLogicaNegocio.Helpers.HelperValidacion;
 import CapaLogicaNegocio.Logica_Negocio.Promocion;
 import CapaLogicaNegocio.Logica_Negocio.Promociones;
@@ -27,14 +24,14 @@ public class PromocionControlador {
      * Este es el metodo que se llama apenas el admin presiona el boton del modulo de Promociones
      * @return una lista con los productos, retorna null si la lista esta vacia o ha habido un problema
      */
-    public RespuestaControlador<ArrayList<PromocionAplicadaDTO>> obtenerProductosPromocion(){
+    public RespuestaControlador<ArrayList<PromocionesDTO.PromocionAplicadaDTO>> obtenerProductosPromocion(){
 
-        ArrayList<Promocion> listaPromociones = HelperIA.agruparProductos(promocionDAO.getDataset());
+        ArrayList<Promocion> listaPromociones = HelperIAPromociones.agruparProductos(promocionDAO.getDataset());
 
-        ArrayList<PromocionAplicadaDTO> lista = promocionDAO.datosPromociones();
-        ArrayList<PromocionAplicadaDTO> listaProductos = new ArrayList<>();
+        ArrayList<PromocionesDTO.PromocionAplicadaDTO> lista = promocionDAO.datosPromociones();
+        ArrayList<PromocionesDTO.PromocionAplicadaDTO> listaProductos = new ArrayList<>();
 
-        for (PromocionAplicadaDTO promocionAplicadaDTO : lista) {
+        for (PromocionesDTO.PromocionAplicadaDTO promocionAplicadaDTO : lista) {
             for (Promocion promocion : listaPromociones) {
 
                 if (promocionAplicadaDTO.id().equals(promocion.getId()) && promocion.getCluster() == 0) {
@@ -54,7 +51,7 @@ public class PromocionControlador {
      * el campo de tipo() PONER "ESPECIFICA" ya que es para un producto en especial.
      * @return un record en el cual contiene un campo .exito() de true si aplico correctamente la promocion, un campo de mensaje
      */
-    public RespuestaControlador<Boolean> aplicarPromocionProducto(String idProductoSeleccionado, PromocionesDTO promocionesDTO){
+    public RespuestaControlador<Boolean> aplicarPromocionProducto(String idProductoSeleccionado, PromocionesDTO.PromocionessDTO promocionesDTO){
 
         RespuestaControlador<Boolean> respuestaControlador = validarCampos(promocionesDTO);
 
@@ -75,7 +72,7 @@ public class PromocionControlador {
 
         if(!promocionDAO.agregarPromocionPersonalizada(promociones)) return new RespuestaControlador<>(false, "Error al tratar de insertar en promociones", null);
 
-        if(!promocionDAO.agregarPromocionPersonalizadaProducto(new PromocionProductoDTO(UUID.randomUUID().toString(),
+        if(!promocionDAO.agregarPromocionProducto(new PromocionesDTO.PromocionProductoDTO(UUID.randomUUID().toString(),
                 promociones.getId(), idProductoSeleccionado)
         )) return new RespuestaControlador<>(false, "No se pudo aplicar la promocion al producto especifico", null);
 
@@ -104,7 +101,7 @@ public class PromocionControlador {
                 : new RespuestaControlador<>(false, "Promocion no desactivada", null);
     }
 
-    public RespuestaControlador<Boolean> aplicarPromocionCliente(String idClienteSeleccionado, PromocionesDTO promocionesDTO){
+    public RespuestaControlador<Boolean> aplicarPromocionCliente(String idClienteSeleccionado, PromocionesDTO.PromocionessDTO promocionesDTO){
 
         RespuestaControlador<Boolean> respuestaControlador = validarCampos(promocionesDTO);
 
@@ -125,14 +122,26 @@ public class PromocionControlador {
 
         if(!promocionDAO.agregarPromocionPersonalizada(promociones)) return new RespuestaControlador<>(false, "Error al tratar de insertar en promociones", null);
 
-        if(!promocionDAO.agregarPromocionPersonalizadaCliente(new PromocionClienteDTO(UUID.randomUUID().toString(),
+        if(!promocionDAO.agregarPromocionCliente(new PromocionesDTO.PromocionClienteDTO(UUID.randomUUID().toString(),
                 promociones.getId(), idClienteSeleccionado)
         )) return new RespuestaControlador<>(false, "No se pudo aplicar la promocion al cliente especifico", null);
 
         return new RespuestaControlador<>(true, "promocion agregada al cliente con exito", null);
     }
 
-    public RespuestaControlador<Boolean> validarCampos(PromocionesDTO promocionesDTO){
+    public RespuestaControlador<ArrayList<PromocionesDTO.PromocioPersonalizadaCliente>> obtenerResumeComprasClientes(){
+
+        ArrayList<PromocionesDTO.PromocioPersonalizadaCliente> listaPromociones = promocionDAO.obtenerResumeComprasCliente();
+
+        return !listaPromociones.isEmpty()
+                ? new RespuestaControlador<>(true, "Lista generada correctamente", listaPromociones)
+                : new RespuestaControlador<>(false, "Lista vacia o nula", null);
+    }
+
+    public RespuestaControlador<> analizarCliente(){
+
+    }
+    public RespuestaControlador<Boolean> validarCampos(PromocionesDTO.PromocionessDTO promocionesDTO){
 
         if(promocionesDTO.descuento() == null || promocionesDTO.descuento().isEmpty()) return new RespuestaControlador<>(false, "el descuento esta vacio o en null", null);
 
