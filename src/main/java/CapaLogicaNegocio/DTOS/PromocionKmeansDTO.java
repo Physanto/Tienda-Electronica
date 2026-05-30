@@ -6,4 +6,4 @@ package CapaLogicaNegocio.DTOS;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public record PromocionDTO(String id, String stockActual, String diasSinVender, String totalVendido) {}
+public record PromocionKmeansDTO(String id, Double stockActual, Double diasSinVender, Double totalVendido) {}

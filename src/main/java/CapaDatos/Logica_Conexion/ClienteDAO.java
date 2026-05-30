@@ -152,7 +152,7 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
             preparedStatement.setString(2, cliente.getApellido());
             preparedStatement.setString(3, cliente.getDireccion());
             preparedStatement.setString(4, cliente.getCedula());
-            preparedStatement.setString(6, cliente.getId());
+            preparedStatement.setString(5, cliente.getId());
 
             return preparedStatement.executeUpdate() >= 1;
         }

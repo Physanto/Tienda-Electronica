@@ -161,6 +161,25 @@ public class HelperValidacion {
         return 0;
     }
 
+    private static int validarNumeroDecimal(String cadena) {
+        cadena = cadena.trim();
+
+        if (cadena.isEmpty() || cadena.startsWith(".")) { return 1; }
+
+        int puntos = 0;
+
+        for (int i = 0; i < cadena.length(); i++) {
+            char c = cadena.charAt(i);
+
+            if (c == '.') {
+                puntos++;
+                if (puntos > 1) { return 1; }
+            }
+            else if (!Character.isDigit(c)) { return 1; }
+        }
+        return 0;
+    }
+
     /**
      * Verifica si la cadena pasada por argumento contiene caracteres especiales
      * @param cadena es la cadena que se quirer verificar
@@ -227,6 +246,15 @@ public class HelperValidacion {
      */
     public static int ValidarTodoNumero(String cadena) {
         return validarNumero(cadena);
+    }
+
+    /**
+     * Valida si el numero pasado por argumento es de tipo double
+     * @param cadena numero a evaluar
+     * @return 0 si el formato es correcto, 1 si es incorrecto
+     */
+    public static int ValidarTodoNumeroDecimal(String cadena) {
+        return validarNumeroDecimal(cadena);
     }
 
     /**

@@ -241,10 +241,9 @@ public class ProductoControlador {
      * }
      * </pre>
      */
-    public RespuestaControlador<ArrayList<Producto>> buscarTodos(){
+    public RespuestaControlador<ArrayList<Producto>> obtenerTodos(){
 
-        ArrayList<Producto> listaProductos = new ArrayList<>();
-        listaProductos = HelperGestorBD.cargarRegistros(
+        ArrayList<Producto> listaProductos = HelperGestorBD.cargarRegistros(
                 () -> productoDAO.obteners(),
                 () -> productoOnlineCRUD.obtenersNube(Producto.class)
         );
