@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -23,8 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class InicioSesion extends javax.swing.JFrame {
  
-    public String pathc;
-    public String s;
+
     Usuario usuAdmin;
     Usuario usuCliente;
  
@@ -39,8 +37,7 @@ public class InicioSesion extends javax.swing.JFrame {
         aplicarEstilosCampos();   
         aplicarEstiloBoton();     
         addPlaceholders();        
- 
-        s = Paths.get("").toAbsolutePath().toString();
+
         establecerFondo();
         establecerIconoUsuario();
 
@@ -190,13 +187,12 @@ public class InicioSesion extends javax.swing.JFrame {
      * Carga la imagen de fondo desde el sistema de archivos y la asigna al JLabel fondo.
      */
     public void establecerFondo() {
-        Image img = null;
         try {
-            String pathC = s + "\\Images\\" + "imgFondo2" + ".png";
-            img = ImageIO.read(new File(pathC));
+            String ruta = OSHelper.getImageFilePath("imgFondo2");
+            Image img = ImageIO.read(new File(ruta));
             fondo.setIcon(new ImageIcon(img));
         } catch (IOException ioexception) {
-            System.err.println(ioexception);
+            System.err.println("Error cargando fondo: " + ioexception.getMessage());
         }
     }
  
@@ -204,13 +200,12 @@ public class InicioSesion extends javax.swing.JFrame {
      * Carga el ícono de usuario desde el sistema de archivos y la asigna al JLabel icono_user.
      */
     public void establecerIconoUsuario() {
-        Image img = null;
         try {
-            String pathIcono = s + "\\Images\\" + "user" + ".png";
-            img = ImageIO.read(new File(pathIcono));
+            String ruta = OSHelper.getImageFilePath("user");
+            Image img = ImageIO.read(new File(ruta));
             icono_user.setIcon(new ImageIcon(img));
         } catch (IOException ioexception) {
-            System.err.println(ioexception);
+            System.err.println("Error cargando fondo: " + ioexception.getMessage());
         }
     }
 

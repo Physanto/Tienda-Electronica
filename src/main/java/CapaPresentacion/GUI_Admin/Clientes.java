@@ -26,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -147,16 +148,17 @@ public class Clientes extends javax.swing.JPanel {
      * en el formulario lateral mediante {@link #cargarFilaEnFormulario(int)}.
      */
     private void construirTabla() {
-        // Columnas del modelo (NO editables directamente en la tabla)
         String[] columnas = {"ID", "Nombre", "Apellido", "Cédula", "Dirección"};
         tableModel = new DefaultTableModel(columnas, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) { return false; }
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
- 
+
         tablaClientes = new JTable(tableModel);
         tablaClientes.setBackground(COLOR_TABLE_BG);
-        tablaClientes.setForeground(COLOR_TEXTO);
+        tablaClientes.setForeground(COLOR_TEXTO); // 🔹 texto blanco en filas
         tablaClientes.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
         tablaClientes.setRowHeight(36);
         tablaClientes.setShowHorizontalLines(true);
@@ -164,41 +166,50 @@ public class Clientes extends javax.swing.JPanel {
         tablaClientes.setSelectionBackground(COLOR_ROW_SEL);
         tablaClientes.setSelectionForeground(COLOR_TEXTO);
         tablaClientes.setIntercellSpacing(new Dimension(0, 1));
- 
-        // Encabezado de la tabla
+
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+        cellRenderer.setHorizontalAlignment(JLabel.CENTER);
+        cellRenderer.setForeground(Color.WHITE); // texto blanco
+        cellRenderer.setBackground(COLOR_TABLE_BG); // fondo oscuro
+        for (int col = 0; col < tablaClientes.getColumnCount(); col++) {
+            tablaClientes.getColumnModel().getColumn(col).setCellRenderer(cellRenderer);
+        }
+
+        // Encabezado de la tabla (mantener estilo actual)
         JTableHeader header = tablaClientes.getTableHeader();
         header.setBackground(COLOR_PANEL_SEC);
-        header.setForeground(COLOR_TEXTO);
+        header.setForeground(COLOR_TEXTO); // títulos en blanco
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
- 
+
         // Al seleccionar una fila → cargar datos en el formulario
         tablaClientes.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && tablaClientes.getSelectedRow() >= 0) {
                 cargarFilaEnFormulario(tablaClientes.getSelectedRow());
             }
         });
- 
+
         // Ajuste de anchos de columna
         tablaClientes.getColumnModel().getColumn(0).setPreferredWidth(80);
         tablaClientes.getColumnModel().getColumn(1).setPreferredWidth(130);
         tablaClientes.getColumnModel().getColumn(2).setPreferredWidth(130);
         tablaClientes.getColumnModel().getColumn(3).setPreferredWidth(110);
         tablaClientes.getColumnModel().getColumn(4).setPreferredWidth(200);
- 
+
         JScrollPane scroll = new JScrollPane(tablaClientes);
         scroll.setBackground(COLOR_TABLE_BG);
         scroll.getViewport().setBackground(COLOR_TABLE_BG);
         scroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
- 
+
         // Panel contenedor con padding
         JPanel tableWrapper = new JPanel(new BorderLayout());
         tableWrapper.setBackground(COLOR_BG);
         tableWrapper.setBorder(new EmptyBorder(16, 16, 16, 16));
         tableWrapper.add(scroll, BorderLayout.CENTER);
- 
+
         add(tableWrapper, BorderLayout.CENTER);
     }
+
  
     /**
      * Construye el panel lateral derecho que contiene el formulario CRUD.
