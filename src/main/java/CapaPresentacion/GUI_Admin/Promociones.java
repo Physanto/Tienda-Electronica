@@ -1,22 +1,18 @@
 package CapaPresentacion.GUI_Admin;
 
-import CapaDatos.Logica_Conexion.ProductoDAO;
-import CapaDatos.Logica_Conexion.PromocionDAO;
+import CapaLogicaNegocio.Controlador.PromocionControlador;
+import CapaLogicaNegocio.Controlador.RespuestaControlador;
+import CapaLogicaNegocio.DTOS.AnalisisCliente;
+import CapaLogicaNegocio.DTOS.PromocionesDTO;
 import CapaLogicaNegocio.Logica_Negocio.Producto;
 import CapaLogicaNegocio.Logica_Negocio.Promocion;
-import CapaDatos.Logica_Conexion.ClienteDAO;
-import CapaDatos.Logica_Conexion.DetalleVentaDAO;
-import CapaDatos.Logica_Conexion.VentaDAO;
-import CapaLogicaNegocio.Logica_Negocio.Cliente;
-import CapaLogicaNegocio.Logica_Negocio.DetalleVenta;
-import CapaLogicaNegocio.Logica_Negocio.Venta;
 
 import java.awt.*;
-import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,58 +20,35 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 /**
- * JPanel del módulo Promociones para el panel de administración.
- *
- * Al abrirse, ejecuta el modelo K-Means sobre los productos y muestra
- * en la tabla superior los productos candidatos a promoción (cluster con
- * mayor diasSinVender y menor totalVendido).
- *
- * El administrador selecciona uno o varios productos, elige un porcentaje
- * de descuento y aplica la promoción. También puede ver y desactivar las
- * promociones actualmente activas en la tabla inferior.
+ * JPanel del módulo Promociones para el panel de administración. Al abrirse, ejecuta el modelo K-Means sobre los productos y muestra en la tabla superior los productos candidatos a promoción (cluster con mayor diasSinVender y menor totalVendido). El administrador selecciona uno o varios productos, elige un porcentaje de descuento y aplica la promoción. También puede ver y desactivar las promociones actualmente activas en la tabla inferior.
  *
  * @author Marlon Vargas
  */
 public class Promociones extends javax.swing.JPanel {
 
-    // ──────────────────────────────────────────────────────────────
-    // Paleta de colores
-    // ──────────────────────────────────────────────────────────────
-    private static final Color COLOR_BG          = new Color(0x1A, 0x1E, 0x29);
-    private static final Color COLOR_PANEL_SEC   = new Color(0x13, 0x2D, 0x46);
-    private static final Color COLOR_ACENTO      = new Color(1, 128, 95);
-    private static final Color COLOR_PELIGRO     = new Color(0xEF, 0x44, 0x44);
-    private static final Color COLOR_AMARILLO    = new Color(0xF5, 0x9E, 0x0B);
-    private static final Color COLOR_TEXTO       = Color.WHITE;
+    private static final Color COLOR_BG = new Color(0x1A, 0x1E, 0x29);
+    private static final Color COLOR_PANEL_SEC = new Color(0x13, 0x2D, 0x46);
+    private static final Color COLOR_ACENTO = new Color(1, 128, 95);
+    private static final Color COLOR_PELIGRO = new Color(0xEF, 0x44, 0x44);
+    private static final Color COLOR_AMARILLO = new Color(0xF5, 0x9E, 0x0B);
+    private static final Color COLOR_TEXTO = Color.WHITE;
     private static final Color COLOR_TEXTO_MUTED = new Color(0x8A, 0xA5, 0xBE);
-    private static final Color COLOR_TABLE_BG    = new Color(0x10, 0x14, 0x1E);
-    private static final Color COLOR_ROW_SEL     = new Color(0x01, 0xC3, 0x8E, 80);
+    private static final Color COLOR_TABLE_BG = new Color(0x10, 0x14, 0x1E);
+    private static final Color COLOR_ROW_SEL = new Color(0x01, 0xC3, 0x8E, 80);
 
-    private static final NumberFormat FMT_MONEDA =
-            NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
+    private final PromocionControlador promoControlador = new PromocionControlador();
+    private final Promocion promo = new Promocion();
 
-    // ──────────────────────────────────────────────────────────────
-    // DAOs y helpers
-    // ──────────────────────────────────────────────────────────────
-    private final PromocionDAO promocionDAO = new PromocionDAO();
-    private final ProductoDAO  productoDAO  = new ProductoDAO();
-    private final ClienteDAO      clienteDAO      = new ClienteDAO();
-    private final DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO();
-    private final VentaDAO ventaDAO = new VentaDAO();
-
-    // ──────────────────────────────────────────────────────────────
-    // Componentes UI
-    // ──────────────────────────────────────────────────────────────
     private DefaultTableModel modeloSugerencias;
-    private JTable            tablaSugerencias;
+    private JTable tablaSugerencias;
 
     private DefaultTableModel modeloActivas;
-    private JTable            tablaActivas;
+    private JTable tablaActivas;
 
-    private JSpinner          spinnerDescuento;
-    private JTextField        txtNombrePromo;
-    private JLabel            lblEstado;
-    
+    private JSpinner spinnerDescuento;
+    private JTextField txtNombrePromo;
+    private JLabel lblEstado;
+
     private DefaultTableModel modeloClientes;
     private JTable tablaClientes;
     private JLabel lblPerfilCliente;
@@ -87,22 +60,17 @@ public class Promociones extends javax.swing.JPanel {
     // Mapa de fila en tablaActivas → id de Promocion (simulado con lista paralela)
     private final ArrayList<String> idsPromoActiva = new ArrayList<>();
 
-    // ──────────────────────────────────────────────────────────────
-    // Constructor
-    // ──────────────────────────────────────────────────────────────
     public Promociones() {
         setLayout(new BorderLayout());
         setBackground(COLOR_BG);
         setBorder(new EmptyBorder(20, 24, 20, 24));
 
-        // Título
         JLabel titulo = new JLabel("Sugerencias de Promociones — Modelo K-Means");
         titulo.setFont(new Font("Segoe UI Light", Font.BOLD, 26));
         titulo.setForeground(COLOR_TEXTO);
         titulo.setBorder(new EmptyBorder(0, 0, 16, 0));
         add(titulo, BorderLayout.NORTH);
 
-        // Contenido scrollable
         JPanel contenido = new JPanel();
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
         contenido.setBackground(COLOR_BG);
@@ -111,10 +79,10 @@ public class Promociones extends javax.swing.JPanel {
         contenido.add(Box.createVerticalStrut(24));
         contenido.add(construirPanelAccion());
         contenido.add(Box.createVerticalStrut(24));
+        contenido.add(construirSeccionClientes());
+        contenido.add(Box.createVerticalStrut(24));
         contenido.add(construirSeccionActivas());
         contenido.add(Box.createVerticalStrut(20));
-        contenido.add(Box.createVerticalStrut(24));
-        contenido.add(construirSeccionClientes());
 
         JScrollPane scroll = new JScrollPane(contenido);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -122,21 +90,19 @@ public class Promociones extends javax.swing.JPanel {
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroll, BorderLayout.CENTER);
 
-        // Cargar datos al iniciar
         cargarSugerenciasKmeans();
+        cargarTablaClientes();
         cargarPromocionesActivas();
     }
 
     // ══════════════════════════════════════════════════════════════
     //  SECCIÓN 1 — TABLA DE SUGERENCIAS
     // ══════════════════════════════════════════════════════════════
-
     private JPanel construirSeccionSugerencias() {
         JPanel seccion = new JPanel(new BorderLayout(0, 10));
         seccion.setBackground(COLOR_BG);
         seccion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 320));
 
-        // Encabezado con badge explicativo
         JPanel encabezado = new JPanel(new BorderLayout());
         encabezado.setBackground(COLOR_BG);
 
@@ -151,20 +117,21 @@ public class Promociones extends javax.swing.JPanel {
         badge.setOpaque(true);
         badge.setBorder(new EmptyBorder(3, 8, 3, 8));
 
-        encabezado.add(lbl,   BorderLayout.WEST);
+        encabezado.add(lbl, BorderLayout.WEST);
         encabezado.add(badge, BorderLayout.EAST);
         seccion.add(encabezado, BorderLayout.NORTH);
 
-        // Tabla
         modeloSugerencias = new DefaultTableModel(
                 new String[]{"ID Producto", "Nombre", "Marca", "Stock",
-                             "Precio Actual", "Días sin venta", "Total vendido", "Cluster"}, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+                    "Precio Actual", "Días sin venta", "Total vendido", "Cluster"}, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
 
         tablaSugerencias = estilizarTabla(new JTable(modeloSugerencias));
         tablaSugerencias.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        // Ocultar columna ID (índice 0) — se usa internamente
         tablaSugerencias.getColumnModel().getColumn(0).setMinWidth(0);
         tablaSugerencias.getColumnModel().getColumn(0).setMaxWidth(0);
         tablaSugerencias.getColumnModel().getColumn(0).setWidth(0);
@@ -179,7 +146,6 @@ public class Promociones extends javax.swing.JPanel {
     // ══════════════════════════════════════════════════════════════
     //  SECCIÓN 2 — PANEL DE ACCIÓN
     // ══════════════════════════════════════════════════════════════
-
     private JPanel construirPanelAccion() {
         JPanel card = new JPanel(new BorderLayout(0, 14));
         card.setBackground(COLOR_PANEL_SEC);
@@ -194,11 +160,9 @@ public class Promociones extends javax.swing.JPanel {
         lbl.setForeground(COLOR_TEXTO);
         card.add(lbl, BorderLayout.NORTH);
 
-        // Controles en una fila
         JPanel controles = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 0));
         controles.setBackground(COLOR_PANEL_SEC);
 
-        // Nombre de la promoción
         JLabel lblNom = new JLabel("Nombre:");
         lblNom.setForeground(COLOR_TEXTO_MUTED);
         lblNom.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
@@ -206,7 +170,6 @@ public class Promociones extends javax.swing.JPanel {
         txtNombrePromo = new JTextField(18);
         estilizarTextField(txtNombrePromo);
 
-        // Spinner descuento
         JLabel lblDesc = new JLabel("Descuento (%):");
         lblDesc.setForeground(COLOR_TEXTO_MUTED);
         lblDesc.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
@@ -216,11 +179,9 @@ public class Promociones extends javax.swing.JPanel {
         spinnerDescuento.setPreferredSize(new Dimension(70, 32));
         estilizarSpinner(spinnerDescuento);
 
-        // Botón aplicar
         JButton btnAplicar = crearBoton("Aplicar Promoción", COLOR_ACENTO);
         btnAplicar.addActionListener(e -> aplicarPromocion());
 
-        // Etiqueta de estado
         lblEstado = new JLabel("");
         lblEstado.setFont(new Font("Segoe UI Light", Font.BOLD, 16));
         lblEstado.setForeground(COLOR_ACENTO);
@@ -239,13 +200,11 @@ public class Promociones extends javax.swing.JPanel {
     // ══════════════════════════════════════════════════════════════
     //  SECCIÓN 3 — PROMOCIONES ACTIVAS
     // ══════════════════════════════════════════════════════════════
-
     private JPanel construirSeccionActivas() {
         JPanel seccion = new JPanel(new BorderLayout(0, 10));
         seccion.setBackground(COLOR_BG);
         seccion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
 
-        // Encabezado con botón desactivar
         JPanel encabezado = new JPanel(new BorderLayout());
         encabezado.setBackground(COLOR_BG);
 
@@ -256,20 +215,21 @@ public class Promociones extends javax.swing.JPanel {
         JButton btnDesactivar = crearBoton("Desactivar seleccionada", COLOR_PELIGRO);
         btnDesactivar.addActionListener(e -> desactivarPromocion());
 
-        encabezado.add(lbl,           BorderLayout.WEST);
+        encabezado.add(lbl, BorderLayout.WEST);
         encabezado.add(btnDesactivar, BorderLayout.EAST);
         seccion.add(encabezado, BorderLayout.NORTH);
 
-        // Tabla
         modeloActivas = new DefaultTableModel(
                 new String[]{"ID Promo", "Nombre Promoción", "Producto",
-                             "Descuento (%)", "Precio Original", "Precio con Descuento"}, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+                    "Descuento (%)", "Precio Original", "Precio con Descuento"}, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
 
         tablaActivas = estilizarTabla(new JTable(modeloActivas));
         tablaActivas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // Ocultar columna ID Promo
         tablaActivas.getColumnModel().getColumn(0).setMinWidth(0);
         tablaActivas.getColumnModel().getColumn(0).setMaxWidth(0);
         tablaActivas.getColumnModel().getColumn(0).setWidth(0);
@@ -280,150 +240,83 @@ public class Promociones extends javax.swing.JPanel {
 
         return seccion;
     }
-    
-     /**
-     * Carga la tabla de clientes con sus métricas calculadas desde el historial
-     * de ventas: total gastado, número de sesiones y días desde la última compra.
-     * Llámala en el constructor:  cargarTablaClientes();
+
+    /**
+     * Puebla tablaClientes con el resumen histórico de compras de cada cliente. Llamar en el constructor: cargarTablaClientes();
      */
     private void cargarTablaClientes() {
         modeloClientes.setRowCount(0);
 
-        ArrayList<Cliente>      clientes  = clienteDAO.obteners();
-        ArrayList<Venta>        ventas    = ventaDAO.obteners();
-        ArrayList<DetalleVenta> detalles  = detalleVentaDAO.obteners();
+        try {
+            RespuestaControlador<ArrayList<PromocionesDTO.PromocioPersonalizadaCliente>> respuesta
+                    = promoControlador.obtenerResumeComprasClientes();
 
-        // Mapa idVenta → Venta (para cruzar con DetalleVenta)
-        Map<String, Venta> mapVentas = new HashMap<>();
-        for (Venta v : ventas) mapVentas.put(v.getId(), v);
-
-        long hoy = System.currentTimeMillis();
-
-        for (Cliente c : clientes) {
-            // Ventas del cliente
-            ArrayList<Venta> ventasCliente = new ArrayList<>();
-            for (Venta v : ventas) {
-                if (v.getIdCliente().equals(c.getId())) ventasCliente.add(v);
+            if (!respuesta.exito() || respuesta.dato() == null) {
+                lblPerfilCliente.setText("No se pudieron cargar los clientes: " + respuesta.mensaje());
+                return;
             }
 
-            int    numSesiones   = ventasCliente.size();
-            double totalGastado  = 0;
-            long   fechaUltima   = 0;
-
-            for (Venta v : ventasCliente) {
-                totalGastado += v.getTotalVenta();
-                if (v.getFechaVenta().getTime() > fechaUltima)
-                    fechaUltima = v.getFechaVenta().getTime();
+            for (PromocionesDTO.PromocioPersonalizadaCliente cliente : respuesta.dato()) {
+                modeloClientes.addRow(new Object[]{
+                    cliente.id(),
+                    cliente.nombre(),
+                    cliente.apellido(),
+                    cliente.cedula(),
+                    cliente.totalCompras(),
+                    cliente.ultCompra()
+                });
             }
 
-            long diasDesdeUltima = (numSesiones == 0) ? 999
-                    : (hoy - fechaUltima) / (1000L * 60 * 60 * 24);
-
-            modeloClientes.addRow(new Object[]{
-                c.getId(),
-                c.getNombre(),
-                c.getApellido(),
-                c.getCedula(),
-                FMT_MONEDA.format(totalGastado),
-                numSesiones,
-                diasDesdeUltima == 999 ? "Sin compras" : diasDesdeUltima + " días"
-            });
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar la tabla de clientes: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  LÓGICA DE NEGOCIO
-    // ══════════════════════════════════════════════════════════════
-
     /**
-     * Ejecuta el K-Means y muestra los productos del cluster con mayor
-     * riesgo (mayor diasSinVender, menor totalVendido).
-     *
-     * El PromocionDAO.getDataset() devuelve objetos Promocion con los datos
-     * estadísticos (stock, diasSinVender, totalVendido). Después de correr
-     * clusters(), cada Promocion.getCluster() tiene su cluster asignado.
-     * Identificamos el cluster "malo" como el de mayor diasSinVender promedio.
+     * Puebla tablaSugerencias con los productos candidatos a promoción detectados por el modelo K-Means del sistema. Llamar en el constructor: cargarSugerenciasKmeans();
      */
     private void cargarSugerenciasKmeans() {
         modeloSugerencias.setRowCount(0);
-        mapaProductos.clear();
 
-        // 1. Obtener dataset del DAO
-        ArrayList<Promocion> dataset = promocionDAO.getDataset();
-        if (dataset == null || dataset.size() < 3) {
-            lblEstado.setText("No hay suficientes productos para el análisis.");
-            lblEstado.setForeground(COLOR_AMARILLO);
-            return;
-        }
+        try {
+            RespuestaControlador<ArrayList<PromocionesDTO.PromocionAplicadaDTO>> respuesta
+                    = promoControlador.obtenerProductosPromocion();
 
-        // 2. Cargar productos para cruzar nombre/marca/precio
-        ArrayList<Producto> productos = productoDAO.obteners();
-        for (Producto p : productos) mapaProductos.put(p.getId(), p);
-
-        // 3. Ejecutar K-Means (modifica in-place el campo cluster de cada Promocion)
-        //HelperKmeans.clusters(dataset);
-
-        // 4. Identificar el cluster "candidato a promoción":
-        //    el que tenga mayor promedio de diasSinVender
-        double[] sumaDias    = new double[3];
-        int[]    contCluster = new int[3];
-
-        for (Promocion pr : dataset) {
-            int c = pr.getCluster();
-            if (c >= 0 && c <= 2) {
-                sumaDias[c]    += pr.getDiasSinVender();
-                contCluster[c] += 1;
+            if (!respuesta.exito() || respuesta.dato() == null) {
+                lblEstado.setText(respuesta.mensaje());
+                lblEstado.setForeground(COLOR_AMARILLO);
+                return;
             }
-        }
 
-        int clusterCandidato = 0;
-        double maxDias = -1;
-        for (int i = 0; i < 3; i++) {
-            if (contCluster[i] > 0) {
-                double promedio = sumaDias[i] / contCluster[i];
-                if (promedio > maxDias) {
-                    maxDias         = promedio;
-                    clusterCandidato = i;
-                }
+            for (PromocionesDTO.PromocionAplicadaDTO dto : respuesta.dato()) {
+                modeloSugerencias.addRow(new Object[]{
+                    dto.id(),
+                    dto.nombre(),
+                    dto.marca(),
+                    dto.Stock(),
+                    dto.PrecioActual(),
+                    dto.diasSinVenta(),
+                    dto.totalVendido(),
+                    "Candidato"
+                });
             }
-        }
 
-        // 5. Poblar tabla solo con los del cluster candidato
-        for (Promocion pr : dataset) {
-            if (pr.getCluster() != clusterCandidato) continue;
+            if (modeloSugerencias.getRowCount() == 0) {
+                lblEstado.setText("Todos los productos tienen buena rotación.");
+                lblEstado.setForeground(COLOR_ACENTO);
+            }
 
-            Producto prod = mapaProductos.get(pr.getId());
-            String nombre = (prod != null) ? prod.getNombre() : "Desconocido";
-            String marca  = (prod != null) ? prod.getMarca()  : "-";
-            String precio = (prod != null)
-                    ? FMT_MONEDA.format(prod.getPrecioActual()) : "-";
-            long stock    = (prod != null) ? prod.getStock() : 0;
-
-            String diasStr = pr.getDiasSinVender() >= 999
-                    ? "Sin ventas"
-                    : String.valueOf(pr.getDiasSinVender().intValue());
-
-            modeloSugerencias.addRow(new Object[]{
-                pr.getId(),
-                nombre,
-                marca,
-                stock,
-                precio,
-                diasStr,
-                pr.getTotalVendido().intValue(),
-                "Cluster " + pr.getCluster()
-            });
-        }
-
-        if (modeloSugerencias.getRowCount() == 0) {
-            lblEstado.setText("Todos los productos tienen buena rotación.");
-            lblEstado.setForeground(COLOR_ACENTO);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar sugerencias de promoción: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
-     * Aplica la promoción a todos los productos seleccionados en la tabla.
-     * Muestra vista previa por cada producto antes de guardar.
+     * Aplica una promoción de descuento a cada producto seleccionado en tablaSugerencias. Por cada fila seleccionada construye un PromocionessDTO y llama al controlador.
      */
     private void aplicarPromocion() {
         int[] filasSeleccionadas = tablaSugerencias.getSelectedRows();
@@ -444,120 +337,154 @@ public class Promociones extends javax.swing.JPanel {
         }
 
         int porcentaje = (int) spinnerDescuento.getValue();
-        int aplicadas  = 0;
+        int aplicadas = 0;
 
         for (int fila : filasSeleccionadas) {
             String idProducto = modeloSugerencias.getValueAt(fila, 0).toString();
-            String nombre     = modeloSugerencias.getValueAt(fila, 1).toString();
+            String nombre = modeloSugerencias.getValueAt(fila, 1).toString();
 
-            Producto prod = mapaProductos.get(idProducto);
-            if (prod == null) continue;
-
-            double precioOriginal = prod.getPrecioActual();
-            double precioFinal    = precioOriginal * (1 - porcentaje / 100.0);
-
-            // Vista previa
-            String mensaje = String.format("""
-                                           Producto:        %s
-                                           Precio original: %s
-                                           Descuento:       %d%%
-                                           Precio final:    %s
-                                           
-                                           \u00bfConfirmar promoci\u00f3n?""",
-                    nombre,
-                    FMT_MONEDA.format(precioOriginal),
-                    porcentaje,
-                    FMT_MONEDA.format(precioFinal)
-            );
-
-            int respuesta = JOptionPane.showConfirmDialog(this, mensaje,
-                    "Vista previa — " + nombrePromo,
+            int confirmacion = JOptionPane.showConfirmDialog(this,
+                    "¿Aplicar " + porcentaje + "% de descuento a \"" + nombre + "\"?",
+                    "Confirmar promoción — " + nombrePromo,
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
-            if (respuesta != JOptionPane.YES_OPTION) continue;
+            if (confirmacion != JOptionPane.YES_OPTION) {
+                continue;
+            }
 
-            // Guardar en BD
-            // Reutilizamos Promocion con los campos disponibles:
-            // id=UUID simulado, stockActual=precioFinal(descuento), diasSinVender=porcentaje,
-            // totalVendido=precioOriginal. 
-            // NOTA: ajusta según la estructura real de tu tabla Promocion en BD.
-            String idPromo = java.util.UUID.randomUUID().toString();
-            Promocion nueva = new Promocion(
-                    idPromo,
-                    precioFinal,          // stockActual ← precio con descuento
-                    (double) porcentaje,  // diasSinVender ← porcentaje aplicado
-                    precioOriginal        // totalVendido ← precio original
-            );
-            nueva.setCluster(-1); // no aplica
+            try {
+                String hoy = new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date());
+                String fin30dias = new java.text.SimpleDateFormat("dd/MM/yyyy")
+                        .format(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000));
 
-            // Aquí deberías usar tu PromocionDAO si tiene método agregar().
-            // Como el DAO actual solo tiene getDataset(), dejamos el hook listo:
-            // promocionDAO.agregar(nueva);  ← descomentar cuando implementes agregar()
+                PromocionesDTO.PromocionessDTO dto = new PromocionesDTO.PromocionessDTO(
+                        UUID.randomUUID().toString(),
+                        nombrePromo,
+                        String.valueOf(porcentaje),
+                        hoy,
+                        fin30dias,
+                        "ESPECIFICA"
+                );
 
-            aplicadas++;
-            modeloActivas.addRow(new Object[]{
-                idPromo,
-                nombrePromo + " (" + porcentaje + "%)",
-                nombre,
-                porcentaje + "%",
-                FMT_MONEDA.format(precioOriginal),
-                FMT_MONEDA.format(precioFinal)
-            });
-            idsPromoActiva.add(idPromo);
+                RespuestaControlador<Boolean> respuesta
+                        = promoControlador.aplicarPromocionProducto(idProducto, dto);
+
+                if (respuesta.exito()) {
+                    aplicadas++;
+                    modeloActivas.addRow(new Object[]{
+                        dto.id(),
+                        nombrePromo + " (" + porcentaje + "%)",
+                        nombre,
+                        porcentaje + "%",
+                        "—",
+                        "—"
+                    });
+                    idsPromoActiva.add(dto.id());
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "No se pudo aplicar la promoción a \"" + nombre + "\": " + respuesta.mensaje(),
+                            "Error al aplicar", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Error inesperado al aplicar promoción al producto \"" + nombre + "\": " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
 
         if (aplicadas > 0) {
-            lblEstado.setText(aplicadas + " promoción(es) aplicada(s).");
+            lblEstado.setText(aplicadas + " promoción(es) aplicada(s) correctamente.");
             lblEstado.setForeground(COLOR_ACENTO);
             txtNombrePromo.setText("");
         }
     }
 
     /**
-     * Desactiva la promoción seleccionada en tablaActivas.
-     * Llama a promocionDAO para persistir el cambio.
+     * Desactiva en BD la promoción seleccionada en tablaActivas usando la fecha actual.
      */
     private void desactivarPromocion() {
         int fila = tablaActivas.getSelectedRow();
         if (fila < 0) {
             JOptionPane.showMessageDialog(this,
-                    "Selecciona una promoción de la tabla.",
+                    "Selecciona una promoción de la tabla para desactivarla.",
                     "Sin selección", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         String nombrePromo = modeloActivas.getValueAt(fila, 1).toString();
-        int confirm = JOptionPane.showConfirmDialog(this,
+        int confirmacion = JOptionPane.showConfirmDialog(this,
                 "¿Desactivar la promoción \"" + nombrePromo + "\"?",
-                "Confirmar", JOptionPane.YES_NO_OPTION);
+                "Confirmar desactivación", JOptionPane.YES_NO_OPTION);
 
-        if (confirm != JOptionPane.YES_OPTION) return;
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
 
-        // promocionDAO.actualizar(...)  ← descomentar cuando implementes actualizar()
-        modeloActivas.removeRow(fila);
-        idsPromoActiva.remove(fila);
+        try {
+            String idPromocion = idsPromoActiva.get(fila);
+            RespuestaControlador<Boolean> respuesta
+                    = promoControlador.desactivarPromocion(new Date(), idPromocion);
 
-        lblEstado.setText("Promoción desactivada.");
-        lblEstado.setForeground(COLOR_PELIGRO);
+            if (respuesta.exito()) {
+                modeloActivas.removeRow(fila);
+                idsPromoActiva.remove(fila);
+                lblEstado.setText("Promoción \"" + nombrePromo + "\" desactivada.");
+                lblEstado.setForeground(COLOR_PELIGRO);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo desactivar la promoción: " + respuesta.mensaje(),
+                        "Error al desactivar", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error inesperado al desactivar la promoción: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
-     * Carga las promociones activas desde la BD al iniciar el panel.
-     * Actualmente vacío hasta que PromocionDAO tenga método obteners().
+     * Puebla tablaActivas con todas las promociones vigentes registradas en BD. Llamar en el constructor: cargarPromocionesActivas();
      */
     private void cargarPromocionesActivas() {
-        // Cuando implementes obteners() en PromocionDAO, descomenta:
-        // ArrayList<Promocion> activas = promocionDAO.obteners();
-        // for (Promocion p : activas) { ... modeloActivas.addRow(...) }
+        modeloActivas.setRowCount(0);
+        idsPromoActiva.clear();
+
+        try {
+            RespuestaControlador<?> respuesta = promoControlador.obtenerPromocionesActivas();
+
+            if (!respuesta.exito() || respuesta.dato() == null) {
+                return;
+            }
+
+            for (Object obj : (ArrayList<?>) respuesta.dato()) {
+                CapaLogicaNegocio.Logica_Negocio.Promocion p = (CapaLogicaNegocio.Logica_Negocio.Promocion) obj;
+
+                modeloActivas.addRow(new Object[]{
+                    p.getId(),
+                    "—",
+                    "—",
+                    p.getStockActual() != null ? p.getStockActual() + "%" : "—",
+                    p.getDiasSinVender() != null ? p.getDiasSinVender().toString() : "—",
+                    p.getTotalVendido() != null ? p.getTotalVendido().toString() : "—"
+                });
+                idsPromoActiva.add(p.getId());
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar promociones activas: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // ══════════════════════════════════════════════════════════════
     //  HELPERS DE ESTILO
     // ══════════════════════════════════════════════════════════════
-
     private JTable estilizarTabla(JTable tabla) {
         tabla.setBackground(COLOR_TABLE_BG);
-        tabla.setForeground(COLOR_TEXTO);
+        tabla.setForeground(COLOR_TEXTO); 
         tabla.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
         tabla.setRowHeight(30);
         tabla.setGridColor(new Color(0x2A, 0x30, 0x45));
@@ -568,18 +495,20 @@ public class Promociones extends javax.swing.JPanel {
         tabla.setIntercellSpacing(new Dimension(0, 1));
         tabla.setFillsViewportHeight(true);
 
-        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
-        center.setHorizontalAlignment(JLabel.CENTER);
-        center.setBackground(COLOR_TABLE_BG);
-        center.setForeground(COLOR_TEXTO);
-        for (int col = 0; col < tabla.getColumnCount(); col++)
-            tabla.getColumnModel().getColumn(col).setCellRenderer(center);
+        DefaultTableCellRenderer rendererCeldas = new DefaultTableCellRenderer();
+        rendererCeldas.setHorizontalAlignment(JLabel.CENTER);
+        rendererCeldas.setBackground(COLOR_TABLE_BG);
+        rendererCeldas.setForeground(COLOR_TEXTO); 
+        for (int col = 0; col < tabla.getColumnCount(); col++) {
+            tabla.getColumnModel().getColumn(col).setCellRenderer(rendererCeldas);
+        }
 
         JTableHeader header = tabla.getTableHeader();
         header.setBackground(COLOR_PANEL_SEC);
-        header.setForeground(Color.BLACK);
+        header.setForeground(Color.BLACK); // título de columnas permanece negro
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 15));
         header.setReorderingAllowed(false);
+
         return tabla;
     }
 
@@ -620,22 +549,23 @@ public class Promociones extends javax.swing.JPanel {
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setBorder(new EmptyBorder(8, 18, 8, 18));
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override public void mouseEntered(java.awt.event.MouseEvent e) {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
                 btn.setBackground(colorFondo.brighter());
             }
-            @Override public void mouseExited(java.awt.event.MouseEvent e) {
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
                 btn.setBackground(colorFondo);
             }
         });
         return btn;
     }
-    
+
     /**
-     * Construye la sección de análisis de clientes.
-     * Llámala en el constructor de Promociones, después de construirSeccionActivas():
+     * Construye la sección de análisis de clientes. Llámala en el constructor de Promociones, después de construirSeccionActivas():
      *
-     *   contenido.add(Box.createVerticalStrut(24));
-     *   contenido.add(construirSeccionClientes());
+     * contenido.add(Box.createVerticalStrut(24)); contenido.add(construirSeccionClientes());
      */
     private JPanel construirSeccionClientes() {
         JPanel seccion = new JPanel(new BorderLayout(0, 10));
@@ -653,24 +583,25 @@ public class Promociones extends javax.swing.JPanel {
         JLabel badge = new JLabel("  Selecciona un cliente y analiza su comportamiento de compra  ");
         badge.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
         badge.setForeground(COLOR_BG);
-        badge.setBackground(new Color(0x3B, 0x82, 0xF6)); // azul
+        badge.setBackground(new Color(0x3B, 0x82, 0xF6));
         badge.setOpaque(true);
         badge.setBorder(new EmptyBorder(3, 8, 3, 8));
 
-        encabezado.add(lbl,   BorderLayout.WEST);
+        encabezado.add(lbl, BorderLayout.WEST);
         encabezado.add(badge, BorderLayout.EAST);
         seccion.add(encabezado, BorderLayout.NORTH);
 
-        // — Tabla de clientes —
         modeloClientes = new DefaultTableModel(
                 new String[]{"ID", "Nombre", "Apellido", "Cédula",
-                             "Total Compras", "Días últ. compra"}, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+                    "Total Compras", "Días últ. compra"}, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
 
         tablaClientes = estilizarTabla(new JTable(modeloClientes));
         tablaClientes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // Ocultar columna ID
         tablaClientes.getColumnModel().getColumn(0).setMinWidth(0);
         tablaClientes.getColumnModel().getColumn(0).setMaxWidth(0);
         tablaClientes.getColumnModel().getColumn(0).setWidth(0);
@@ -680,7 +611,6 @@ public class Promociones extends javax.swing.JPanel {
         spClientes.setPreferredSize(new Dimension(0, 180));
         seccion.add(spClientes, BorderLayout.CENTER);
 
-        // — Panel inferior: perfil detectado + acción —
         JPanel panelAccionCliente = new JPanel(new BorderLayout(0, 10));
         panelAccionCliente.setBackground(COLOR_PANEL_SEC);
         panelAccionCliente.setBorder(BorderFactory.createCompoundBorder(
@@ -725,19 +655,8 @@ public class Promociones extends javax.swing.JPanel {
         return seccion;
     }
 
-
-
     /**
-     * Analiza el cliente seleccionado en la tabla usando un K-Means de 3 clusters
-     * construido sobre tres métricas: totalGastado, numSesiones, diasDesdeUltima.
-     *
-     * Clusters resultantes:
-     *   0 → Cliente frecuente  (alto gasto, muchas sesiones, compra reciente)
-     *   1 → Cliente ocasional  (gasto medio, pocas sesiones)
-     *   2 → Cliente inactivo   (no compra hace mucho o nunca ha comprado)
-     *
-     * El perfil detectado se muestra en lblPerfilCliente y el spinner de descuento
-     * se ajusta automáticamente a la sugerencia del modelo.
+     * Delega el análisis K-Means del cliente al controlador y actualiza el label de perfil y el spinner con el descuento recomendado por el modelo.
      */
     private void analizarClienteSeleccionado() {
         int fila = tablaClientes.getSelectedRow();
@@ -748,196 +667,144 @@ public class Promociones extends javax.swing.JPanel {
             return;
         }
 
-        String idCliente    = modeloClientes.getValueAt(fila, 0).toString();
+        String idCliente = modeloClientes.getValueAt(fila, 0).toString();
         String nombreCliente = modeloClientes.getValueAt(fila, 1) + " "
-                             + modeloClientes.getValueAt(fila, 2);
+                + modeloClientes.getValueAt(fila, 2);
 
-        // — Calcular métricas del cliente seleccionado —
-        ArrayList<Venta> todasVentas = ventaDAO.obteners();
+        try {
+            RespuestaControlador<AnalisisCliente> respuesta
+                    = promoControlador.analizarCliente(idCliente);
 
-        ArrayList<Venta> ventasCliente = new ArrayList<>();
-        for (Venta v : todasVentas) {
-            if (v.getIdCliente().equals(idCliente)) ventasCliente.add(v);
-        }
-
-        int    numSesiones  = ventasCliente.size();
-        double totalGastado = 0;
-        long   fechaUltima  = 0;
-        long   hoy          = System.currentTimeMillis();
-
-        for (Venta v : ventasCliente) {
-            totalGastado += v.getTotalVenta();
-            if (v.getFechaVenta().getTime() > fechaUltima)
-                fechaUltima = v.getFechaVenta().getTime();
-        }
-
-        long diasDesdeUltima = (numSesiones == 0) ? 999
-                : (hoy - fechaUltima) / (1000L * 60 * 60 * 24);
-
-        // — Calcular métricas de TODOS los clientes para normalizar —
-        ArrayList<Cliente> todosClientes = clienteDAO.obteners();
-        double maxGasto = 1, maxSesiones = 1, maxDias = 1;
-
-        for (Cliente c : todosClientes) {
-            double g = 0; int s = 0; long f = 0;
-            for (Venta v : todasVentas) {
-                if (!v.getIdCliente().equals(c.getId())) continue;
-                g += v.getTotalVenta();
-                s++;
-                if (v.getFechaVenta().getTime() > f) f = v.getFechaVenta().getTime();
+            if (!respuesta.exito() || respuesta.dato() == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo analizar el cliente: " + respuesta.mensaje(),
+                        "Error de análisis", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            long d = (s == 0) ? 999 : (hoy - f) / (1000L * 60 * 60 * 24);
-            if (g > maxGasto)    maxGasto    = g;
-            if (s > maxSesiones) maxSesiones = s;
-            if (d > maxDias)     maxDias     = d;
+
+            AnalisisCliente analisis = respuesta.dato();
+            Color colorPerfil = switch (analisis.getEtiquetaNegocio()) {
+                case "VIP" ->
+                    COLOR_ACENTO;
+                case "Regular" ->
+                    COLOR_AMARILLO;
+                default ->
+                    COLOR_PELIGRO;
+            };
+
+            lblPerfilCliente.setText(
+                    "<html><b style='color:white'>" + nombreCliente + "</b>"
+                    + " → " + analisis.getEtiquetaNegocio()
+                    + " &nbsp;|&nbsp; <i>Descuento sugerido: "
+                    + analisis.getDescuentoRecomendado() + "%</i></html>"
+            );
+            lblPerfilCliente.setForeground(colorPerfil);
+
+            int descuentoSugerido = Integer.parseInt(analisis.getDescuentoRecomendado());
+            spinnerDescuentoCliente.setValue(descuentoSugerido);
+
+            clienteAnalizadoId = idCliente;
+            clienteAnalizadoNombre = nombreCliente;
+            clienteAnalizadoPerfil = analisis.getEtiquetaNegocio();
+
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(this,
+                    "El descuento recomendado no tiene formato numérico válido.",
+                    "Error de formato", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error inesperado al analizar el cliente: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        // — Normalizar métricas del cliente analizado (0.0 – 1.0) —
-        double normGasto   = totalGastado  / maxGasto;
-        double normSesiones = numSesiones  / maxSesiones;
-        double normDias    = diasDesdeUltima / maxDias;  // mayor = peor
-
-        // — Centroides fijos para los 3 perfiles (ya están en escala normalizada) —
-        // Frecuente: alto gasto, muchas sesiones, días bajos
-        double[] centFrecuente  = {0.8, 0.8, 0.1};
-        // Ocasional: gasto medio, sesiones medias, días medios
-        double[] centOcasional  = {0.4, 0.3, 0.4};
-        // Inactivo:  bajo gasto, pocas sesiones, muchos días
-        double[] centInactivo   = {0.1, 0.1, 0.9};
-
-        double[] punto = {normGasto, normSesiones, normDias};
-
-        double distFrecuente = distManhattan(punto, centFrecuente);
-        double distOcasional = distManhattan(punto, centOcasional);
-        double distInactivo  = distManhattan(punto, centInactivo);
-
-        // — Determinar perfil (cluster más cercano) —
-        int    perfilCluster;
-        String perfilNombre;
-        String sugerencia;
-        int    descuentoSugerido;
-        Color  colorPerfil;
-
-        if (distFrecuente <= distOcasional && distFrecuente <= distInactivo) {
-            perfilCluster     = 0;
-            perfilNombre      = "Cliente Frecuente";
-            sugerencia        = "Premio por fidelidad — descuento moderado para retenerlo.";
-            descuentoSugerido = 10;
-            colorPerfil       = COLOR_ACENTO;
-        } else if (distOcasional <= distFrecuente && distOcasional <= distInactivo) {
-            perfilCluster     = 1;
-            perfilNombre      = "Cliente Ocasional";
-            sugerencia        = "Incentivo para aumentar frecuencia — descuento atractivo.";
-            descuentoSugerido = 20;
-            colorPerfil       = COLOR_AMARILLO;
-        } else {
-            perfilCluster     = 2;
-            perfilNombre      = "Cliente Inactivo";
-            sugerencia        = "Campaña de reactivación — descuento agresivo para recuperarlo.";
-            descuentoSugerido = 35;
-            colorPerfil       = COLOR_PELIGRO;
-        }
-
-        // — Actualizar UI —
-        lblPerfilCliente.setText(
-            "<html><b style='color:white'>" + nombreCliente + "</b>"
-            + " → " + perfilNombre
-            + " &nbsp;|&nbsp; <i>" + sugerencia + "</i></html>"
-        );
-        lblPerfilCliente.setForeground(colorPerfil);
-        spinnerDescuentoCliente.setValue(descuentoSugerido);
-
-        // Guardar datos del cliente analizado para usarlos en aplicarPromocionCliente()
-        clienteAnalizadoId     = idCliente;
-        clienteAnalizadoNombre = nombreCliente;
-        clienteAnalizadoPerfil = perfilNombre;
     }
 
-    /** Calcula la distancia Manhattan entre dos vectores de igual tamaño. */
-    private double distManhattan(double[] a, double[] b) {
-        double suma = 0;
-        for (int i = 0; i < a.length; i++) suma += Math.abs(a[i] - b[i]);
-        return suma;
-    }
-
-    // Campos temporales del cliente analizado actualmente
-    private String clienteAnalizadoId     = null;
+    private String clienteAnalizadoId = null;
     private String clienteAnalizadoNombre = "";
     private String clienteAnalizadoPerfil = "";
 
     /**
-     * Muestra vista previa y aplica la promoción personalizada al cliente analizado.
-     * Se ejecuta al presionar el botón "Aplicar promoción" de la sección clientes.
+     * Persiste en BD la promoción personalizada para el cliente que fue analizado en el paso previo (analizarClienteSeleccionado).
      */
     private void aplicarPromocionCliente() {
         if (clienteAnalizadoId == null) {
             JOptionPane.showMessageDialog(this,
                     "Primero analiza un cliente con el botón \"Analizar cliente\".",
-                    "Sin análisis", JOptionPane.WARNING_MESSAGE);
+                    "Sin análisis previo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int porcentaje = (int) spinnerDescuentoCliente.getValue();
 
-        // — Vista previa en JOptionPane personalizado —
         String resumen = String.format("""
-                                       \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
-                                         RESUMEN DE PROMOCI\u00d3N PERSONALIZADA
-                                       \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d
-                                       
-                                         Cliente:   %s
-                                         Perfil:    %s
-                                         Descuento: %d%%
-                                       
-                                         Esta promoci\u00f3n se aplicar\u00e1 a su pr\u00f3xima
-                                         compra seg\u00fan el perfil detectado.
-                                       
-                                         \u00bfConfirmar y registrar la promoci\u00f3n?""",
-            clienteAnalizadoNombre,
-            clienteAnalizadoPerfil,
-            porcentaje
+            ╔══════════════════════════════════════╗
+              RESUMEN DE PROMOCIÓN PERSONALIZADA
+            ╚══════════════════════════════════════╝
+
+              Cliente:   %s
+              Perfil:    %s
+              Descuento: %d%%
+
+              ¿Confirmar y registrar la promoción?""",
+                clienteAnalizadoNombre,
+                clienteAnalizadoPerfil,
+                porcentaje
         );
 
-        int respuesta = JOptionPane.showConfirmDialog(this, resumen,
+        int confirmacion = JOptionPane.showConfirmDialog(this, resumen,
                 "Vista previa — Promoción para " + clienteAnalizadoNombre,
                 JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
-        if (respuesta != JOptionPane.YES_OPTION) return;
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
 
-        // — Registrar la promoción —
-        // El campo stockActual lo usamos para guardar el porcentaje,
-        // diasSinVender para el cluster, totalVendido en 0.0 (no aplica a producto).
-        // Ajusta según tu tabla real en BD.
-        String idPromo = java.util.UUID.randomUUID().toString();
-        Promocion promoCliente = new Promocion(
-                idPromo,
-                (double) porcentaje,   // stockActual ← porcentaje descuento
-                (double) 0,            // diasSinVender ← no aplica
-                0.0                    // totalVendido ← no aplica
-        );
-        // promocionDAO.agregar(promoCliente); ← descomentar cuando implementes agregar()
+        try {
+            String hoy = new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date());
+            String fin30dias = new java.text.SimpleDateFormat("dd/MM/yyyy")
+                    .format(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000));
 
-        // Agregar a la tabla de activas para feedback visual inmediato
-        modeloActivas.addRow(new Object[]{
-            idPromo,
-            "Promo cliente — " + porcentaje + "%",
-            clienteAnalizadoNombre + " (" + clienteAnalizadoPerfil + ")",
-            porcentaje + "%",
-            "N/A",
-            "N/A"
-        });
-        idsPromoActiva.add(idPromo);
+            PromocionesDTO.PromocionessDTO dto = new PromocionesDTO.PromocionessDTO(
+                    UUID.randomUUID().toString(),
+                    "Promo cliente — " + clienteAnalizadoPerfil,
+                    String.valueOf(porcentaje),
+                    hoy,
+                    fin30dias,
+                    "GENERAL"
+            );
 
-        // Feedback de estado
-        lblEstado.setText("Promoción de " + porcentaje + "% aplicada a " + clienteAnalizadoNombre);
-        lblEstado.setForeground(COLOR_ACENTO);
+            RespuestaControlador<Boolean> respuesta
+                    = promoControlador.aplicarPromocionCliente(clienteAnalizadoId, dto);
 
-        // Limpiar estado del cliente analizado
-        clienteAnalizadoId     = null;
-        clienteAnalizadoNombre = "";
-        clienteAnalizadoPerfil = "";
-        lblPerfilCliente.setText("Selecciona un cliente para analizar su perfil de compra.");
-        lblPerfilCliente.setForeground(COLOR_TEXTO_MUTED);
+            if (respuesta.exito()) {
+                modeloActivas.addRow(new Object[]{
+                    dto.id(),
+                    "Promo cliente — " + porcentaje + "%",
+                    clienteAnalizadoNombre + " (" + clienteAnalizadoPerfil + ")",
+                    porcentaje + "%",
+                    "N/A",
+                    "N/A"
+                });
+                idsPromoActiva.add(dto.id());
+
+                lblEstado.setText("Promoción de " + porcentaje + "% aplicada a " + clienteAnalizadoNombre);
+                lblEstado.setForeground(COLOR_ACENTO);
+                clienteAnalizadoId = null;
+                clienteAnalizadoNombre = "";
+                clienteAnalizadoPerfil = "";
+                lblPerfilCliente.setText("Selecciona un cliente para analizar su perfil de compra.");
+                lblPerfilCliente.setForeground(COLOR_TEXTO_MUTED);
+
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo aplicar la promoción al cliente: " + respuesta.mensaje(),
+                        "Error al aplicar", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error inesperado al aplicar la promoción al cliente: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -949,7 +816,6 @@ public class Promociones extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         add(jlb_fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1300, 900));
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jlb_fondo;

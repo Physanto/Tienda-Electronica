@@ -1,7 +1,8 @@
 package CapaPresentacion.GUI_Admin;
 
-import CapaDatos.Logica_Conexion.CategoriaDAO;
-import CapaDatos.Logica_Conexion.ProductoDAO;
+import CapaLogicaNegocio.Controlador.ProductoControlador;
+import CapaLogicaNegocio.Controlador.RespuestaControlador;
+import CapaLogicaNegocio.DTOS.ProductoDTO;
 import CapaLogicaNegocio.Logica_Negocio.Categoria;
 import CapaLogicaNegocio.Logica_Negocio.Producto;
 
@@ -39,40 +40,19 @@ public class Productos extends JPanel {
     /** Ancho fijo de la sidebar en píxeles. */
     private static final int FORM_PANEL_WIDTH = 340;
 
-    // ──────────────────────────────────────────────────────────────
-    // DAOs
-    // ──────────────────────────────────────────────────────────────
+    private final ProductoControlador productoControlador = new ProductoControlador();
 
-    /** DAO para operaciones CRUD sobre {@link Producto}. */
-    private final ProductoDAO productoDAO = new ProductoDAO();
-
-    /** DAO para cargar las categorías disponibles en el {@link JComboBox}. */
-    private final CategoriaDAO categoriaDAO = new CategoriaDAO();
-
-    // ──────────────────────────────────────────────────────────────
-    // Componentes de la tabla
-    // ──────────────────────────────────────────────────────────────
-
-    /** Modelo de datos de la tabla de productos. */
     private DefaultTableModel tableModel;
 
-    /** Tabla que muestra el inventario completo. */
     private JTable tablaProductos;
-
-    // ──────────────────────────────────────────────────────────────
-    // Panel lateral y sus controles
-    // ──────────────────────────────────────────────────────────────
 
     /**
      * Panel lateral derecho que aloja el formulario CRUD.
      * Oculto por defecto; se hace visible al presionar un botón de acción.
      */
     private JPanel formPanel;
-
-    /** Contenedor con scroll interno para los campos del formulario. */
     private JPanel camposContainer;
 
-    // ── Campos de texto ──
     private JTextField txtId;
     private JTextField txtCodigo;
     private JTextField txtNombre;
@@ -81,25 +61,15 @@ public class Productos extends JPanel {
     private JTextField txtStock;
     private JTextField txtPrecio;
 
-
-    /**
-     * Spinner para seleccionar la {@code fechaVencimiento} del producto.
-     * Usa un {@link SpinnerDateModel} para garantizar entrada de fechas válidas.
-     */
+    
     private JSpinner spinnerFecha;
-
-    /**
-     * ComboBox para seleccionar la categoría del producto.
-     * Se carga dinámicamente desde {@link CategoriaDAO#obteners()}.
-     */
     private JComboBox<CategoriaItem> cmbCategoria;
 
-    /** Etiqueta dinámica del título del panel lateral. */
+    
     private JLabel lblTituloForm;
     private JButton btnConfirmar;
     private String modoActual = "";
 
-    /** Ruta base del proyecto para cargar recursos. */
     public String s;
 
 
@@ -204,7 +174,6 @@ public class Productos extends JPanel {
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
 
-        // Al seleccionar fila → precargar datos en el formulario lateral
         tablaProductos.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && tablaProductos.getSelectedRow() >= 0) {
                 cargarFilaEnFormulario(tablaProductos.getSelectedRow());
@@ -232,15 +201,6 @@ public class Productos extends JPanel {
      * Construye el panel lateral derecho con todos los controles del formulario.
      *
      * <p>Se crea inicialmente <b>oculto</b> ({@code setVisible(false)}).
-     * Contiene:
-     * <ul>
-     *   <li>Título dinámico según la operación activa</li>
-     *   <li>Campos de texto para: ID, Código, Nombre, Marca, Serie,
-     *       Stock, Precio, URL Imagen</li>
-     *   <li>{@link JSpinner} con modelo de fecha para {@code fechaVencimiento}</li>
-     *   <li>{@link JComboBox} cargado desde {@link CategoriaDAO} para {@code idCategoria}</li>
-     *   <li>Botón de confirmación y botón Cancelar</li>
-     * </ul>
      */
     private void construirFormPanel() {
         formPanel = new JPanel(new BorderLayout());
@@ -248,7 +208,6 @@ public class Productos extends JPanel {
         formPanel.setPreferredSize(new Dimension(FORM_PANEL_WIDTH, 0));
         formPanel.setVisible(false);
 
-        // ── Encabezado del panel ──
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COLOR_PANEL_SEC);
         header.setBorder(new EmptyBorder(20, 16, 8, 16));
@@ -259,7 +218,6 @@ public class Productos extends JPanel {
         header.add(lblTituloForm, BorderLayout.CENTER);
         formPanel.add(header, BorderLayout.NORTH);
 
-        // ── Área de campos con scroll (necesario por la cantidad de campos) ──
         camposContainer = new JPanel();
         camposContainer.setLayout(new BoxLayout(camposContainer, BoxLayout.Y_AXIS));
         camposContainer.setBackground(COLOR_PANEL_SEC);
@@ -273,7 +231,6 @@ public class Productos extends JPanel {
         txtStock   = crearCampoTexto();
         txtPrecio  = crearCampoTexto();
 
-        // SpinnerDateModel para fechaVencimiento
         spinnerFecha = new JSpinner(new SpinnerDateModel());
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spinnerFecha, "dd/MM/yyyy");
         spinnerFecha.setEditor(dateEditor);
@@ -288,7 +245,6 @@ public class Productos extends JPanel {
         dateEditor.getTextField().setBorder(
             BorderFactory.createLineBorder(new Color(0x2A, 0x3D, 0x55), 1));
 
-        // ComboBox para idCategoria — se puebla desde la BD
         cmbCategoria = new JComboBox<>();
         cmbCategoria.setBackground(COLOR_INPUT_BG);
         cmbCategoria.setForeground(COLOR_TEXTO);
@@ -297,7 +253,6 @@ public class Productos extends JPanel {
         cmbCategoria.setAlignmentX(Component.LEFT_ALIGNMENT);
         cargarCategorias();
 
-        // Agregar filas al contenedor
         camposContainer.add(crearFilaCampo("ID", txtId));
         camposContainer.add(Box.createVerticalStrut(8));
         camposContainer.add(crearFilaCampo("Código", txtCodigo));
@@ -322,7 +277,6 @@ public class Productos extends JPanel {
         scrollForm.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         formPanel.add(scrollForm, BorderLayout.CENTER);
 
-        // ── Botones de acción ──
         JPanel botonesPanel = new JPanel();
         botonesPanel.setLayout(new BoxLayout(botonesPanel, BoxLayout.Y_AXIS));
         botonesPanel.setBackground(COLOR_PANEL_SEC);
@@ -436,22 +390,9 @@ public class Productos extends JPanel {
         btn.setBorder(new EmptyBorder(8, 0, 8, 0));
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Lógica de navegación y visibilidad del formulario
-    // ──────────────────────────────────────────────────────────────
-
     /**
      * Muestra el panel lateral configurado para el modo de operación indicado,
      * o lo oculta si se vuelve a presionar el mismo botón activo (toggle).
-     *
-     * <p><b>Comportamiento por modo:</b>
-     * <ul>
-     *   <li>{@code "REGISTRAR"}: limpia campos, genera ID automático, habilita todo.</li>
-     *   <li>{@code "BUSCAR"}: habilita solo el campo ID.</li>
-     *   <li>{@code "ACTUALIZAR"}: requiere fila seleccionada; precarga sus datos.</li>
-     *   <li>{@code "ELIMINAR"}: requiere fila seleccionada; campos en solo lectura.</li>
-     * </ul>
-     *
      * @param modo operación CRUD a activar
      */
     private void mostrarFormulario(String modo) {
@@ -521,21 +462,37 @@ public class Productos extends JPanel {
         revalidate();
         repaint();
     }
-
-    // ──────────────────────────────────────────────────────────────
-    // Lógica CRUD — delegación al ProductoDAO
-    // ──────────────────────────────────────────────────────────────
-
+    
     /**
      * Despacha la operación CRUD al método especializado según {@code modoActual}.
      */
     private void ejecutarOperacion() {
         switch (modoActual) {
-            case "REGISTRAR":  registrarProducto();  break;
-            case "BUSCAR":     buscarProducto();     break;
-            case "ACTUALIZAR": actualizarProducto(); break;
-            case "ELIMINAR":   eliminarProducto();   break;
+            case "REGISTRAR" -> registrarProducto();
+            case "BUSCAR" -> buscarProducto();
+            case "ACTUALIZAR" -> actualizarProducto();
+            case "ELIMINAR" -> eliminarProducto();
+            default -> { }
         }
+    }
+
+    private ProductoDTO construirProductoDTODesdeFormulario() {
+        String fechaFormateada = new SimpleDateFormat("dd/MM/yyyy").format((Date) spinnerFecha.getValue());
+
+        CategoriaItem categoriaSeleccionada = (CategoriaItem) cmbCategoria.getSelectedItem();
+        String idCategoria = (categoriaSeleccionada != null) ? categoriaSeleccionada.getId() : "";
+
+        return new ProductoDTO(
+                txtId.getText().trim(),
+                txtCodigo.getText().trim(),
+                txtNombre.getText().trim(),
+                txtMarca.getText().trim(),
+                txtSerie.getText().trim(),
+                txtStock.getText().trim(),
+                txtPrecio.getText().trim(),
+                fechaFormateada,
+                idCategoria
+        );
     }
 
     /**
@@ -547,21 +504,20 @@ public class Productos extends JPanel {
      * es exitosa y oculta el formulario.
      */
     private void registrarProducto() {
-        if (!validarCamposObligatorios()) return;
+        try {
+            RespuestaControlador<Producto> respuesta = productoControlador.agregarProducto(construirProductoDTODesdeFormulario());
 
-        Producto p = construirProductoDesdeFormulario();
-        boolean exito = productoDAO.agregar(p);
-
-        if (exito) {
-            JOptionPane.showMessageDialog(this,
-                "Producto registrado exitosamente.", "Éxito",
-                JOptionPane.INFORMATION_MESSAGE);
-            cargarProductos();
-            ocultarFormulario();
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "No se pudo registrar el producto. Verifique los datos.",
-                "Error", JOptionPane.ERROR_MESSAGE);
+            if (respuesta.exito()) {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Éxito",JOptionPane.INFORMATION_MESSAGE
+                );
+                cargarProductos(); ocultarFormulario();
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Error de validación",JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"Error inesperado al registrar producto: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -570,21 +526,26 @@ public class Productos extends JPanel {
      * en la tabla. Si el campo ID está vacío, recarga todos los registros.
      */
     private void buscarProducto() {
-        String id = txtId.getText().trim();
-        if (id.isEmpty()) {
-            cargarProductos();
-            return;
-        }
+        try {
+            String id = txtId.getText().trim();
 
-        Producto p = productoDAO.obtener(id);
-        tableModel.setRowCount(0);
+            if (id.isEmpty()) {cargarProductos();
+                return;
+            }
 
-        if (p != null) {
-            agregarFilaTabla(p);
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "No se encontró un producto con el ID: " + id,
-                "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
+            RespuestaControlador<Producto> respuesta = productoControlador.buscarProductoId(id);
+
+            tableModel.setRowCount(0);
+
+            if (respuesta.exito() && respuesta.dato() != null) {
+                agregarFilaTabla(respuesta.dato());
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Sin resultados",JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"Error inesperado al buscar producto: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -595,27 +556,26 @@ public class Productos extends JPanel {
      * <p>Requiere que {@code txtId} tenga el ID del producto a modificar.
      */
     private void actualizarProducto() {
-        if (txtId.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Selecciona un producto de la tabla para actualizar.",
-                "Sin selección", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!validarCamposObligatorios()) return;
+        try {
+            if (txtId.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this,"Selecciona un producto de la tabla para actualizar.","Sin selección",JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
 
-        Producto p = construirProductoDesdeFormulario();
-        boolean exito = productoDAO.actualizar(p);
+            RespuestaControlador<Producto> respuesta = productoControlador.actualizarProducto(construirProductoDTODesdeFormulario());
 
-        if (exito) {
-            JOptionPane.showMessageDialog(this,
-                "Producto actualizado correctamente.", "Éxito",
-                JOptionPane.INFORMATION_MESSAGE);
-            cargarProductos();
-            ocultarFormulario();
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "No se pudo actualizar el producto.",
-                "Error", JOptionPane.ERROR_MESSAGE);
+            if (respuesta.exito()) {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Éxito",JOptionPane.INFORMATION_MESSAGE
+                );
+                cargarProductos();  ocultarFormulario();
+            } else {
+                JOptionPane.showMessageDialog( this, respuesta.mensaje(), "Error de validación", JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog( this, "Error inesperado al actualizar producto: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -624,49 +584,60 @@ public class Productos extends JPanel {
      * previa confirmación explícita del usuario mediante un diálogo.
      */
     private void eliminarProducto() {
-        String id = txtId.getText().trim();
-        if (id.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Selecciona un producto de la tabla para eliminar.",
-                "Sin selección", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+        try {
+            String id = txtId.getText().trim();
 
-        int confirmacion = JOptionPane.showConfirmDialog(this,
-            "¿Confirma la eliminación del producto con ID: " + id + "?\n"
-            + "Esta acción no se puede deshacer.",
-            "Confirmar eliminación",
-            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            boolean exito = productoDAO.eliminar(id);
-            if (exito) {
-                JOptionPane.showMessageDialog(this,
-                    "Producto eliminado correctamente.", "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE);
-                cargarProductos();
-                ocultarFormulario();
-            } else {
-                JOptionPane.showMessageDialog(this,
-                    "No se pudo eliminar el producto.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this,"Selecciona un producto de la tabla para eliminar.","Sin selección",JOptionPane.WARNING_MESSAGE
+                );
+                return;
             }
+
+            int confirmacion = JOptionPane.showConfirmDialog(this,"¿Confirma la eliminación del producto con ID: " + id + "?\n"+ "Esta acción no se puede deshacer.",
+                    "Confirmar eliminación",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE
+            );
+
+            if (confirmacion != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            RespuestaControlador<Producto> respuesta = productoControlador.eliminarProducto(id);
+
+            if (respuesta.exito()) {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Éxito",JOptionPane.INFORMATION_MESSAGE
+                );
+                cargarProductos(); ocultarFormulario();
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Error al eliminar",JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"Error inesperado al eliminar producto: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
-
-    // ──────────────────────────────────────────────────────────────
-    // Métodos utilitarios
-    // ──────────────────────────────────────────────────────────────
 
     /**
      * Carga todos los productos desde la base de datos y repuebla la tabla.
      * Limpia el modelo previo antes de insertar las nuevas filas.
      */
     public void cargarProductos() {
-        tableModel.setRowCount(0);
-        ArrayList<Producto> productos = productoDAO.obteners();
-        for (Producto p : productos) {
-            agregarFilaTabla(p);
+        try {
+            RespuestaControlador<ArrayList<Producto>> respuesta = productoControlador.obtenerTodos();
+
+            tableModel.setRowCount(0);
+
+            if (respuesta.exito() && respuesta.dato() != null) {
+                for (Producto p : respuesta.dato()) {
+                    agregarFilaTabla(p);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,respuesta.mensaje(),"Información",JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"Error inesperado al cargar productos: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -681,10 +652,25 @@ public class Productos extends JPanel {
         if (p.getFechaVencimiento() != null) {
             fechaStr = new SimpleDateFormat("dd/MM/yyyy").format(p.getFechaVencimiento());
         }
+
+        String nombreCategoria = p.getIdCategoria();
+        for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
+            if (cmbCategoria.getItemAt(i).getId().equals(p.getIdCategoria())) {
+                nombreCategoria = cmbCategoria.getItemAt(i).toString();
+                break;
+            }
+        }
+
         tableModel.addRow(new Object[]{
-            p.getId(), p.getCodigo(), p.getNombre(), p.getMarca(), p.getSerie(),
-            p.getStock(), p.getPrecioActual(), fechaStr,
-            p.getIdCategoria()
+            p.getId(),
+            p.getCodigo(),
+            p.getNombre(),
+            p.getMarca(),
+            p.getSerie(),
+            p.getStock(),
+            p.getPrecioActual(),
+            fechaStr,
+            nombreCategoria
         });
     }
 
@@ -696,18 +682,17 @@ public class Productos extends JPanel {
      * @param rowIndex índice de la fila seleccionada en {@code tablaProductos}
      */
     private void cargarFilaEnFormulario(int rowIndex) {
-        txtId.setText(     (String) tableModel.getValueAt(rowIndex, 0));
-        txtCodigo.setText( (String) tableModel.getValueAt(rowIndex, 1));
-        txtNombre.setText( (String) tableModel.getValueAt(rowIndex, 2));
-        txtMarca.setText(  (String) tableModel.getValueAt(rowIndex, 3));
-        txtSerie.setText(  (String) tableModel.getValueAt(rowIndex, 4));
+        txtId.setText((String) tableModel.getValueAt(rowIndex, 0));
+        txtCodigo.setText((String) tableModel.getValueAt(rowIndex, 1));
+        txtNombre.setText((String) tableModel.getValueAt(rowIndex, 2));
+        txtMarca.setText((String) tableModel.getValueAt(rowIndex, 3));
+        txtSerie.setText((String) tableModel.getValueAt(rowIndex, 4));
 
-        Object stock  = tableModel.getValueAt(rowIndex, 5);
+        Object stock = tableModel.getValueAt(rowIndex, 5);
         Object precio = tableModel.getValueAt(rowIndex, 6);
-        txtStock.setText(  stock  != null ? stock.toString()  : "");
-        txtPrecio.setText( precio != null ? precio.toString() : "");
+        txtStock.setText(stock != null ? stock.toString() : "");
+        txtPrecio.setText(precio != null ? precio.toString() : "");
 
-        // Fecha: parsear desde el String formateado de la tabla
         String fechaStr = (String) tableModel.getValueAt(rowIndex, 7);
         if (fechaStr != null && !fechaStr.isEmpty()) {
             try {
@@ -718,10 +703,9 @@ public class Productos extends JPanel {
             }
         }
 
-        // Categoría: seleccionar en el ComboBox el item cuyo ID coincida
-        String idCategoria = (String) tableModel.getValueAt(rowIndex, 9);
+        String nombreCategoria = (String) tableModel.getValueAt(rowIndex, 8);
         for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
-            if (cmbCategoria.getItemAt(i).getId().equals(idCategoria)) {
+            if (cmbCategoria.getItemAt(i).toString().equals(nombreCategoria)) {
                 cmbCategoria.setSelectedIndex(i);
                 break;
             }
@@ -749,9 +733,9 @@ public class Productos extends JPanel {
             long   stock       = Long.parseLong(txtStock.getText().trim());
             double precio      = Double.parseDouble(txtPrecio.getText().trim());
             Date   fecha       = (Date) spinnerFecha.getValue();
-            String idCategoria = ((CategoriaItem) cmbCategoria.getSelectedItem()).getId();
+            String Categoria = ((CategoriaItem) cmbCategoria.getSelectedItem()).getId();
 
-            return new Producto(id, codigo, nombre, marca, serie, stock, precio, fecha, idCategoria);
+            return new Producto(id, codigo, nombre, marca, serie, stock, precio, fecha, Categoria);
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this,
@@ -768,10 +752,13 @@ public class Productos extends JPanel {
      */
     private void cargarCategorias() {
         cmbCategoria.removeAllItems();
-        ArrayList<Categoria> categorias = categoriaDAO.obteners();
-        for (Categoria c : categorias) {
-            cmbCategoria.addItem(new CategoriaItem(c.getId(), c.getNombre()));
-        }
+
+        JOptionPane.showMessageDialog(this, """
+                                            Las categor\u00edas no est\u00e1n disponibles.
+                                            CategoriaControlador a\u00fan no ha sido implementado.""",
+                "Módulo pendiente",
+                JOptionPane.WARNING_MESSAGE
+        );
     }
 
     /**
@@ -839,10 +826,6 @@ public class Productos extends JPanel {
     /**
      * Clase interna que encapsula el {@code id} y el {@code nombre} de una
      * {@link Categoria} para ser usada como ítem en el {@link JComboBox}.
-     *
-     * <p>Sobrescribe {@link #toString()} para que el ComboBox muestre
-     * únicamente el nombre mientras internamente mantiene el ID
-     * necesario para la FK {@code idCategoria} en la tabla {@code Producto}.
      */
     private static class CategoriaItem {
         private final String id;
