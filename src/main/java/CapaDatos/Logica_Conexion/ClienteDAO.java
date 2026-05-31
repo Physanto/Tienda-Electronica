@@ -76,18 +76,19 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
         Cliente cliente = null;
 
         Connection con = Conexion.getConexionLocal();
-        if(con == null) { return cliente; }
+        if(con == null) { return null; }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query)) {
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while (resultSet.next()) {
                     cliente = new Cliente(resultSet.getString("id"),
                             resultSet.getString("nombre"),
                             resultSet.getString("apellido"),
                             resultSet.getString("cedula"),
-                            resultSet.getString("direccion"));
+                            resultSet.getString("direccion")
+                    );
                 }
             }
         }

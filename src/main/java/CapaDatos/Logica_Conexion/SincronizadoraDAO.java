@@ -86,11 +86,12 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()) {
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()){
                     sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
                             resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
-                            resultSet.getString("registroJson"), resultSet.getString("estado"));
+                            resultSet.getString("registroJson"), resultSet.getString("estado")
+                    );
                 }
             }
         }
@@ -186,8 +187,8 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, estado);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                while(resultSet.next()) {
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()){
                     Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
                             resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
                             resultSet.getString("registroJson"), resultSet.getString("estado"));

@@ -5,6 +5,7 @@ import java.io.File;
 import javax.swing.JLabel;
 import java.awt.Component;
 import java.awt.Container;
+import java.nio.file.Paths;
 /**
  * OSHelper — Utilidad multiplataforma para manejo de rutas y recursos del proyecto.
  *
@@ -14,13 +15,10 @@ import java.awt.Container;
  *
  * <p><b>Uso recomendado en JFrames:</b></p>
  * <pre>
- *   // Cargar imagen en un JLabel
- *   String ruta = OSHelper.getImagePath("logo.png");
+ *   // Construir la ruta de una imagen de forma multiplataforma (Windows, Linux o macOS)
+ *   String ruta = OSHelper.rutaImagen("Images", "logo.png");
  *   ImageIcon icon = new ImageIcon(ruta);
  *   jLabel.setIcon(icon);
- *
- *   // Cargar imagen .jpg por nombre base
- *   String ruta = OSHelper.getImageFilePath("perfil"); // → .../Images/perfil.jpg
  * </pre>
  *
  * <p><b>Nota:</b> Esta clase no debe instanciarse. Todos sus métodos son estáticos.</p>
@@ -30,6 +28,9 @@ import java.awt.Container;
 public class OSHelper {
 
     private static final boolean ES_WINDOWS = System.getProperty("os.name").toLowerCase().contains("win");
+
+    /** Carpeta raiz del proyecto resuelta en tiempo de ejecucion (independiente del SO). */
+    private static final String RUTA_BASE = Paths.get("").toAbsolutePath().toString();
 
     private OSHelper() { }
     
@@ -86,5 +87,32 @@ public class OSHelper {
             return ruta.replace("/", "\\");
         }
         return ruta.replace("\\", "/");
+    }
+
+    /**
+     * Construye una ruta absoluta multiplataforma a partir de la carpeta raiz del proyecto y los segmentos indicados,
+     * usando siempre el separador correcto del sistema operativo (Windows, Linux o macOS).
+     *
+     * @param segmentos las carpetas y/o el archivo que componen la ruta (ej. "Images", "logo.png")
+     * @return la ruta absoluta lista para usar en cualquier SO
+     */
+    public static String ruta(String... segmentos) {
+        return Paths.get(RUTA_BASE, segmentos).toString();
+    }
+
+    /**
+     * Atajo para construir la ruta absoluta de un recurso (tipicamente una imagen) ubicado bajo la carpeta del proyecto.
+     * El separador se ajusta automaticamente al sistema operativo, evitando rutas con "\\" que solo funcionan en Windows.
+     *
+     * <pre>
+     *   // En vez de:  s + "\\Images\\" + "logo" + ".png"   (solo funciona en Windows)
+     *   String ruta = OSHelper.rutaImagen("Images", "logo.png"); // funciona en cualquier SO
+     * </pre>
+     *
+     * @param segmentos carpetas y nombre del archivo (ej. "Images", "Icons", "user.png")
+     * @return la ruta absoluta al recurso con el separador del SO
+     */
+    public static String rutaImagen(String... segmentos) {
+        return ruta(segmentos);
     }
 }

@@ -74,11 +74,11 @@ public class CategoriaDAO implements ILocalDAO<Categoria> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return categoria; }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)) {
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()) {
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()){
                     categoria = new Categoria(resultSet.getString("id"), resultSet.getString("nombre"));
                 }
             }

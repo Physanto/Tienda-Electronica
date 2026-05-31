@@ -78,8 +78,8 @@ public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
         try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()) {
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()) {
                     detalleVenta = new DetalleVenta(
                             resultSet.getString("id"),
                             resultSet.getLong("cantidad"),

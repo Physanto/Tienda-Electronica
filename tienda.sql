@@ -94,8 +94,8 @@ CREATE TABLE ColaSincronizadora(
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,
     tablaAfectada VARCHAR(50) NOT NULL,
-    idRegistroAfectado VARCHAR(500) NOT NULL,
-    registroJson VARCHAR(MAX) NOT NULL,
+    idRegistroAfectado VARCHAR(50) NOT NULL,
+    registroJson TEXT NOT NULL,
     estado VARCHAR(2) NOT NULL
 );
 
