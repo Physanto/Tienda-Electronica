@@ -79,7 +79,7 @@ public class CategoriaOnlineCRUD implements IOnlineCRUD<Categoria> {
 
         Map<String, Object> datos = new HashMap<>();
         datos.put("id", id);
-        datos.put("nombre", id);
+        datos.put("nombre", categoria.getNombre());
 
         return GeneralOnlineProviderCRUD.actualizar("Categoria", id, datos);
     }

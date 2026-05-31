@@ -73,21 +73,22 @@ public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
         DetalleVenta detalleVenta = null;
 
         Connection con = Conexion.getConexionLocal();
-        if(con == null) { return null; }
+        if(con == null) { return detalleVenta; }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            while(resultSet.next()) {
-                detalleVenta = new DetalleVenta(
-                        resultSet.getString("id"),
-                        resultSet.getLong("cantidad"),
-                        resultSet.getDouble("subtotal"),
-                        resultSet.getDouble("precioVenta"),
-                        resultSet.getString("idProducto"),
-                        resultSet.getString("idVenta")
-                );
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()) {
+                    detalleVenta = new DetalleVenta(
+                            resultSet.getString("id"),
+                            resultSet.getLong("cantidad"),
+                            resultSet.getDouble("subtotal"),
+                            resultSet.getDouble("precioVenta"),
+                            resultSet.getString("idProducto"),
+                            resultSet.getString("idVenta")
+                    );
+                }
             }
         }
         catch (Exception ex) {

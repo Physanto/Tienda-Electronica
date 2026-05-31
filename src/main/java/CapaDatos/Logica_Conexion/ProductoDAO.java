@@ -84,18 +84,18 @@ public class ProductoDAO implements ILocalDAO<Producto> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return null; }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
-
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            while(resultSet.next()){
-                producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
-                        resultSet.getString("nombre"), resultSet.getString("marca"),
-                        resultSet.getString("serie"), resultSet.getLong("stock"),
-                        resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
-                        resultSet.getString("idCategoria")
-                );
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()) {
+                    producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
+                            resultSet.getString("nombre"), resultSet.getString("marca"),
+                            resultSet.getString("serie"), resultSet.getLong("stock"),
+                            resultSet.getDouble("precioActual"), resultSet.getTimestamp("fechaVencimiento"),
+                            resultSet.getString("idCategoria")
+                    );
+                }
             }
         }
         catch(Exception ex){
@@ -144,7 +144,7 @@ public class ProductoDAO implements ILocalDAO<Producto> {
     public boolean actualizar(Producto producto){
         String query = "UPDATE Producto SET codigo = ?, nombre = ?, marca = ?, " +
                 "serie = ?, stock = ?, precioActual = ?, " +
-                "fechaVencimiento = ?, urlImg = ?, idCategoria = ? WHERE id = ?";
+                "fechaVencimiento = ?, idCategoria = ? WHERE id = ?";
 
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
@@ -158,8 +158,8 @@ public class ProductoDAO implements ILocalDAO<Producto> {
             preparedStatement.setLong(5, producto.getStock());
             preparedStatement.setDouble(6, producto.getPrecioActual());
             preparedStatement.setTimestamp(7, new Timestamp(producto.getFechaVencimiento().getTime()));
-            preparedStatement.setString(9, producto.getIdCategoria());
-            preparedStatement.setString(10, producto.getId());
+            preparedStatement.setString(8, producto.getIdCategoria());
+            preparedStatement.setString(9, producto.getId());
 
             return preparedStatement.executeUpdate() >= 1;
         }

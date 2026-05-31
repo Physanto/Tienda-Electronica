@@ -83,8 +83,9 @@ public class HelperMonitorRed extends Thread{
      * @return true si se pudo conectar con la base local, de lo contrario false
      */
     private static boolean hayLocalDisponible(){
-        try (Connection conexion = Conexion.getConexionLocal()) {
-            return conexion != null;
+        try {
+            Connection conexion = Conexion.getConexionLocal();
+            return conexion != null && conexion.isValid(2);
         }
         catch (Exception e) {
             return false;

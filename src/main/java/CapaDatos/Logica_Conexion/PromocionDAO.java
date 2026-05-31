@@ -15,8 +15,8 @@ public class PromocionDAO {
                 "COALESCE(DATEDIFF(CURDATE(), MAX(v.fechaVenta)), 999) AS diasSinVender, " +
                 "COALESCE(SUM(dv.cantidad), 0) AS totalVendido " +
                 "FROM Producto p " +
-                "LEFT JOIN DetalleVenta dv ON p.id = dv.id " +
-                "LEFT JOIN Venta v ON dv.id = v.id " +
+                "LEFT JOIN DetalleVenta dv ON p.id = dv.idProducto " +
+                "LEFT JOIN Venta v ON dv.idVenta = v.id " +
                 "GROUP BY p.id, p.stock";
 
         ArrayList<Promocion> listaPromocion = new ArrayList<>();
@@ -42,7 +42,7 @@ public class PromocionDAO {
     }
 
     public ArrayList<PromocionesDTO.PromocionAplicadaDTO> datosPromociones(){
-        String query = "SELECT p.id, p.nombre, p.marca, p.stock, p.precioActual " +
+        String query = "SELECT p.id, p.nombre, p.marca, p.stock, p.precioActual, " +
                 "COALESCE(DATEDIFF(CURDATE(), MAX(v.fechaVenta)), 999) AS diasSinVender, " +
                 "COALESCE(SUM(dv.cantidad), 0) AS totalVendido " +
                 "FROM Producto p " +
@@ -87,8 +87,8 @@ public class PromocionDAO {
             preparedStatement.setString(1, promociones.getId());
             preparedStatement.setString(2, promociones.getNombre());
             preparedStatement.setDouble(3, promociones.getDescuento());
-            preparedStatement.setDate(4, (Date) promociones.getFechaInicio());
-            preparedStatement.setDate(5, (Date) promociones.getFechaFin());
+            preparedStatement.setTimestamp(4, new Timestamp(promociones.getFechaInicio().getTime()));
+            preparedStatement.setTimestamp(5, new Timestamp(promociones.getFechaFin().getTime()));
             preparedStatement.setString(6, promociones.getTipo().name());
 
             return preparedStatement.executeUpdate() >= 1;
@@ -114,8 +114,8 @@ public class PromocionDAO {
             while(resultSet.next()){
 
                 Promociones promociones = new Promociones(resultSet.getString("id"), resultSet.getString("nombre"),
-                       resultSet.getDouble("descuento"), resultSet.getDate("fechaInicio"),
-                        resultSet.getDate("fechaFin"), Promociones.TipoPromocion.valueOf(resultSet.getString("tipo").toUpperCase())
+                       resultSet.getDouble("descuento"), resultSet.getTimestamp("fechaInicio"),
+                        resultSet.getTimestamp("fechaFin"), Promociones.TipoPromocion.valueOf(resultSet.getString("tipo").toUpperCase())
                 );
                 listaPromociones.add(promociones);
             }
@@ -134,7 +134,7 @@ public class PromocionDAO {
 
         try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
-            preparedStatement.setDate(1, (Date)fechaActual);
+            preparedStatement.setTimestamp(1, new Timestamp(fechaActual.getTime()));
             preparedStatement.setString(2, idPromocion);
 
             return preparedStatement.executeUpdate() >= 1;
@@ -185,7 +185,6 @@ public class PromocionDAO {
             ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
-
                 PromocionesDTO.PromocioPersonalizadaCliente promociones = new PromocionesDTO.PromocioPersonalizadaCliente(resultSet.getString("id"),
                         resultSet.getString("nombre"), resultSet.getString("apellido"),
                         resultSet.getString("cedula"), resultSet.getString("totalComprado"),

@@ -83,15 +83,15 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return null; }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
-
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            while(resultSet.next()){
-                sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
-                        resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
-                        resultSet.getString("registroJson"), resultSet.getString("estado"));
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()) {
+                    sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
+                            resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
+                            resultSet.getString("registroJson"), resultSet.getString("estado"));
+                }
             }
         }
         catch (Exception ex){
@@ -183,15 +183,16 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return listaNoSincronizados; }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, estado);
 
-            while(resultSet.next()){
-                Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
-                        resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
-                        resultSet.getString("registroJson"), resultSet.getString("estado"));
-                listaNoSincronizados.add(sincronizadora);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while(resultSet.next()) {
+                    Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
+                            resultSet.getString("tablaAfectada"), resultSet.getString("idRegistroAfectado"),
+                            resultSet.getString("registroJson"), resultSet.getString("estado"));
+                    listaNoSincronizados.add(sincronizadora);
+                }
             }
         }
         catch (Exception ex){
