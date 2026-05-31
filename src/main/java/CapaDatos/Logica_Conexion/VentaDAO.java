@@ -84,12 +84,13 @@ public class VentaDAO implements ILocalDAO<Venta> {
             preparedStatement.setString(1, id);
 
             try(ResultSet resultSet = preparedStatement.executeQuery()){
-                if(resultSet.next()) {
+
+                while(resultSet.next()) {
                     venta = new Venta(
                             resultSet.getString("id"),
-                            resultSet.getTimestamp("fechaVenta"),
+                            resultSet.getDate("fechaVenta"),
                             resultSet.getDouble("totalVenta"),
-                            Venta.MetodoPago.valueOf(resultSet.getString("metodoPago")),
+                            Venta.MetodoPago.valueOf(resultSet.getString("metodoPago").toUpperCase()),
                             resultSet.getString("idCliente")
                     );
                 }

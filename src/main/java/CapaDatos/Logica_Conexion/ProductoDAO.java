@@ -87,8 +87,8 @@ public class ProductoDAO implements ILocalDAO<Producto> {
         try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()) {
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()){
                     producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
                             resultSet.getString("nombre"), resultSet.getString("marca"),
                             resultSet.getString("serie"), resultSet.getLong("stock"),

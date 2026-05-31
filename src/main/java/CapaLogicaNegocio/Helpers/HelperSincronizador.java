@@ -33,14 +33,15 @@ public class HelperSincronizador {
                 return;
             }
             for (Sincronizadora sincronizadora : datosPendientes) {
+                if(aplicarEnNube(sincronizadora)){
+                    System.out.println("Registro con id: " + sincronizadora.getIdRegistroAfectado() + " fue subido a la nube correctamente");
 
-                if(!aplicarEnNube(sincronizadora)) {
-                    System.out.println("No se puede sincronizar");
-                    continue;
+                    if(new SincronizadoraDAO().actualizarSincronizados(sincronizadora.getId())){
+                        System.out.println("Cambio el estado del registro a 1, sincronizado correctamente");
+                    }
                 }
-                System.out.println("sincronizado correctamente");
-                if(new SincronizadoraDAO().actualizarSincronizados(sincronizadora.getId())){
-                    System.out.println("Cambio el estado del registro a 1, sincronizado correctamente");
+                else {
+                    System.out.println("No se pudo subir a la nube el registro con id: " + sincronizadora.getIdRegistroAfectado() + ", queda pendiente para el proximo intento");
                 }
             }
         }
@@ -147,9 +148,15 @@ public class HelperSincronizador {
 
     /**
      * Aplica en la base de datos de la nube el evento de sincronizacion proveniente de la cola local. Reconstruye el objeto
+<<<<<<< HEAD
      * tipado a partir del JSON segun la tabla afectada y delega en el OnlineCRUD correspondiente, de modo que las fechas
      * viajan como Date nativo (Firestore Timestamp), igual que en la escritura directa a la nube. Asi ambas bases reciben
      * el mismo formato y no quedan fechas como String.
+=======
+     * tipado a partir del JSON segun la tabla afectada y delega en el CRUD de nube correspondiente. Asi los registros suben
+     * con los MISMOS tipos que una escritura directa (Date -> Timestamp, Long como entero, etc.) y se evita que la
+     * serializacion generica a Map convierta las fechas en texto y los numeros en double, lo que dejaba la nube inconsistente.
+>>>>>>> 30223dd (feature: agregando todo el modulo de compras para el cliente y haciendo cambios en clases que fallan...)
      * @param evento el registro de la cola local que se quiere aplicar en la nube
      * @return true si la operacion se aplico correctamente en la nube, de lo contrario false
      */
@@ -192,7 +199,6 @@ public class HelperSincronizador {
                     DetalleVenta detalle = gson.fromJson(registroJson, DetalleVenta.class);
                     return upsertNube(crud, DetalleVenta.class, id, detalle);
                 }
-                // TODO: agregar el case "Promocion" cuando exista PromocionOnlineCRUD (sincronizacion de promociones a la nube pendiente)
                 default:
                     System.out.println("Tabla no soportada en la sincronizacion hacia la nube: " + tabla);
                     return false;
@@ -203,7 +209,6 @@ public class HelperSincronizador {
             return false;
         }
     }
-
     private static <T> boolean upsertNube(IOnlineCRUD<T> crud, Class<T> clase, String id, T obj){
         boolean existe = crud.obtenerNube(clase, id) != null;
         return existe ? crud.actualizarNube(obj) : crud.registrarNube(obj);
