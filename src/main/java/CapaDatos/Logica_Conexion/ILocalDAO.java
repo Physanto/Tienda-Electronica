@@ -13,9 +13,9 @@ import java.util.ArrayList;
  */
 public interface ILocalDAO<T> {
     
-    public boolean agregar(T object) throws ExcepcionSQL;
-    public boolean eliminar(String id) throws ExcepcionSQL;
-    public T obtener(String id) throws ExcepcionSQL;
-    public ArrayList<T> obteners() throws ExcepcionSQL;
-    public boolean actualizar(T object) throws ExcepcionSQL;
+    public boolean agregar(T object);
+    public boolean eliminar(String id);
+    public T obtener(String id);
+    public ArrayList<T> obteners();
+    public boolean actualizar(T object);
 }

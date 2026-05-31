@@ -30,8 +30,7 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, sincronizadora.getId());
             preparedStatement.setString(2, sincronizadora.getAccion().name());
@@ -60,8 +59,7 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
@@ -85,11 +83,10 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return null; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             preparedStatement.setString(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
                 sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
@@ -115,9 +112,8 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return listaSincronizadora; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
                 Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),
@@ -144,8 +140,7 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, sincronizadora.getAccion().name());
             preparedStatement.setString(2, sincronizadora.getTablaAfectada());
@@ -168,8 +163,7 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, "1");
             preparedStatement.setString(2, id);
@@ -189,12 +183,9 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return listaNoSincronizados; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
             preparedStatement.setString(1, estado);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
                 Sincronizadora sincronizadora = new Sincronizadora(resultSet.getString("id"), Sincronizadora.Accion.valueOf(resultSet.getString("accion")),

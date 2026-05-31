@@ -3,7 +3,7 @@ package CapaDatos.Logica_Conexion;
 import CapaLogicaNegocio.DTOS.VentasDTO;
 import CapaLogicaNegocio.Logica_Negocio.Venta;
 import java.sql.Connection;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -29,12 +29,10 @@ public class VentaDAO implements ILocalDAO<Venta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
 
             preparedStatement.setString(1, venta.getId());
-            //preparedStatement.setDate(2, new java.sql.Date(venta.getFechaVenta().getTime()));
-            preparedStatement.setDate(2, (Date) venta.getFechaVenta());
+            preparedStatement.setTimestamp(2, new Timestamp(venta.getFechaVenta().getTime()));
             preparedStatement.setDouble(3, venta.getTotalVenta());
             preparedStatement.setString(4, venta.getMetodoPago().name());
             preparedStatement.setString(5, venta.getIdCliente());
@@ -58,8 +56,7 @@ public class VentaDAO implements ILocalDAO<Venta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
@@ -83,10 +80,9 @@ public class VentaDAO implements ILocalDAO<Venta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return null; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
             preparedStatement.setString(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
                 venta = new Venta(
@@ -120,9 +116,8 @@ public class VentaDAO implements ILocalDAO<Venta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return listaVentas; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = con.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()) {
                 Venta venta = new Venta(resultSet.getString("id"), resultSet.getDate("fechaVenta"),
@@ -144,17 +139,15 @@ public class VentaDAO implements ILocalDAO<Venta> {
      */
     @Override
     public boolean actualizar(Venta venta) {
-        String query =
-                "UPDATE Venta SET fechaVenta=?, totalVenta=?, metodoPago=?, idCliente=? "
+        String query = "UPDATE Venta SET fechaVenta=?, totalVenta=?, metodoPago=?, idCliente=? "
                 + "WHERE id=?";
 
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
 
-            preparedStatement.setDate(1, (Date)venta.getFechaVenta());
+            preparedStatement.setTimestamp(1, new Timestamp(venta.getFechaVenta().getTime()));
             preparedStatement.setDouble(2, venta.getTotalVenta());
             preparedStatement.setString(3, venta.getMetodoPago().name());
             preparedStatement.setString(4, venta.getIdCliente());
@@ -178,9 +171,8 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
         if(conexion == null) return 0.0;
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             if(resultSet.next()){
                 total = resultSet.getDouble("total");
@@ -197,7 +189,7 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
     public Long cantidadVentas(){
 
-        String query = "SELECT SUM(id) AS cantidad FROM Venta";
+        String query = "SELECT COUNT(id) AS cantidad FROM Venta";
 
         Long total = 0l;
 
@@ -205,9 +197,8 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
         if(conexion == null) return 0l;
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             if(resultSet.next()){
                 total = resultSet.getLong("cantidad");
@@ -226,9 +217,9 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
         String query = "SELECT c.nombre AS categoria," +
                 "    SUM(dt.cantidad) AS productosVendidos," +
-                "    SUM(dt.cantidad * p.precio) AS totalVentas," +
+                "    SUM(dt.cantidad * p.precioActual) AS totalVentas," +
                 "    MIN(v.fechaVenta) AS primeraVenta," +
-                "    MAX(v.fechaVenta) AS ultimaVenta" +
+                "    MAX(v.fechaVenta) AS ultimaVenta " +
                 "FROM Categoria c" +
                 "JOIN Producto p ON p.idCategoria = c.id" +
                 "JOIN DetalleVenta dt ON dt.idProducto = p.id" +
@@ -240,9 +231,8 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
         if(conexion == null) return listaVentas;
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             VentasDTO.VentaPorCategoriaDTO ventaPorCategoriaDTO;
 

@@ -23,13 +23,13 @@ public class ProductoDAO implements ILocalDAO<Producto> {
     public boolean agregar(Producto producto){
         String query = "INSERT INTO Producto (id, codigo, nombre, marca, serie, stock," +
                 "precioActual, fechaVencimiento, idCategoria) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
+
             preparedStatement.setString(1, producto.getId());
             preparedStatement.setString(2, producto.getCodigo());
             preparedStatement.setString(3, producto.getNombre());
@@ -38,7 +38,7 @@ public class ProductoDAO implements ILocalDAO<Producto> {
             preparedStatement.setLong(6, producto.getStock());
             preparedStatement.setDouble(7, producto.getPrecioActual());
             preparedStatement.setTimestamp(8, new Timestamp(producto.getFechaVencimiento().getTime()));
-            preparedStatement.setString(10, producto.getIdCategoria());
+            preparedStatement.setString(9, producto.getIdCategoria());
 
             return preparedStatement.executeUpdate() >= 1;
         }
@@ -60,10 +60,9 @@ public class ProductoDAO implements ILocalDAO<Producto> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            preparedStatement.setString(1, id);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
+            preparedStatement.setString(1, id);
             return preparedStatement.executeUpdate() >= 1;
         }
         catch(Exception ex){
@@ -85,10 +84,10 @@ public class ProductoDAO implements ILocalDAO<Producto> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return null; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
+
             preparedStatement.setString(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
                 producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
@@ -117,9 +116,8 @@ public class ProductoDAO implements ILocalDAO<Producto> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return listaProductos; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
                 Producto producto = new Producto(resultSet.getString("id"), resultSet.getString("codigo"),
@@ -151,8 +149,7 @@ public class ProductoDAO implements ILocalDAO<Producto> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, producto.getCodigo());
             preparedStatement.setString(2, producto.getNombre());

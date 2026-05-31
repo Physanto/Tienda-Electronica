@@ -30,8 +30,7 @@ public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
 
             preparedStatement.setString(1, detalleVenta.getId());
             preparedStatement.setLong(2, detalleVenta.getCantidad());
@@ -56,8 +55,7 @@ public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
@@ -77,10 +75,9 @@ public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return null; }
 
-        try{
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
             preparedStatement.setString(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
                 detalleVenta = new DetalleVenta(
@@ -108,9 +105,8 @@ public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return lista; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = con.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()) {
                 DetalleVenta detalleVenta = new DetalleVenta(
@@ -141,8 +137,8 @@ public class DetalleVentaDAO implements ILocalDAO<DetalleVenta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
+
             preparedStatement.setLong(1, detalleVenta.getCantidad());
             preparedStatement.setDouble(2, detalleVenta.getSubtotal());
             preparedStatement.setDouble(3, detalleVenta.getPrecioVenta());
