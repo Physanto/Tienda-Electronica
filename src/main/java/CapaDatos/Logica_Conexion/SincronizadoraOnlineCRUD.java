@@ -46,7 +46,7 @@ public class SincronizadoraOnlineCRUD implements IOnlineCRUD<Sincronizadora> {
      */
     @Override
     public Sincronizadora obtenerNube(Class<Sincronizadora> sincronizadora, String id) {
-        if(id.isEmpty()) return null;
+        if(id == null || id.isEmpty()) return null;
         return GeneralOnlineProviderCRUD.obtener("Sincronizadora", id, sincronizadora);
     }
 

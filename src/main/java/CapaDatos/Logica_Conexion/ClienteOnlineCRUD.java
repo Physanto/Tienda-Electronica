@@ -36,11 +36,14 @@ public class ClienteOnlineCRUD implements IOnlineCRUD<Cliente> {
         datos.put("apellido", cliente.getApellido());
         datos.put("direccion", cliente.getDireccion());
         datos.put("cedula", cliente.getCedula());
+
         long m = System.currentTimeMillis();
-        GeneralOnlineProviderCRUD.guardar("Cliente", id, datos);
-        long n = System.currentTimeMillis();
-        HelperTiempo.RetornarTiempo(n,m);
-        return true;
+        if(GeneralOnlineProviderCRUD.guardar("Cliente", id, datos)){
+            Long n = System.currentTimeMillis();
+            HelperTiempo.RetornarTiempo(n,m);
+            return true;
+        }
+        return false;
     }
 
     /**

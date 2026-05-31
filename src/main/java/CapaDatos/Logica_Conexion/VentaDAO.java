@@ -80,22 +80,20 @@ public class VentaDAO implements ILocalDAO<Venta> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return null; }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
-            while(resultSet.next()) {
-                venta = new Venta(
-                        resultSet.getString("id"),
-                        resultSet.getDate("fechaVenta"),
-                        resultSet.getDouble("totalVenta"),
-                        Venta.MetodoPago.valueOf(
-                                resultSet.getString("metodoPago")
-                        ),
-                        resultSet.getString("idCliente")
-                );
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if(resultSet.next()) {
+                    venta = new Venta(
+                            resultSet.getString("id"),
+                            resultSet.getTimestamp("fechaVenta"),
+                            resultSet.getDouble("totalVenta"),
+                            Venta.MetodoPago.valueOf(resultSet.getString("metodoPago")),
+                            resultSet.getString("idCliente")
+                    );
+                }
             }
-
         }
         catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -120,7 +118,7 @@ public class VentaDAO implements ILocalDAO<Venta> {
             ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()) {
-                Venta venta = new Venta(resultSet.getString("id"), resultSet.getDate("fechaVenta"),
+                Venta venta = new Venta(resultSet.getString("id"), resultSet.getTimestamp("fechaVenta"),
                         resultSet.getDouble("totalVenta"),
                         Venta.MetodoPago.valueOf(resultSet.getString("metodoPago").toUpperCase()), resultSet.getString("idCliente")
                 );
@@ -215,12 +213,12 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
     public ArrayList<VentasDTO.VentaPorCategoriaDTO> ventasPorCategoria(){
 
-        String query = "SELECT c.nombre AS categoria," +
-                "    SUM(dt.cantidad) AS productosVendidos," +
-                "    SUM(dt.cantidad * p.precioActual) AS totalVentas," +
-                "    MIN(v.fechaVenta) AS primeraVenta," +
+        String query = "SELECT c.nombre AS categoria, " +
+                "    SUM(dt.cantidad) AS productosVendidos, " +
+                "    SUM(dt.cantidad * p.precioActual) AS totalVentas, " +
+                "    MIN(v.fechaVenta) AS primeraVenta, " +
                 "    MAX(v.fechaVenta) AS ultimaVenta " +
-                "FROM Categoria c" +
+                " FROM Categoria c " +
                 "JOIN Producto p ON p.idCategoria = c.id" +
                 "JOIN DetalleVenta dt ON dt.idProducto = p.id" +
                 "JOIN Venta v ON v.id = dt.idVenta" +
