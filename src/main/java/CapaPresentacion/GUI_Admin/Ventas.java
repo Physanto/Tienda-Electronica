@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+//import org.jfree.chart.JFreeChart;
  
 /**
  * JPanel de Ventas para el panel de administración.
@@ -25,9 +26,9 @@ public class Ventas extends javax.swing.JPanel {
     private static final Color COLOR_BG          = new Color(0x1A, 0x1E, 0x29);
     private static final Color COLOR_PANEL_SEC   = new Color(0x13, 0x2D, 0x46);
     private static final Color COLOR_ACENTO      = new Color(1, 128, 95);
-    private static final Color COLOR_HOVER       = new Color(0x1A, 0x3D, 0x58);
     private static final Color COLOR_TEXTO       = Color.WHITE;
     private static final Color COLOR_TEXTO_MUTED = new Color(0x8A, 0xA5, 0xBE);
+    private static final Color COLOR_HOVER       = new Color(0x1A, 0x3D, 0x58);
     private static final Color COLOR_TABLE_BG    = new Color(0x10, 0x14, 0x1E);
     private static final Color COLOR_ROW_SEL     = new Color(0x01, 0xC3, 0x8E, 80);
     private static final Color COLOR_CARD_1      = new Color(0x01, 0xC3, 0x8E);   // verde
@@ -38,7 +39,7 @@ public class Ventas extends javax.swing.JPanel {
  
     private DefaultTableModel modeloTablaVentas;
     private JTable            tablaVentas;
- 
+
     private DefaultTableModel modeloTablaCliente;
     private JTable            tablaCliente;
  
@@ -88,6 +89,11 @@ public class Ventas extends javax.swing.JPanel {
         // ── Sección ventas por categoría ──
         contenido.add(construirSeccionCategoria());
         contenido.add(Box.createVerticalStrut(20));
+        
+        //   contenido.add(Box.createVerticalStrut(20));
+        //   contenido.add(construirSeccionGraficas());
+        //   poblarDatasets();
+        //   iniciarTimerGraficas();
  
         JScrollPane scroll = new JScrollPane(contenido);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -496,10 +502,12 @@ public class Ventas extends javax.swing.JPanel {
     }
 
  
-    /** Aplica estilo oscuro a una JTable y la retorna. */
+    /**
+     * Aplica estilo oscuro a una JTable y la retorna.
+     */
     private JTable estilizarTabla(JTable tabla) {
         tabla.setBackground(COLOR_TABLE_BG);
-        tabla.setForeground(COLOR_TEXTO);
+        tabla.setForeground(COLOR_TEXTO); 
         tabla.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
         tabla.setRowHeight(30);
         tabla.setGridColor(new Color(0x2A, 0x30, 0x45));
@@ -509,24 +517,23 @@ public class Ventas extends javax.swing.JPanel {
         tabla.setShowVerticalLines(false);
         tabla.setIntercellSpacing(new Dimension(0, 1));
         tabla.setFillsViewportHeight(true);
- 
-        // Centrado de celdas
+
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         center.setHorizontalAlignment(JLabel.CENTER);
-        center.setBackground(COLOR_TABLE_BG);
-        center.setForeground(COLOR_TEXTO);
-        for (int col = 0; col < tabla.getColumnCount(); col++)
+        center.setForeground(COLOR_TEXTO); 
+        for (int col = 0; col < tabla.getColumnCount(); col++) {
             tabla.getColumnModel().getColumn(col).setCellRenderer(center);
- 
-        // Encabezado
+        }
+
         JTableHeader header = tabla.getTableHeader();
         header.setBackground(COLOR_PANEL_SEC);
-        header.setForeground(Color.BLACK);
+        header.setForeground(Color.BLACK); 
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
- 
+
         return tabla;
     }
+
  
     /** Aplica estilo al JScrollPane de una tabla. */
     private void estilizarScroll(JScrollPane sp) {

@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * Panel principal del módulo <b>Productos</b> dentro del JFrame {@code Menu_Admin}.
@@ -154,12 +155,14 @@ public class Productos extends JPanel {
 
         tableModel = new DefaultTableModel(columnas, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) { return false; }
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
 
         tablaProductos = new JTable(tableModel);
         tablaProductos.setBackground(COLOR_TABLE_BG);
-        tablaProductos.setForeground(COLOR_TEXTO);
+        tablaProductos.setForeground(COLOR_TEXTO); // 🔹 texto blanco en filas
         tablaProductos.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
         tablaProductos.setRowHeight(36);
         tablaProductos.setShowHorizontalLines(true);
@@ -168,9 +171,17 @@ public class Productos extends JPanel {
         tablaProductos.setSelectionForeground(COLOR_TEXTO);
         tablaProductos.setIntercellSpacing(new Dimension(0, 1));
 
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+        cellRenderer.setHorizontalAlignment(JLabel.CENTER);
+        cellRenderer.setForeground(COLOR_TEXTO);   // texto blanco
+        cellRenderer.setBackground(COLOR_TABLE_BG); // fondo oscuro
+        for (int col = 0; col < tablaProductos.getColumnCount(); col++) {
+            tablaProductos.getColumnModel().getColumn(col).setCellRenderer(cellRenderer);
+        }
+
         JTableHeader header = tablaProductos.getTableHeader();
         header.setBackground(COLOR_PANEL_SEC);
-        header.setForeground(Color.BLACK);
+        header.setForeground(Color.BLACK); // títulos en negro
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
 
@@ -196,6 +207,7 @@ public class Productos extends JPanel {
 
         add(wrapper, BorderLayout.CENTER);
     }
+
 
     /**
      * Construye el panel lateral derecho con todos los controles del formulario.
