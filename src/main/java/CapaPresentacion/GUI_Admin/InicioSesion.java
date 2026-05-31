@@ -43,9 +43,6 @@ public class InicioSesion extends javax.swing.JFrame {
         s = Paths.get("").toAbsolutePath().toString();
         establecerFondo();
         establecerIconoUsuario();
-      
-        OSHelper.setImage(fondo, "Fondo.png");
-        OSHelper.setImage(icono_user, "usuario.png");
 
         javax.swing.Timer timer = new javax.swing.Timer(100, e -> requestFocusInWindow());
         timer.setRepeats(false);

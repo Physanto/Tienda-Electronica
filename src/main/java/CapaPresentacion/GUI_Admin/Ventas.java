@@ -1,23 +1,15 @@
 package CapaPresentacion.GUI_Admin;
  
-import CapaDatos.Logica_Conexion.ClienteDAO;
-import CapaDatos.Logica_Conexion.DetalleVentaDAO;
-import CapaDatos.Logica_Conexion.ProductoDAO;
-import CapaDatos.Logica_Conexion.VentaDAO;
-import CapaDatos.Logica_Conexion.CategoriaDAO;
-import CapaLogicaNegocio.Logica_Negocio.Cliente;
-import CapaLogicaNegocio.Logica_Negocio.DetalleVenta;
-import CapaLogicaNegocio.Logica_Negocio.Producto;
+import CapaLogicaNegocio.Controlador.RespuestaControlador;
+import CapaLogicaNegocio.Controlador.VentaControlador;
+import CapaLogicaNegocio.DTOS.VentasDTO.VentaPorCategoriaDTO;
 import CapaLogicaNegocio.Logica_Negocio.Venta;
-import CapaLogicaNegocio.Logica_Negocio.Categoria;
- 
+
 import java.awt.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -26,19 +18,10 @@ import javax.swing.table.JTableHeader;
  
 /**
  * JPanel de Ventas para el panel de administración.
- * Muestra un dashboard con:
- *   - Tabla general de todas las ventas (Producto, Precio, Fecha, Cliente)
- *   - Búsqueda por cliente: detalle de sesión y total acumulado
- *   - Tarjeta de total de ingresos de todos los clientes
- *   - Tarjeta de ventas por categoría
- *
  * @author Marlon Vargas
  */
 public class Ventas extends javax.swing.JPanel {
  
-    // ──────────────────────────────────────────────────────────────
-    // Paleta de colores (coherente con el resto del proyecto)
-    // ──────────────────────────────────────────────────────────────
     private static final Color COLOR_BG          = new Color(0x1A, 0x1E, 0x29);
     private static final Color COLOR_PANEL_SEC   = new Color(0x13, 0x2D, 0x46);
     private static final Color COLOR_ACENTO      = new Color(1, 128, 95);
@@ -51,18 +34,8 @@ public class Ventas extends javax.swing.JPanel {
     private static final Color COLOR_CARD_2      = new Color(0x3B, 0x82, 0xF6);   // azul
     private static final Color COLOR_CARD_3      = new Color(0xF5, 0x9E, 0x0B);   // amarillo
  
-    // ──────────────────────────────────────────────────────────────
-    // DAOs
-    // ──────────────────────────────────────────────────────────────
-    private final VentaDAO       ventaDAO       = new VentaDAO();
-    private final DetalleVentaDAO detalleDAO    = new DetalleVentaDAO();
-    private final ClienteDAO     clienteDAO     = new ClienteDAO();
-    private final ProductoDAO    productoDAO    = new ProductoDAO();
-    private final CategoriaDAO   categoriaDAO   = new CategoriaDAO();
+    private final VentaControlador ventaControlador = new VentaControlador();
  
-    // ──────────────────────────────────────────────────────────────
-    // Componentes de la UI
-    // ──────────────────────────────────────────────────────────────
     private DefaultTableModel modeloTablaVentas;
     private JTable            tablaVentas;
  
@@ -75,7 +48,6 @@ public class Ventas extends javax.swing.JPanel {
     private JLabel            lblTotalIngresos;
     private JPanel            panelCategoria;
  
-    // Formato moneda y fecha
     private static final NumberFormat FMT_MONEDA =
             NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
     private static final SimpleDateFormat FMT_FECHA =
@@ -230,7 +202,7 @@ public class Ventas extends javax.swing.JPanel {
         barraBusq.setBackground(COLOR_BG);
  
         txtBuscarCliente = new JTextField(22);
-        estilizarTextField(txtBuscarCliente, "Nombre del cliente...");
+        estilizarTextField(txtBuscarCliente, "ID del cliente...");
  
         JButton btnBuscar = crearBoton("Buscar", COLOR_ACENTO);
         btnBuscar.addActionListener(e -> buscarPorCliente());
@@ -330,38 +302,34 @@ public class Ventas extends javax.swing.JPanel {
      */
     private void cargarTablaGeneral() {
         modeloTablaVentas.setRowCount(0);
- 
-        ArrayList<Venta>       ventas    = ventaDAO.obteners();
-        ArrayList<DetalleVenta> detalles = detalleDAO.obteners();
-        ArrayList<Producto>    productos = productoDAO.obteners();
-        ArrayList<Cliente>     clientes  = clienteDAO.obteners();
- 
-        // Mapas para búsqueda rápida
-        Map<String, Producto> mapProductos = new HashMap<>();
-        for (Producto p : productos) mapProductos.put(p.getId(), p);
- 
-        Map<String, Cliente> mapClientes = new HashMap<>();
-        for (Cliente c : clientes) mapClientes.put(c.getId(), c);
- 
-        Map<String, Venta> mapVentas = new HashMap<>();
-        for (Venta v : ventas) mapVentas.put(v.getId(), v);
- 
-        for (DetalleVenta dv : detalles) {
-            Venta    v = mapVentas.get(dv.getIdVenta());
-            Producto p = mapProductos.get(dv.getIdProducto());
-            if (v == null || p == null) continue;
- 
-            Cliente c = mapClientes.get(v.getIdCliente());
-            String  nombreCliente = (c != null)
-                    ? c.getNombre() + " " + c.getApellido()
-                    : "Desconocido";
- 
-            modeloTablaVentas.addRow(new Object[]{
-                p.getNombre(),
-                FMT_MONEDA.format(dv.getPrecioVenta()),
-                FMT_FECHA.format(v.getFechaVenta()),
-                nombreCliente
-            });
+
+        try {
+            RespuestaControlador<ArrayList<Venta>> respuesta = ventaControlador.buscarTodos();
+
+            if (!respuesta.exito()) {
+                JOptionPane.showMessageDialog(this,
+                        respuesta.mensaje(),
+                        "Error al cargar ventas",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            ArrayList<Venta> ventas = respuesta.dato();
+
+            for (Venta v : ventas) {
+                modeloTablaVentas.addRow(new Object[]{
+                    v.getId(),
+                    FMT_MONEDA.format(v.getTotalVenta()),
+                    FMT_FECHA.format(v.getFechaVenta()),
+                    v.getIdCliente()
+                });
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error inesperado al cargar la tabla de ventas: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
  
@@ -369,21 +337,40 @@ public class Ventas extends javax.swing.JPanel {
      * Actualiza las tarjetas KPI.
      */
     private void actualizarKPIs() {
-        ArrayList<Venta>   ventas  = ventaDAO.obteners();
-        ArrayList<Cliente> clients = clienteDAO.obteners();
- 
-        double totalIngresos = ventas.stream()
-                .mapToDouble(Venta::getTotalVenta).sum();
- 
-        long clientesUnicos = ventas.stream()
-                .map(Venta::getIdCliente).distinct().count();
- 
-        lblTotalIngresos.setText(FMT_MONEDA.format(totalIngresos));
-        lblNumVentasRef.setText(String.valueOf(ventas.size()));
-        lblClientesRef.setText(String.valueOf(clientesUnicos));
- 
-        // Actualizar también la sección categoría
-        cargarVentasPorCategoria();
+        try {
+            RespuestaControlador<Double> respuestaTotal = ventaControlador.totalVentas();
+            if (respuestaTotal.exito() && respuestaTotal.dato() != null) {
+                lblTotalIngresos.setText(FMT_MONEDA.format(respuestaTotal.dato()));
+            } else {
+                lblTotalIngresos.setText("$0");
+            }
+
+            RespuestaControlador<Long> respuestaCantidad = ventaControlador.cantidadVentas();
+            if (respuestaCantidad.exito() && respuestaCantidad.dato() != null) {
+                lblNumVentasRef.setText(String.valueOf(respuestaCantidad.dato()));
+            } else {
+                lblNumVentasRef.setText("0");
+            }
+
+            RespuestaControlador<ArrayList<Venta>> respuestaVentas = ventaControlador.buscarTodos();
+            if (respuestaVentas.exito() && respuestaVentas.dato() != null) {
+                long clientesUnicos = respuestaVentas.dato().stream()
+                        .map(Venta::getIdCliente)
+                        .distinct()
+                        .count();
+                lblClientesRef.setText(String.valueOf(clientesUnicos));
+            } else {
+                lblClientesRef.setText("0");
+            }
+
+            cargarVentasPorCategoria();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al actualizar los indicadores: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
  
     /**
@@ -393,164 +380,121 @@ public class Ventas extends javax.swing.JPanel {
      */
     private void buscarPorCliente() {
         String busqueda = txtBuscarCliente.getText().trim().toLowerCase();
-        if (busqueda.isEmpty()) return;
- 
+        if (busqueda.isEmpty()) {
+            return;
+        }
+
         modeloTablaCliente.setRowCount(0);
-        lblTotalSesion.setText("$0");
         lblTotalCliente.setText("$0");
- 
-        ArrayList<Cliente>     clientes  = clienteDAO.obteners();
-        ArrayList<Venta>       ventas    = ventaDAO.obteners();
-        ArrayList<DetalleVenta> detalles = detalleDAO.obteners();
-        ArrayList<Producto>    productos = productoDAO.obteners();
- 
-        // Encontrar cliente por nombre o apellido
-        Cliente clienteEncontrado = null;
-        for (Cliente c : clientes) {
-            String nombreCompleto = (c.getNombre() + " " + c.getApellido()).toLowerCase();
-            if (nombreCompleto.contains(busqueda)) {
-                clienteEncontrado = c;
-                break;
+
+        try {
+            RespuestaControlador<ArrayList<Venta>> respuesta = ventaControlador.buscarTodos();
+
+            if (!respuesta.exito() || respuesta.dato() == null) {
+                JOptionPane.showMessageDialog(this, "No se pudieron cargar las ventas: " + respuesta.mensaje(),"Error de búsqueda",JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            ArrayList<Venta> ventasDelCliente = new ArrayList<>();
+            for (Venta v : respuesta.dato()) {
+                if (v.getIdCliente().toLowerCase().contains(busqueda)) {
+                    ventasDelCliente.add(v);
+                }
+            }
+
+            if (ventasDelCliente.isEmpty()) {
+                JOptionPane.showMessageDialog(this,"No se encontraron ventas para el cliente indicado.","Sin resultados",JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            double totalAcumulado = 0;
+
+            for (Venta v : ventasDelCliente) {
+                modeloTablaCliente.addRow(new Object[]{
+                    v.getId(),
+                    FMT_MONEDA.format(v.getTotalVenta()),
+                    "—",
+                    FMT_MONEDA.format(v.getTotalVenta()),
+                    FMT_FECHA.format(v.getFechaVenta())
+                });
+                totalAcumulado += v.getTotalVenta();
+            }
+
+            lblTotalCliente.setText(FMT_MONEDA.format(totalAcumulado));
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error inesperado en la búsqueda: " + e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }
- 
-        if (clienteEncontrado == null) {
-            JOptionPane.showMessageDialog(this,
-                    "No se encontró ningún cliente con ese nombre.",
-                    "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
- 
-        // Ventas del cliente
-        ArrayList<Venta> ventasCliente = new ArrayList<>();
-        for (Venta v : ventas) {
-            if (v.getIdCliente().equals(clienteEncontrado.getId()))
-                ventasCliente.add(v);
-        }
- 
-        if (ventasCliente.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "El cliente no tiene ventas registradas.",
-                    "Sin ventas", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
- 
-        // Mapas auxiliares
-        Map<String, Producto> mapProductos = new HashMap<>();
-        for (Producto p : productos) mapProductos.put(p.getId(), p);
- 
-        Map<String, Venta> mapVentas = new HashMap<>();
-        for (Venta v : ventasCliente) mapVentas.put(v.getId(), v);
- 
-        // Sesión más reciente = venta con fecha mayor
-        Venta ventaReciente = ventasCliente.stream()
-                .max((a, b) -> a.getFechaVenta().compareTo(b.getFechaVenta()))
-                .orElse(null);
- 
-        double totalSesion    = 0;
-        double totalAcumulado = 0;
- 
-        for (DetalleVenta dv : detalles) {
-            if (!mapVentas.containsKey(dv.getIdVenta())) continue;
- 
-            Producto p = mapProductos.get(dv.getIdProducto());
-            String nombreProd = (p != null) ? p.getNombre() : "N/A";
-            Venta v = mapVentas.get(dv.getIdVenta());
- 
-            modeloTablaCliente.addRow(new Object[]{
-                nombreProd,
-                FMT_MONEDA.format(dv.getPrecioVenta()),
-                dv.getCantidad(),
-                FMT_MONEDA.format(dv.getSubtotal()),
-                FMT_FECHA.format(v.getFechaVenta())
-            });
- 
-            totalAcumulado += dv.getSubtotal();
- 
-            if (ventaReciente != null && dv.getIdVenta().equals(ventaReciente.getId()))
-                totalSesion += dv.getSubtotal();
-        }
- 
-        lblTotalSesion.setText(FMT_MONEDA.format(totalSesion));
-        lblTotalCliente.setText(FMT_MONEDA.format(totalAcumulado));
     }
  
     /** Limpia los resultados de búsqueda por cliente. */
     private void limpiarBusqueda() {
-        txtBuscarCliente.setText("");
-        modeloTablaCliente.setRowCount(0);
-        lblTotalSesion.setText("$0");
-        lblTotalCliente.setText("$0");
-    }
+    txtBuscarCliente.setText("");
+    modeloTablaCliente.setRowCount(0);
+    lblTotalSesion.setText("$0");
+    lblTotalCliente.setText("$0");
+}
  
     /**
      * Carga tarjetas con el total vendido por cada categoría de productos.
      */
     private void cargarVentasPorCategoria() {
         panelCategoria.removeAll();
- 
-        ArrayList<Categoria>    categorias = categoriaDAO.obteners();
-        ArrayList<Producto>     productos  = productoDAO.obteners();
-        ArrayList<DetalleVenta> detalles   = detalleDAO.obteners();
- 
-        // Mapa idProducto → idCategoria
-        Map<String, String> prodCat = new HashMap<>();
-        for (Producto p : productos) prodCat.put(p.getId(), p.getIdCategoria());
- 
-        // Mapa idCategoria → nombre
-        Map<String, String> catNombre = new HashMap<>();
-        for (Categoria c : categorias) catNombre.put(c.getId(), c.getNombre());
- 
-        // Suma de subtotales por categoría
-        Map<String, Double> totalPorCat = new HashMap<>();
-        for (DetalleVenta dv : detalles) {
-            String idCat = prodCat.getOrDefault(dv.getIdProducto(), "sin_cat");
-            totalPorCat.merge(idCat, dv.getSubtotal(), Double::sum);
+
+        try {
+            // ventaControlador.ventasPorCategoria() — devuelve lista de VentaPorCategoriaDTO con nombre y total por categoría
+            RespuestaControlador<ArrayList<VentaPorCategoriaDTO>> respuesta
+                    = ventaControlador.ventasPorCategoria();
+
+            if (!respuesta.exito() || respuesta.dato() == null || respuesta.dato().isEmpty()) {
+                JLabel sinDatos = new JLabel("No hay datos de categorías disponibles.");
+                sinDatos.setForeground(COLOR_TEXTO_MUTED);
+                panelCategoria.add(sinDatos);
+                panelCategoria.revalidate();
+                panelCategoria.repaint();
+                return;
+            }
+
+            Color[] colores = {COLOR_CARD_1, COLOR_CARD_2, COLOR_CARD_3,
+                new Color(0xEC, 0x48, 0x99), new Color(0x8B, 0x5C, 0xF6)};
+            int i = 0;
+
+            for (VentaPorCategoriaDTO dto : respuesta.dato()) {
+                Color color = colores[i % colores.length];
+
+                JPanel card = new JPanel(new BorderLayout(0, 4));
+                card.setBackground(COLOR_PANEL_SEC);
+                card.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(0, 4, 0, 0, color),
+                        new EmptyBorder(12, 14, 12, 20)
+                ));
+                card.setPreferredSize(new Dimension(200, 80));
+
+                JLabel lblNom = new JLabel(dto.categoria());
+                lblNom.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
+                lblNom.setForeground(COLOR_TEXTO);
+
+                JLabel lblTotal = new JLabel(FMT_MONEDA.format(dto.totalVentas()));
+                lblTotal.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
+                lblTotal.setForeground(color);
+
+                card.add(lblNom, BorderLayout.NORTH);
+                card.add(lblTotal, BorderLayout.CENTER);
+                panelCategoria.add(card);
+                i++;
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar las categorías: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
- 
-        Color[] colores = {COLOR_CARD_1, COLOR_CARD_2, COLOR_CARD_3,
-                           new Color(0xEC, 0x48, 0x99), new Color(0x8B, 0x5C, 0xF6)};
-        int i = 0;
- 
-        for (Map.Entry<String, Double> entry : totalPorCat.entrySet()) {
-            String nombre = catNombre.getOrDefault(entry.getKey(), "Sin categoría");
-            Color  color  = colores[i % colores.length];
- 
-            JPanel card = new JPanel(new BorderLayout(0, 4));
-            card.setBackground(COLOR_PANEL_SEC);
-            card.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createMatteBorder(0, 4, 0, 0, color),
-                    new EmptyBorder(12, 14, 12, 20)
-            ));
-            card.setPreferredSize(new Dimension(200, 80));
- 
-            JLabel lblNom = new JLabel(nombre);
-            lblNom.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
-            lblNom.setForeground(COLOR_TEXTO);
- 
-            JLabel lblTotal = new JLabel(FMT_MONEDA.format(entry.getValue()));
-            lblTotal.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
-            lblTotal.setForeground(color);
- 
-            card.add(lblNom,   BorderLayout.NORTH);
-            card.add(lblTotal, BorderLayout.CENTER);
-            panelCategoria.add(card);
-            i++;
-        }
- 
-        if (totalPorCat.isEmpty()) {
-            JLabel sinDatos = new JLabel("No hay datos de categorías disponibles.");
-            sinDatos.setForeground(COLOR_TEXTO_MUTED);
-            panelCategoria.add(sinDatos);
-        }
- 
+
         panelCategoria.revalidate();
         panelCategoria.repaint();
     }
- 
-    // ══════════════════════════════════════════════════════════════
-    //  HELPERS DE ESTILO
-    // ══════════════════════════════════════════════════════════════
+
  
     /** Aplica estilo oscuro a una JTable y la retorna. */
     private JTable estilizarTabla(JTable tabla) {
