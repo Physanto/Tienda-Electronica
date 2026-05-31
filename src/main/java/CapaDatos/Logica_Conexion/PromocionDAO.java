@@ -25,9 +25,8 @@ public class PromocionDAO {
 
         if(conexion == null){ return listaPromocion; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
                 Promocion promocion = new Promocion(resultSet.getString("id"), resultSet.getDouble("stock"),
@@ -57,9 +56,8 @@ public class PromocionDAO {
 
         if(conexion == null){ return listaPromocion; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
                 PromocionesDTO.PromocionAplicadaDTO promocion = new PromocionesDTO.PromocionAplicadaDTO(resultSet.getString("id"), resultSet.getString("nombre"),
@@ -84,8 +82,7 @@ public class PromocionDAO {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) return false;
 
-        try {
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, promociones.getId());
             preparedStatement.setString(2, promociones.getNombre());
@@ -111,9 +108,8 @@ public class PromocionDAO {
         if(conexion == null) return listaPromociones;
 
 
-        try {
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
 
@@ -136,8 +132,7 @@ public class PromocionDAO {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) return false;
 
-        try {
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setDate(1, (Date)fechaActual);
             preparedStatement.setString(2, idPromocion);
@@ -157,8 +152,7 @@ public class PromocionDAO {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) return false;
 
-        try {
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, promocionClienteDTO.id());
             preparedStatement.setString(2, promocionClienteDTO.idPromocion());
@@ -187,9 +181,8 @@ public class PromocionDAO {
         if(conexion == null) return listaPromociones;
 
 
-        try {
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
 
@@ -214,8 +207,7 @@ public class PromocionDAO {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) return false;
 
-        try {
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, promocionProductoDTO.id());
             preparedStatement.setString(2, promocionProductoDTO.idPromocion());
@@ -241,9 +233,8 @@ public class PromocionDAO {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) return listaPromociones;
 
-        try {
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
 

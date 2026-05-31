@@ -87,10 +87,10 @@ public class ClienteOnlineCRUD implements IOnlineCRUD<Cliente> {
 
         Map<String, Object> datos = new HashMap<>();
         datos.put("id", id);
-        datos.put("nombre", id);
-        datos.put("apellido", id);
-        datos.put("direccion", id);
-        datos.put("cedula", id);
+        datos.put("nombre", cliente.getNombre());
+        datos.put("apellido", cliente.getApellido());
+        datos.put("direccion", cliente.getDireccion());
+        datos.put("cedula", cliente.getCedula());
 
         return GeneralOnlineProviderCRUD.actualizar("Cliente", id, datos);
     }

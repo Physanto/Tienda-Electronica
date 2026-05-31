@@ -1,5 +1,9 @@
 package CapaLogicaNegocio.Helpers;
 
+import CapaDatos.Logica_Conexion.Conexion;
+
+import java.sql.Connection;
+
 /**
  * Clase que se comporta como un daemon para la monitorizacion de la red del sistema.
  *
@@ -7,8 +11,13 @@ package CapaLogicaNegocio.Helpers;
  */
 public class HelperMonitorRed extends Thread{
 
-    public static boolean usandoNube = true;
-    public static boolean estadoAnterior = true;
+    // variables de tipo volatile porque se estan manejando hilos asi que se quiere que el cambio sea visible para todos
+
+    public static volatile boolean usandoNube = true;
+    public static volatile boolean estadoAnterior = true;
+
+    public static volatile boolean localDisponible = true;
+    public static volatile boolean estadoAnteriorLocal = true;
 
     /**
      * Metodo sobreescrito de la clase Thread donde monitorea todo el tiempo el estado de la red
@@ -28,6 +37,9 @@ public class HelperMonitorRed extends Thread{
                         usandoNube = true;
 
                         HelperSincronizador.SincronizarLocalANube();
+                        if (hayLocalDisponible()) {
+                            HelperSincronizador.SincronizarNubeALocal();
+                        }
                     }
                     else {
                         System.out.println("Conexion perdida, cambiando a local");
@@ -35,6 +47,25 @@ public class HelperMonitorRed extends Thread{
                     }
                     estadoAnterior = hayInternet;
                 }
+
+                boolean hayLocal = hayLocalDisponible();
+
+                if(hayLocal != estadoAnteriorLocal) {
+                    if (hayLocal) {
+                        System.out.println("Base de datos local recuperada, bajando pendientes desde la nube");
+                        localDisponible = true;
+
+                        if (usandoNube) {
+                            HelperSincronizador.SincronizarNubeALocal();
+                        }
+                    }
+                    else {
+                        System.out.println("Base de datos local perdida, operando contra la nube");
+                        localDisponible = false;
+                    }
+                    estadoAnteriorLocal = hayLocal;
+                }
+
                 Thread.sleep(5000);
             }
             catch (InterruptedException e){ break; }
@@ -46,4 +77,17 @@ public class HelperMonitorRed extends Thread{
      * @return true si hay conexion estable de internet, de lo contrario retorna false
      */
     public static boolean estaUsandoNube(){ return usandoNube; }
+
+    /**
+     * Verifica si la base de datos local esta disponible abriendo una conexion de sondeo que se cierra de inmediato.
+     * @return true si se pudo conectar con la base local, de lo contrario false
+     */
+    private static boolean hayLocalDisponible(){
+        try (Connection conexion = Conexion.getConexionLocal()) {
+            return conexion != null;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
 }

@@ -27,8 +27,7 @@ public class CategoriaDAO implements ILocalDAO<Categoria> {
 
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
 
             preparedStatement.setString(1, categoria.getId());
             preparedStatement.setString(2, categoria.getNombre());
@@ -52,8 +51,7 @@ public class CategoriaDAO implements ILocalDAO<Categoria> {
 
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
@@ -76,12 +74,9 @@ public class CategoriaDAO implements ILocalDAO<Categoria> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return categoria; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
             preparedStatement.setString(1, id);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
                 categoria = new Categoria(resultSet.getString("id"), resultSet.getString("nombre"));
@@ -105,11 +100,8 @@ public class CategoriaDAO implements ILocalDAO<Categoria> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return listaCategorias; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while(resultSet.next()){
                 Categoria categoria = new Categoria(resultSet.getString("id"), resultSet.getString("nombre"));
@@ -131,8 +123,7 @@ public class CategoriaDAO implements ILocalDAO<Categoria> {
         Connection conexion = Conexion.getConexionLocal();
         if(conexion == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
             preparedStatement.setString(1, categoria.getNombre());
             preparedStatement.setString(2, categoria.getId());
 

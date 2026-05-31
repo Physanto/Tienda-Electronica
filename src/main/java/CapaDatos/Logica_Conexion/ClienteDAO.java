@@ -22,14 +22,12 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
     public boolean agregar(Cliente cliente){
         String query
                 = "INSERT INTO Cliente (id,nombre,apellido,direccion,cedula)"
-                + " VALUES (?, ?, ?, ?, ?, ?)";
+                + " VALUES (?, ?, ?, ?, ?)";
 
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try{
-
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, cliente.getId());
             preparedStatement.setString(2, cliente.getNombre());
             preparedStatement.setString(3, cliente.getApellido());
@@ -56,8 +54,7 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
             preparedStatement.setString(1, id);
             return preparedStatement.executeUpdate() >= 1;
         }
@@ -81,11 +78,10 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return null; }
 
-        try{
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            preparedStatement.setString(1, id);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            preparedStatement.setString(1, id);
             while (resultSet.next()) {
                 cliente = new Cliente(resultSet.getString("id"),
                         resultSet.getString("nombre"),
@@ -112,9 +108,8 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return listaClientes; }
 
-        try{
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = con.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             while (resultSet.next()) {
                 Cliente cliente = new Cliente(
@@ -145,8 +140,7 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
         Connection con = Conexion.getConexionLocal();
         if(con == null) { return false; }
 
-        try{
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
 
             preparedStatement.setString(1, cliente.getNombre());
             preparedStatement.setString(2, cliente.getApellido());
@@ -163,18 +157,14 @@ public class ClienteDAO implements ILocalDAO<Cliente> {
     }
 
     public Long cantidadClientes(){
-
         String query = "SELECT COUNT(id) AS cantidad FROM Cliente";
-
         Long total = 0l;
 
         Connection conexion = Conexion.getConexionLocal();
-
         if(conexion == null) return 0l;
 
-        try{
-            PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery()){
 
             if(resultSet.next()){
                 total = resultSet.getLong("cantidad");

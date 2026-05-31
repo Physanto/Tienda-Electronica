@@ -27,44 +27,62 @@ public class Conexion {
      * Intenta establecer la conexión con Firebase.
      * Empuja la excepción IOException hacia arriba si el archivo de credenciales falla.
      */
-    public static Firestore getConexionNube() throws IOException {
+    public static Firestore getConexionNube() {
+        if (db != null) return db;
 
-        if (db != null) {
-            return db;
-        }
-
-        try{
+        try {
             if (FirebaseApp.getApps().isEmpty()) {
                 System.out.println("Inicializando Firebase por primera vez...");
-                FileInputStream as = new FileInputStream("tienda-electronica-v2.json");
-
-                FirebaseOptions options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(as))
-                        .build();
-                FirebaseApp.initializeApp(options);
+                try (FileInputStream as = new FileInputStream("tienda-electronica-v2.json")) {
+                    FirebaseOptions options = FirebaseOptions.builder()
+                            .setCredentials(GoogleCredentials.fromStream(as))
+                            .build();
+                    FirebaseApp.initializeApp(options);
+                }
             }
+            db = FirestoreClient.getFirestore();
+            System.out.println("Conexión Exitosa a Firestore.");
+            return db;
         }
-        catch (Exception e){
-            System.out.println("Fallo la conexion con la nube");
+        catch (Exception e) {
+            System.out.println("Falló la conexión con la nube: " + e.getMessage());
+            return null;
         }
-        db = FirestoreClient.getFirestore();
-        System.out.println("Conexión Exitosa a Firestore.");
-        return db;
     }
 
     public static Connection getConexionLocal(){
-        String url = "jdbc:mysql://localhost:3306/Tienda_Electronica";
+        String url = "jdbc:mysql://localhost:3306/Tienda_Electronica"
+                + "?useSSL=false"
+                + "&serverTimezone=UTC";
         String user = "root";
         String pass = "root";
 
-        if(conexion != null) return conexion;
-
         try{
-            return DriverManager.getConnection(url, user, pass);
+            if(conexion == null || conexion.isClosed()){
+               conexion = DriverManager.getConnection(url,user,pass);
+            }
         }
         catch (SQLException e){
             System.out.println("Error en la conexion" + e.getMessage());
+            return null;
         }
-        return null;
+        return conexion;
+    }
+
+    /**
+     * metodo encargado de cerrar la conexion al cerrar la app
+     */
+    public static void cerrarConexionLocal() {
+        try {
+            if (conexion != null && !conexion.isClosed()) {
+                conexion.close();
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error al cerrar la conexion: " + e.getMessage());
+        }
+        finally {
+            conexion = null;
+        }
     }
 }
