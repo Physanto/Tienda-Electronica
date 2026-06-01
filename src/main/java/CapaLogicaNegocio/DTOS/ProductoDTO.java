@@ -6,4 +6,6 @@ package CapaLogicaNegocio.DTOS;
  *
  * @author Manuel Figueroa (Physanto)
  */
-public record ProductoDTO(String id, String codigo, String nombre, String marca, String serie, String stock, String precioActual, String fechaVencimiento, String idCategoria) {}
+public record ProductoDTO(String id, String codigo, String nombre, String marca, String serie, String stock,
+        String precioActual, String fechaVencimiento, String idCategoria) {
+}

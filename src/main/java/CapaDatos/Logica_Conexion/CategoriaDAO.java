@@ -7,8 +7,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 /**
- * Clase que se encarga de hacer el CRUD en la tabla categoria de la base de datos local,
- * esta implementa la interfaz generica definida en el mismo paquete, ademas hace uso de la clase Connection
+ * Clase que se encarga de hacer el CRUD en la tabla categoria de la base de
+ * datos local,
+ * esta implementa la interfaz generica definida en el mismo paquete, ademas
+ * hace uso de la clase Connection
  * para la comunicacion con la base de datos.
  *
  * @author Manuel Figueroa (Physanto)
@@ -17,119 +19,137 @@ public class CategoriaDAO implements ILocalDAO<Categoria> {
 
     /**
      * Agrega una nueva categoria a la base de datos
+     * 
      * @param categoria la categoria que quiere agregar a la base de datos
      * @return false si no inserta ningun registro, de lo contrario true.
      */
     @Override
-    public boolean agregar(Categoria categoria){
+    public boolean agregar(Categoria categoria) {
         String query = "INSERT INTO Categoria (id, nombre) VALUES (?,?)";
         Connection conexion = Conexion.getConexionLocal();
 
-        if(conexion == null) { return false; }
+        if (conexion == null) {
+            return false;
+        }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query)) {
 
             preparedStatement.setString(1, categoria.getId());
             preparedStatement.setString(2, categoria.getNombre());
 
             return preparedStatement.executeUpdate() >= 1;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println("Error CategoriaDAO: " + ex.getMessage());
         }
-       return false;
+        return false;
     }
+
     /**
-     * Elimina de la base de datos la categoria con el idCliente pasado por argumento
+     * Elimina de la base de datos la categoria con el idCliente pasado por
+     * argumento
+     * 
      * @param id es el idCliente de la categoria que se quiere eliminar
      * @return true si elimina el registro, de lo contrario false
      */
     @Override
-    public boolean eliminar(String id){
+    public boolean eliminar(String id) {
         String query = "DELETE FROM Categoria WHERE id = ?";
         Connection conexion = Conexion.getConexionLocal();
 
-        if(conexion == null) { return false; }
+        if (conexion == null) {
+            return false;
+        }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query)) {
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
     }
+
     /**
-     * Extrae de la base de datos la categoria que coincide con el idCliente pasado por argumento
+     * Extrae de la base de datos la categoria que coincide con el idCliente pasado
+     * por argumento
+     * 
      * @param id es el idCliente de la categoria a buscar
-     * @return un objeto de tipo Categoria con toda la informacion de la categoria o null si no encuentra nada.
+     * @return un objeto de tipo Categoria con toda la informacion de la categoria o
+     *         null si no encuentra nada.
      */
     @Override
-    public Categoria obtener(String id){
+    public Categoria obtener(String id) {
         String query = "SELECT * FROM Categoria WHERE id = ?";
         Categoria categoria = null;
 
         Connection conexion = Conexion.getConexionLocal();
-        if(conexion == null) { return categoria; }
+        if (conexion == null) {
+            return categoria;
+        }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query)) {
             preparedStatement.setString(1, id);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
-                while(resultSet.next()){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
                     categoria = new Categoria(resultSet.getString("id"), resultSet.getString("nombre"));
                 }
             }
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return categoria;
     }
+
     /**
      * Obtiene todos los registros de la tabla categoria de la base de datos
-     * @return una lista con las categorias registradas en la base de datos o una lista vacia sino existen categorias
+     * 
+     * @return una lista con las categorias registradas en la base de datos o una
+     *         lista vacia sino existen categorias
      */
     @Override
-    public ArrayList<Categoria> obteners(){
-        String query = "SELECT * FROM Categoria";
+    public ArrayList<Categoria> obteners() {
+        String query = "SELECT id, nombre FROM Categoria";
         ArrayList<Categoria> listaCategorias = new ArrayList<>();
 
         Connection conexion = Conexion.getConexionLocal();
-        if(conexion == null) { return listaCategorias; }
+        if (conexion == null) {
+            return listaCategorias;
+        }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 Categoria categoria = new Categoria(resultSet.getString("id"), resultSet.getString("nombre"));
                 listaCategorias.add(categoria);
             }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return listaCategorias;
     }
+
     /**
      * Actualiza el registro de la categoria que se le pase por argumento
+     * 
      * @param categoria es el registro que se quiere actualizar
      */
     @Override
-    public boolean actualizar(Categoria categoria){
+    public boolean actualizar(Categoria categoria) {
         String query = "UPDATE Categoria SET nombre = ? WHERE id = ?";
         Connection conexion = Conexion.getConexionLocal();
-        if(conexion == null) { return false; }
+        if (conexion == null) {
+            return false;
+        }
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query)) {
             preparedStatement.setString(1, categoria.getNombre());
             preparedStatement.setString(2, categoria.getId());
 
             return preparedStatement.executeUpdate() >= 1;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
