@@ -1,49 +1,156 @@
 package CapaPresentacion.GUI_Cliente;
 
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import CapaPresentacion.GUI_Admin.InicioSesion;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-/**
- *
- * @author Santiago Lopez
- */
-public class MenuCliente extends javax.swing.JFrame {
+public class MenuCliente extends JFrame {
 
-    /**
-     * Creates new form MenuAdministrador
-     */
-    public String pathc;
-    public String s;
+    private JPanel panelPrincipal;
+    private JPanel navBar;
+    private JPanel contentPanel;
+    private CardLayout cardLayout;
+
+    // Panels
+    private Productos panelProductos;
+    private CarritoCompras panelCarrito;
+    private Promociones panelPromociones;
 
     public MenuCliente() {
         initComponents();
-        setLocationRelativeTo(null);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        Path currentRelativePath = Paths.get("");
-        s = currentRelativePath.toAbsolutePath().toString();
-        pathc = s + "\\Images\\" + "Background" + ".jpg";
-        establecerImagen();
+        configurarVentana();
+        inicializarPanels();
+        configurarLayoutPrincipal(); 
+        configurarNavegacion();
     }
 
-    public void establecerImagen() {
+    private void configurarVentana() {
+        setTitle("Menú Cliente");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(1920, 1080));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLocationRelativeTo(null);
+    }
 
-        Image img = null;
-        try {
-            File file = new File(pathc);
-            img = ImageIO.read(new File(pathc));
-            //5. Setear la imagen al JLabel
-            jLabel2.setIcon(new ImageIcon(img));
-        } catch (IOException ioexception) {
-            System.err.println(ioexception);
+    private void inicializarPanels() {
+        cardLayout = new CardLayout();
+        contentPanel = new JPanel(cardLayout);
+        contentPanel.setBackground(new Color(0x1A, 0x1E, 0x29));
+
+        panelProductos = new Productos();
+        panelCarrito = new CarritoCompras();
+        panelPromociones = new Promociones();
+
+        contentPanel.add(panelProductos, "Productos");
+        contentPanel.add(panelCarrito, "Carrito");
+        contentPanel.add(panelPromociones, "Promociones");
+
+        cardLayout.show(contentPanel, "Productos");
+    }
+
+
+    private void configurarLayoutPrincipal() {
+        panelPrincipal = new JPanel(new BorderLayout());
+        navBar = crearNavBar();
+
+        panelPrincipal.add(navBar, BorderLayout.NORTH);
+        panelPrincipal.add(contentPanel, BorderLayout.CENTER);
+
+        setContentPane(panelPrincipal);
+    }
+
+    private void configurarNavegacion() {
+    }
+
+    private JPanel crearNavBar() {
+        JPanel nav = new JPanel(new BorderLayout());
+        nav.setBackground(new Color(0x13, 0x2D, 0x46));
+        nav.setPreferredSize(new Dimension(1920, 80));
+
+        JLabel logo = new JLabel("Tienda Online");
+        logo.setFont(new Font("Segoe UI Light", Font.BOLD, 24));
+        logo.setForeground(Color.WHITE);
+        logo.setBorder(new javax.swing.border.EmptyBorder(0, 30, 0, 0));
+        nav.add(logo, BorderLayout.WEST);
+
+        JPanel opciones = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 20));
+        opciones.setOpaque(false);
+
+        JButton btnProductos = crearBotonNav("Productos");
+        JButton btnCarrito = crearBotonNav("Carrito");
+        JButton btnPromociones = crearBotonNav("Promociones");
+        JButton btnSalir = crearBotonNav("Salir");
+
+        btnProductos.addActionListener(e -> {
+            cardLayout.show(contentPanel, "Productos");
+            activarBoton(btnProductos, btnCarrito, btnPromociones, btnSalir);
+        });
+
+        btnCarrito.addActionListener(e -> {
+            cardLayout.show(contentPanel, "Carrito");
+            activarBoton(btnCarrito, btnProductos, btnPromociones, btnSalir);
+        });
+
+        btnPromociones.addActionListener(e -> {
+            cardLayout.show(contentPanel, "Promociones");
+            activarBoton(btnPromociones, btnProductos, btnCarrito, btnSalir);
+        });
+
+        btnSalir.addActionListener(e -> cerrarSesion());
+
+
+        opciones.add(btnProductos);
+        opciones.add(btnCarrito);
+        opciones.add(btnPromociones);
+        opciones.add(btnSalir);
+
+        nav.add(opciones, BorderLayout.CENTER);
+        return nav;
+    }
+
+    private JButton crearBotonNav(String texto) {
+        JButton btn = new JButton(texto);
+        btn.setFont(new Font("Segoe UI Light", Font.PLAIN, 20));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(0x13, 0x2D, 0x46)); 
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Efecto hover
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btn.setForeground(new Color(0x01, 0xC3, 0x8E));
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btn.setForeground(Color.WHITE);
+            }
+        });
+
+        return btn;
+    }
+
+    private void activarBoton(JButton activo, JButton... otros) {
+        Color verdeActivo = new Color(1, 128, 95);
+        Color azulNormal = new Color(0x13, 0x2D, 0x46);
+
+        activo.setBackground(verdeActivo);
+        for (JButton b : otros) {
+            b.setBackground(azulNormal);
         }
     }
-
+    
+    private void cerrarSesion() {
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Cerrar sesión?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            dispose();
+            new InicioSesion().setVisible(true);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
@@ -51,48 +158,18 @@ public class MenuCliente extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu Cliente");
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
         setResizable(false);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("Menu Opciones Cliente");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, -1, -1));
-
-        jButton3.setBackground(new java.awt.Color(0, 0, 204));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 204, 204));
-        jButton3.setText("Buscar Persona");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 80, 129, -1));
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-4, 0, 510, 300));
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -121,8 +198,5 @@ public class MenuCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

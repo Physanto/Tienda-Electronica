@@ -19,21 +19,16 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 /**
  * Ventana principal del módulo Administrador de la Tienda Electrónica.
@@ -52,30 +47,20 @@ import javax.swing.Timer;
 public class MenuAdmin extends JFrame {
 
     private static final Color COLOR_SIDEBAR_BG = new Color(0x1A, 0x1E, 0x29);
-
     private static final Color COLOR_BTN_NORMAL = new Color(0x13, 0x2D, 0x46);
-
     private static final Color COLOR_BTN_ACTIVO = new Color(1, 128, 95);
-
     private static final Color COLOR_BTN_HOVER = new Color(0x1A, 0x3D, 0x58);
-
     private static final Color COLOR_TEXTO_BTN = new Color(0xFF, 0xFF, 0xFF);
-
     private static final Color COLOR_TITULO_SIDEBAR = new Color(0x8A, 0xA5, 0xBE);
-
     private static final Color COLOR_CONTENIDO_BG = new Color(0x1A, 0x1E, 0x29);
 
     /** Ancho fijo de la sidebar en píxeles. */
     private static final int SIDEBAR_ANCHO = 245;
 
     private static final String CARD_PRODUCTOS = "PRODUCTOS";
-
     private static final String CARD_CLIENTES = "CLIENTES";
-
     private static final String CARD_VENTAS = "VENTAS";
-
     private static final String CARD_PROMOCIONES = "PROMOCIONES";
-
     private static final String CARD_SETTINGS = "SETTINGS";
 
     /** Panel izquierdo que contiene los botones de navegación. */
@@ -103,7 +88,7 @@ public class MenuAdmin extends JFrame {
 
     public MenuAdmin() {
         initComponents();
-        LinearLoadingDialog.mostrar(this, 10000);
+        LinearLoadingDialog.mostrar(this, 5000);
         construirSidebar();
         construirAreaContenido();
         ensamblarLayout();

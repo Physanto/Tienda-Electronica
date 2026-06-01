@@ -167,7 +167,7 @@ public class Clientes extends javax.swing.JPanel {
 
         tablaClientes = new JTable(tableModel);
         tablaClientes.setBackground(COLOR_TABLE_BG);
-        tablaClientes.setForeground(COLOR_TEXTO); // 🔹 texto blanco en filas
+        tablaClientes.setForeground(COLOR_TEXTO); 
         tablaClientes.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
         tablaClientes.setRowHeight(36);
         tablaClientes.setShowHorizontalLines(true);
@@ -178,8 +178,8 @@ public class Clientes extends javax.swing.JPanel {
 
         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
         cellRenderer.setHorizontalAlignment(JLabel.CENTER);
-        cellRenderer.setForeground(Color.WHITE); // texto blanco
-        cellRenderer.setBackground(COLOR_TABLE_BG); // fondo oscuro
+        cellRenderer.setForeground(Color.WHITE);
+        cellRenderer.setBackground(COLOR_TABLE_BG); 
         for (int col = 0; col < tablaClientes.getColumnCount(); col++) {
             tablaClientes.getColumnModel().getColumn(col).setCellRenderer(cellRenderer);
         }
@@ -187,7 +187,7 @@ public class Clientes extends javax.swing.JPanel {
         // Encabezado de la tabla (mantener estilo actual)
         JTableHeader header = tablaClientes.getTableHeader();
         header.setBackground(COLOR_PANEL_SEC);
-        header.setForeground(COLOR_TEXTO); // títulos en blanco
+        header.setForeground(COLOR_TEXTO);
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
 

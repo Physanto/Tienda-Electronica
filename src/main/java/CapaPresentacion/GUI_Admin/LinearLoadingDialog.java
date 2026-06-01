@@ -9,9 +9,7 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
 /**
- * Diálogo de carga personalizado con diseño de barra lineal luminosa ("Neon
- * Glow").
- * Dimensión de barra estricta de 100x25 píxeles.
+ * Diálogo de carga personalizado con diseño de barra lineal luminosa ("Neon Glow"). Dimensión de barra estricta de 100x25 píxeles.
  */
 public class LinearLoadingDialog extends JDialog {
 
@@ -21,11 +19,9 @@ public class LinearLoadingDialog extends JDialog {
 
     /**
      * Constructor principal.
-     * 
-     * @param padre              Ventana JFrame que actúa como propietaria (puede
-     *                           ser null).
-     * @param tiempoMilisegundos Duración en milisegundos antes de cerrarse
-     *                           automáticamente.
+     *
+     * @param padre Ventana JFrame que actúa como propietaria (puede ser null).
+     * @param tiempoMilisegundos Duración en milisegundos antes de cerrarse automáticamente.
      */
     public LinearLoadingDialog(Frame padre, int tiempoMilisegundos) {
         super(padre, "Cargando...", true); // Modal por defecto
@@ -37,45 +33,50 @@ public class LinearLoadingDialog extends JDialog {
         // 1. Configuración del JDialog sin bordes del sistema
         this.setUndecorated(true);
 
-        // Creamos un panel principal con un fondo negro y un margen interno (Border)
-        // Esto simula los márgenes que tiene un JOptionPane (15 píxeles arriba/abajo,
-        // 25 a los lados)
+        // TRUCO 1: Hace que la ventana nativa sea completamente transparente
+        // De este modo, las esquinas cuadradas del sistema operativo no se verán.
+        this.setBackground(new Color(0, 0, 0, 0));
+
+        // Creamos el panel principal que ahora tendrá el fondo negro sólido
         JPanel panelPrincipal = new JPanel(new GridBagLayout());
-        panelPrincipal.setBackground(Color.BLACK);
-        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(15, 40, 15, 40));
+        panelPrincipal.setBackground(Color.BLACK); // El color negro del fondo
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
         this.setContentPane(panelPrincipal);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.CENTER; // Todo perfectamente centrado
+        gbc.anchor = GridBagConstraints.CENTER;
 
-        // 2. Instanciar la barra de neón (Dimensión fija e inmutable de 100x25)
+        // 2. Instanciar la barra de neón (Dimensión fija de 100x25)
         barraComponente = new BarraNeon();
-        Dimension tamanoBarra = new Dimension(100, 25);
+        Dimension tamanoBarra = new Dimension(200, 25);
         barraComponente.setPreferredSize(tamanoBarra);
         barraComponente.setMinimumSize(tamanoBarra);
         barraComponente.setMaximumSize(tamanoBarra);
 
         gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 10, 0); // Espacio de 10px entre la barra y el texto inferior
+        gbc.insets = new Insets(0, 0, 10, 0);
         panelPrincipal.add(barraComponente, gbc);
 
         // 3. Texto inferior "Loading..." estilizado
         JLabel lblTexto = new JLabel();
         lblTexto.setFont(new Font("Times New Roman", Font.ITALIC | Font.BOLD, 14));
-        lblTexto.setText(
-                "<html><span style='color: #AADCFF; text-shadow: 0px 0px 5px #0088FF;'>Loading...</span></html>");
+        lblTexto.setText("<html><span style='color: #AADCFF; text-shadow: 0px 0px 5px #0088FF;'>Loading...</span></html>");
 
         gbc.gridy = 1;
         gbc.insets = new Insets(0, 0, 0, 0);
         panelPrincipal.add(lblTexto, gbc);
 
-        // 4. El Secreto: Empaquetar la ventana automáticamente según sus componentes
-        // internos
+        // 4. Empaquetar la ventana para calcular las dimensiones antes de redondear
         this.pack();
 
-        // 5. Centrar en pantalla (IMPORTANTE: Debe ir DESPUÉS de pack())
+        // TRUCO 2: Aplicar esquinas redondeadas a la ventana completa
+        // 'RoundRectangle2D.Float' recortará el JDialog con la dimensión exacta que calculó pack()
+        // El '20, 20' del final controla qué tan redondas quieres las esquinas (puedes subirlo a 30 si quieres más arco)
+        this.setShape(new RoundRectangle2D.Float(0, 0, this.getWidth(), this.getHeight(), 20, 20));
+
+        // 5. Centrar en pantalla (Siempre después de pack() y setShape())
         this.setLocationRelativeTo(getOwner());
 
         // 6. Temporizador de autodestrucción
@@ -87,25 +88,21 @@ public class LinearLoadingDialog extends JDialog {
     }
 
     /**
-     * Hace visible el diálogo e inicia automáticamente las animaciones y el
-     * temporizador.
+     * Hace visible el diálogo e inicia automáticamente las animaciones y el temporizador.
      */
     public void iniciar() {
         if (timerCierre != null && !timerCierre.isRunning()) {
             timerCierre.start();
         }
-        // SwingUtilities asegura que la interfaz se dibuje correctamente en su propio
-        // hilo de eventos
+        // SwingUtilities asegura que la interfaz se dibuje correctamente en su propio hilo de eventos
         SwingUtilities.invokeLater(() -> this.setVisible(true));
     }
 
     /**
-     * Método utilitario estático para mostrar la barra rápidamente con una sola
-     * línea de código.
-     * 
-     * @param padre              Ventana JFrame actual desde donde se invoca.
-     * @param tiempoMilisegundos Tiempo que durará en pantalla (ej: 5000 para 5
-     *                           segundos).
+     * Método utilitario estático para mostrar la barra rápidamente con una sola línea de código.
+     *
+     * @param padre Ventana JFrame actual desde donde se invoca.
+     * @param tiempoMilisegundos Tiempo que durará en pantalla (ej: 5000 para 5 segundos).
      */
     public static void mostrar(Frame padre, int tiempoMilisegundos) {
         LinearLoadingDialog dialogo = new LinearLoadingDialog(padre, tiempoMilisegundos);
@@ -116,6 +113,7 @@ public class LinearLoadingDialog extends JDialog {
     // COMPONENTE INTERNO: LA BARRA DE PROGRESO DE NEÓN
     // =========================================================================
     private static class BarraNeon extends JComponent {
+
         private float progreso = 0.0f;
         private final Timer animacionTimer;
 
