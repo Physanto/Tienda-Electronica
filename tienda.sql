@@ -91,11 +91,15 @@ CREATE TABLE PromocionProducto(
 --------- tabla encargada del registro de la sincronizacion
 
 CREATE TABLE ColaSincronizadora(
-    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    secuencia BIGINT NOT NULL AUTO_INCREMENT, -- T1: orden de reproduccion (replay) garantizado
+    id VARCHAR(50) NOT NULL,
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,
     tablaAfectada VARCHAR(50) NOT NULL,
     idRegistroAfectado VARCHAR(50) NOT NULL,
     registroJson TEXT NOT NULL,
-    estado VARCHAR(2) NOT NULL
+    estado VARCHAR(2) NOT NULL,
+    PRIMARY KEY (secuencia),
+    UNIQUE KEY uq_id (id),       -- id sigue siendo unico (lo usan actualizar/eliminar por id)
+    INDEX idx_estado (estado)    -- T2: evita escanear toda la tabla en el vaciado (WHERE estado=0)
 );
 
