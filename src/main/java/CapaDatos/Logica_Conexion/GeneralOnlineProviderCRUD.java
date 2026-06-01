@@ -77,21 +77,20 @@ public class GeneralOnlineProviderCRUD {
      * @return el registro encontrado, de lo contrario null
      */
     public static <T> T obtener(String coleccion, String documento, Class<T> clase){
-       QuerySnapshot datos = cargarDatos(coleccion);
-
-       if(datos != null) {
-           try {
-               for (DocumentSnapshot documentSnapshot : datos.getDocuments()) {
-                   if (documentSnapshot.getString("id").equals(documento)) {
-                       return documentSnapshot.toObject(clase);
-                   }
-               }
-           }
-           catch (Exception e) {
-               System.out.println("Error: " + e.getMessage());
-           }
-       }
-       return null;
+        // Lectura directa por id de documento (O(1)) en lugar de descargar toda la coleccion
+        // e iterar en memoria. Valido porque al guardar se usa document(id) con id == record.id,
+        // por lo que el id de documento coincide con el identificador del registro.
+        try {
+            Firestore db = Conexion.getConexionNube();
+            DocumentSnapshot documentSnapshot = db.collection(coleccion).document(documento).get().get();
+            if (documentSnapshot.exists()) {
+                return documentSnapshot.toObject(clase);
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
     }
 
     /**

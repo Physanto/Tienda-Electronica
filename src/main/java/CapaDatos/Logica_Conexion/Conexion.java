@@ -1,13 +1,11 @@
 package CapaDatos.Logica_Conexion;
 
-import CapaLogicaNegocio.Excepciones.ExcepcionSQL;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,7 +17,11 @@ import java.sql.SQLException;
 public class Conexion {
 
     private static Firestore db;
-    private static Connection conexion;
+
+    // R1: una conexion por hilo. Antes era un unico Connection estatico compartido entre el hilo
+    // daemon de HelperMonitorRed (sincronizacion) y el EDT (CRUD de la UI); java.sql.Connection NO
+    // es thread-safe -> condicion de carrera. Con ThreadLocal cada hilo usa su propia conexion.
+    private static final ThreadLocal<Connection> conexionLocal = new ThreadLocal<>();
 
     private Conexion() {
     }
@@ -60,21 +62,26 @@ public class Conexion {
         String pass = "root";
 
         try {
-            if (conexion == null || conexion.isClosed()) {
+            Connection conexion = conexionLocal.get();
+            // isValid(2) detecta conexiones muertas (p.ej. cerradas por el wait_timeout de MySQL
+            // mientras el hilo estuvo inactivo), algo que isClosed() no garantiza.
+            if (conexion == null || conexion.isClosed() || !conexion.isValid(2)) {
                 conexion = DriverManager.getConnection(url, user, pass);
+                conexionLocal.set(conexion);
                 System.out.println("conexion a la bd local efectiva");
             }
+            return conexion;
         } catch (SQLException e) {
             System.out.println("Error en la conexion" + e.getMessage());
             return null;
         }
-        return conexion;
     }
 
     /**
      * metodo encargado de cerrar la conexion al cerrar la app
      */
     public static void cerrarConexionLocal() {
+        Connection conexion = conexionLocal.get();
         try {
             if (conexion != null && !conexion.isClosed()) {
                 conexion.close();
@@ -82,7 +89,7 @@ public class Conexion {
         } catch (SQLException e) {
             System.out.println("Error al cerrar la conexion: " + e.getMessage());
         } finally {
-            conexion = null;
+            conexionLocal.remove();
         }
     }
 }
