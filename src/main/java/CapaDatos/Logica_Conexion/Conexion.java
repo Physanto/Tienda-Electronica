@@ -14,21 +14,24 @@ import java.sql.SQLException;
 
 /**
  *
- * @author Santiago Lopez  Patron Singleton
+ * @author Santiago Lopez Patron Singleton
  */
 public class Conexion {
 
     private static Firestore db;
     private static Connection conexion;
 
-    private Conexion(){ }
+    private Conexion() {
+    }
 
     /**
      * Intenta establecer la conexión con Firebase.
-     * Empuja la excepción IOException hacia arriba si el archivo de credenciales falla.
+     * Empuja la excepción IOException hacia arriba si el archivo de credenciales
+     * falla.
      */
     public static Firestore getConexionNube() {
-        if (db != null) return db;
+        if (db != null)
+            return db;
 
         try {
             if (FirebaseApp.getApps().isEmpty()) {
@@ -43,26 +46,25 @@ public class Conexion {
             db = FirestoreClient.getFirestore();
             System.out.println("Conexión Exitosa a Firestore.");
             return db;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Falló la conexión con la nube: " + e.getMessage());
             return null;
         }
     }
 
-    public static Connection getConexionLocal(){
+    public static Connection getConexionLocal() {
         String url = "jdbc:mysql://localhost:3306/Tienda_Electronica"
                 + "?useSSL=false"
                 + "&serverTimezone=UTC";
-        String user = "root";
+        String user = "init";
         String pass = "root";
 
-        try{
-            if(conexion == null || conexion.isClosed()){
-               conexion = DriverManager.getConnection(url,user,pass);
+        try {
+            if (conexion == null || conexion.isClosed()) {
+                conexion = DriverManager.getConnection(url, user, pass);
+                System.out.println("conexion a la bd local efectiva");
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Error en la conexion" + e.getMessage());
             return null;
         }
@@ -77,11 +79,9 @@ public class Conexion {
             if (conexion != null && !conexion.isClosed()) {
                 conexion.close();
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Error al cerrar la conexion: " + e.getMessage());
-        }
-        finally {
+        } finally {
             conexion = null;
         }
     }

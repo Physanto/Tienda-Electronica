@@ -1,8 +1,10 @@
 package CapaPresentacion.GUI_Admin;
+
 /**
  *
  * @author Marlon Vargas
  */
+import CapaLogicaNegocio.Helpers.OSHelper;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -24,24 +26,30 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+
 /**
  * Ventana principal del módulo Administrador de la Tienda Electrónica.
  *
- * <p>Implementa el patrón de navegación Sidebar + CardLayout:
+ * <p>
+ * Implementa el patrón de navegación Sidebar + CardLayout:
  * <ul>
- *   <li>El {@code JPanel} izquierdo ({@code sidebarPanel}) actúa como barra
- *       lateral de navegación con botones para cada módulo.</li>
- *   <li>El {@code JPanel} derecho ({@code contentPanel}) usa {@link CardLayout}
- *       para intercambiar los sub-paneles sin abrir nuevas ventanas.</li>
+ * <li>El {@code JPanel} izquierdo ({@code sidebarPanel}) actúa como barra
+ * lateral de navegación con botones para cada módulo.</li>
+ * <li>El {@code JPanel} derecho ({@code contentPanel}) usa {@link CardLayout}
+ * para intercambiar los sub-paneles sin abrir nuevas ventanas.</li>
  * </ul>
+ * 
  * @author Marlon Vargas
  */
 public class MenuAdmin extends JFrame {
- 
 
     private static final Color COLOR_SIDEBAR_BG = new Color(0x1A, 0x1E, 0x29);
 
@@ -56,61 +64,54 @@ public class MenuAdmin extends JFrame {
     private static final Color COLOR_TITULO_SIDEBAR = new Color(0x8A, 0xA5, 0xBE);
 
     private static final Color COLOR_CONTENIDO_BG = new Color(0x1A, 0x1E, 0x29);
- 
+
     /** Ancho fijo de la sidebar en píxeles. */
     private static final int SIDEBAR_ANCHO = 245;
- 
 
-    private static final String CARD_PRODUCTOS   = "PRODUCTOS";
+    private static final String CARD_PRODUCTOS = "PRODUCTOS";
 
-    private static final String CARD_CLIENTES    = "CLIENTES";
+    private static final String CARD_CLIENTES = "CLIENTES";
 
-    private static final String CARD_VENTAS      = "VENTAS";
+    private static final String CARD_VENTAS = "VENTAS";
 
     private static final String CARD_PROMOCIONES = "PROMOCIONES";
 
-    private static final String CARD_SETTINGS    = "SETTINGS";
- 
+    private static final String CARD_SETTINGS = "SETTINGS";
+
     /** Panel izquierdo que contiene los botones de navegación. */
     private JPanel sidebarPanel;
- 
+
     /**
      * Panel derecho que aloja los sub-paneles mediante CardLayout.
      * Es el "contenedor dinámico" de la interfaz.
      */
     private JPanel contentPanel;
- 
+
     /**
      * Layout manager del contentPanel.
      * Permite intercambiar paneles por nombre sin destruirlos.
      */
     private CardLayout cardLayout;
- 
 
     private JButton btnProductos;
     private JButton btnClientes;
     private JButton btnVentas;
     private JButton btnPromociones;
     private JButton btnSettings;
- 
-    private JButton botonActivo;
 
-    public String s;
+    private JButton botonActivo;
 
     public MenuAdmin() {
         initComponents();
-        s = Paths.get("").toAbsolutePath().toString();
-
+        LinearLoadingDialog.mostrar(this, 10000);
         construirSidebar();
         construirAreaContenido();
         ensamblarLayout();
-
         contentPanel.add(new Inicio(), "INICIO");
         cardLayout.show(contentPanel, "INICIO");
-
         configurarVentana();
     }
- 
+
     /**
      * Configura las propiedades básicas del JFrame:
      * título, tamaño, comportamiento de cierre y centrado en pantalla.
@@ -124,7 +125,7 @@ public class MenuAdmin extends JFrame {
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
- 
+
     /**
      * Construye el panel lateral izquierdo (sidebar).
      */
@@ -136,53 +137,52 @@ public class MenuAdmin extends JFrame {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                                     RenderingHints.VALUE_RENDER_QUALITY);
+                        RenderingHints.VALUE_RENDER_QUALITY);
                 GradientPaint gp = new GradientPaint(
-                    0, 0, COLOR_SIDEBAR_BG,
-                    0, getHeight(), new Color(8, 13, 28)
-                );
+                        0, 0, COLOR_SIDEBAR_BG,
+                        0, getHeight(), new Color(8, 13, 28));
                 g2d.setPaint(gp);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
- 
+
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
-        sidebarPanel.setOpaque(false); 
+        sidebarPanel.setOpaque(false);
         sidebarPanel.setPreferredSize(new Dimension(SIDEBAR_ANCHO, 0));
         sidebarPanel.setMinimumSize(new Dimension(SIDEBAR_ANCHO, 0));
         sidebarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
- 
+
         // — Logo / Cabecera —
         sidebarPanel.add(crearCabeceraSidebar());
         sidebarPanel.add(Box.createVerticalStrut(8));
- 
+
         // — Etiqueta de sección —
         sidebarPanel.add(crearEtiquetaSeccion("MÓDULOS"));
         sidebarPanel.add(Box.createVerticalStrut(4));
- 
+
         // — Botones de navegación —
-        btnProductos   = crearBotonSidebar("Productos",   CARD_PRODUCTOS, "Productos");
-        btnClientes    = crearBotonSidebar("Clientes",    CARD_CLIENTES, "Clientes");
-        btnVentas      = crearBotonSidebar("Ventas",      CARD_VENTAS, "Ventas");
+        btnProductos = crearBotonSidebar("Productos", CARD_PRODUCTOS, "Productos");
+        btnClientes = crearBotonSidebar("Clientes", CARD_CLIENTES, "Clientes");
+        btnVentas = crearBotonSidebar("Ventas", CARD_VENTAS, "Ventas");
         btnPromociones = crearBotonSidebar("️Promociones", CARD_PROMOCIONES, "Promos");
 
         sidebarPanel.add(btnProductos);
         sidebarPanel.add(btnClientes);
         sidebarPanel.add(btnVentas);
         sidebarPanel.add(btnPromociones);
- 
+
         // Empuja el botón Settings hacia el fondo
         sidebarPanel.add(Box.createVerticalGlue());
- 
+
         // — Separador visual antes de Settings —
         sidebarPanel.add(crearEtiquetaSeccion("SISTEMA"));
         sidebarPanel.add(Box.createVerticalStrut(4));
- 
+
         btnSettings = crearBotonSidebar("Configuración", CARD_SETTINGS, "Config");
         sidebarPanel.add(btnSettings);
         sidebarPanel.add(Box.createVerticalStrut(16));
     }
- 
+
     /**
      * Crea el panel de cabecera de la sidebar con el nombre del sistema
      * y el rol del usuario actual.
@@ -199,8 +199,8 @@ public class MenuAdmin extends JFrame {
         // Ícono del logo
         JLabel lblLogo = new JLabel();
         try {
-            String pathLogo = s + "\\Images\\Icons\\Icono_Logo.png";
-            Image img = ImageIO.read(new File(pathLogo));
+            String ruta = OSHelper.getImageFilePath("Icons/" + "Icono_Logo");
+            Image img = ImageIO.read(new File(ruta));
             Image escalada = img.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
             lblLogo.setIcon(new ImageIcon(escalada));
         } catch (IOException e) {
@@ -230,9 +230,10 @@ public class MenuAdmin extends JFrame {
 
         return logoPanel;
     }
- 
+
     /**
-     * Crea una etiqueta de sección pequeña en la sidebar (texto muted en mayúsculas).
+     * Crea una etiqueta de sección pequeña en la sidebar (texto muted en
+     * mayúsculas).
      *
      * @param texto texto de la etiqueta (ej. "MÓDULOS", "SISTEMA")
      * @return JLabel estilizado como etiqueta de grupo
@@ -246,15 +247,16 @@ public class MenuAdmin extends JFrame {
         lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
         return lbl;
     }
- 
+
     /**
      * Crea un botón de navegación para la sidebar con los tres estados
      * visuales: normal, hover y activo.
      *
-     * <p>Al hacer clic, el botón invoca {@link #mostrarPanel(String, JButton)}
+     * <p>
+     * Al hacer clic, el botón invoca {@link #mostrarPanel(String, JButton)}
      * con la clave del panel correspondiente en el CardLayout.
      *
-     * @param etiqueta  texto visible del botón (ej. "  Productos")
+     * @param etiqueta  texto visible del botón (ej. " Productos")
      * @param cardClave clave del panel a mostrar en el CardLayout
      * @return JButton completamente configurado
      */
@@ -263,7 +265,7 @@ public class MenuAdmin extends JFrame {
 
         // Cargar ícono
         try {
-            String pathIcono = s + "\\Images\\Icons\\" + rutaIcono + ".png";
+            String pathIcono = OSHelper.getImageFilePath("Icons/" + rutaIcono);
             Image img = ImageIO.read(new File(pathIcono));
             Image escalada = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
             btn.setIcon(new ImageIcon(escalada));
@@ -307,41 +309,41 @@ public class MenuAdmin extends JFrame {
 
         return btn;
     }
- 
- 
+
     /**
      * Construye el panel de contenido dinámico usando {@link CardLayout}.
      *
-     * <p>Cada sub-panel (JPanel hijo) se registra con una clave única de tipo
+     * <p>
+     * Cada sub-panel (JPanel hijo) se registra con una clave única de tipo
      * {@code String}. El CardLayout solo hace visible uno a la vez sin
      * destruir los demás, conservando su estado interno.
      */
     private void construirAreaContenido() {
-        cardLayout   = new CardLayout();
+        cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(COLOR_CONTENIDO_BG);
- 
+
         // Registrar cada sub-panel con su clave única
-        contentPanel.add(new Productos(),   CARD_PRODUCTOS);
-        contentPanel.add(new Clientes(),    CARD_CLIENTES);
-        contentPanel.add(new Ventas(),      CARD_VENTAS);
+        contentPanel.add(new Productos(), CARD_PRODUCTOS);
+        contentPanel.add(new Clientes(), CARD_CLIENTES);
+        contentPanel.add(new Ventas(), CARD_VENTAS);
         contentPanel.add(new Promociones(), CARD_PROMOCIONES);
-        contentPanel.add(new Settings(),    CARD_SETTINGS);
+        contentPanel.add(new Settings(), CARD_SETTINGS);
     }
- 
+
     /**
      * Ensambla la estructura final del JFrame:
      * <ul>
-     *   <li>{@code BorderLayout.WEST}   → {@code sidebarPanel}</li>
-     *   <li>{@code BorderLayout.CENTER} → {@code contentPanel}</li>
+     * <li>{@code BorderLayout.WEST} → {@code sidebarPanel}</li>
+     * <li>{@code BorderLayout.CENTER} → {@code contentPanel}</li>
      * </ul>
      * El panel CENTER se expande automáticamente con el resize del frame.
      */
     private void ensamblarLayout() {
-        getContentPane().add(sidebarPanel,  BorderLayout.WEST);
-        getContentPane().add(contentPanel,  BorderLayout.CENTER);
+        getContentPane().add(sidebarPanel, BorderLayout.WEST);
+        getContentPane().add(contentPanel, BorderLayout.CENTER);
     }
- 
+
     /**
      * Muestra el panel indicado en el área de contenido y actualiza
      * el estado visual de los botones de la sidebar.
@@ -356,18 +358,19 @@ public class MenuAdmin extends JFrame {
             botonActivo.setBackground(COLOR_BTN_NORMAL);
             botonActivo.setFont(new Font("Segoe UI Light", Font.PLAIN, 18));
         }
- 
+
         // 2. Activar nuevo botón
         boton.setBackground(COLOR_BTN_ACTIVO);
         boton.setFont(new Font("Segoe UI Light", Font.BOLD, 18));
         botonActivo = boton;
- 
+
         // 3. Cambiar el panel visible en el CardLayout
         cardLayout.show(contentPanel, cardClave);
     }
- 
+
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -376,9 +379,13 @@ public class MenuAdmin extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -396,7 +403,7 @@ public class MenuAdmin extends JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MenuAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MenuAdmin().setVisible(true);

@@ -1,7 +1,9 @@
 package CapaPresentacion.GUI_Admin;
- 
+
+import CapaDatos.Logica_Conexion.Conexion;
 import CapaPresentacion.GUI_Cliente.MenuCliente;
 import CapaLogicaNegocio.Helpers.HelperCifrado;
+import CapaLogicaNegocio.Helpers.HelperMonitorRed;
 import CapaLogicaNegocio.Helpers.OSHelper;
 import CapaLogicaNegocio.Logica_Negocio.Administrador;
 import CapaLogicaNegocio.Logica_Negocio.Persona;
@@ -14,29 +16,28 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
- 
+
 /**
  * Formulario de inicio de sesión.
  *
  * @author Santiago Lopez
  */
 public class InicioSesion extends javax.swing.JFrame {
- 
 
     Usuario usuAdmin;
     Usuario usuCliente;
- 
+
     // Paleta de colores centralizada para mantener coherencia visual
-    private static final Color COLOR_BOTON       = new Color(0, 95,115);
-    private static final Color COLOR_LINEA       = Color.WHITE;
-    private static final Color COLOR_ERROR       = Color.RED;
- 
+    private static final Color COLOR_BOTON = new Color(0, 95, 115);
+    private static final Color COLOR_LINEA = Color.WHITE;
+    private static final Color COLOR_ERROR = Color.RED;
+
     public InicioSesion() {
         initComponents();
         setLocationRelativeTo(null);
-        aplicarEstilosCampos();   
-        aplicarEstiloBoton();     
-        addPlaceholders();        
+        aplicarEstilosCampos();
+        aplicarEstiloBoton();
+        addPlaceholders();
 
         establecerFondo();
         establecerIconoUsuario();
@@ -44,24 +45,28 @@ public class InicioSesion extends javax.swing.JFrame {
         javax.swing.Timer timer = new javax.swing.Timer(100, e -> requestFocusInWindow());
         timer.setRepeats(false);
         timer.start();
+
+        HelperMonitorRed monitor = new HelperMonitorRed();
+        monitor.setDaemon(true);
+        monitor.start();
     }
- 
+
     /**
      * Aplica estilos visuales a los campos de texto y contraseña:
      * fondo transparente, sin borde exterior y línea inferior blanca,
      * alineados con el estilo minimalista de la imagen de referencia.
      */
     private void aplicarEstilosCampos() {
-        for (javax.swing.JComponent campo : new javax.swing.JComponent[]{tx_user, tx_passwd}) {
+        for (javax.swing.JComponent campo : new javax.swing.JComponent[] { tx_user, tx_passwd }) {
             campo.setOpaque(false);
-            campo.setBackground(new Color(0, 0, 0, 0)); 
+            campo.setBackground(new Color(0, 0, 0, 0));
             campo.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_LINEA));
             campo.setForeground(COLOR_LINEA);
             javax.swing.UIManager.put("TextField.background", new Color(0, 0, 0, 0));
             javax.swing.UIManager.put("PasswordField.background", new Color(0, 0, 0, 0));
         }
     }
- 
+
     /**
      * Configura el botón "INICIAR SESIÓN" con el estilo de referencia:
      * color azul oscuro, texto en mayúsculas, sin borde pintado y cursor de mano.
@@ -75,16 +80,17 @@ public class InicioSesion extends javax.swing.JFrame {
         btn_login.setFocusPainted(false);
         btn_login.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
- 
+
     /**
      * Registra los placeholders (texto gris de ayuda) en los campos.
-     * El campo de contraseña muestra el texto sin máscara hasta que el usuario escribe.
+     * El campo de contraseña muestra el texto sin máscara hasta que el usuario
+     * escribe.
      */
     private void addPlaceholders() {
         setPlaceholder(tx_user, "Ingresa tu Usuario");
         setPasswordPlaceholder(tx_passwd, "Ingresa tu Contraseña");
     }
- 
+
     /**
      * Placeholder genérico para JTextField: muestra texto blanco al perder foco
      * y lo limpia al ganar foco si el contenido sigue siendo el placeholder.
@@ -93,15 +99,24 @@ public class InicioSesion extends javax.swing.JFrame {
         field.setText(ph);
         field.setForeground(java.awt.Color.WHITE);
         field.addFocusListener(new java.awt.event.FocusAdapter() {
-            @Override public void focusGained(java.awt.event.FocusEvent e) {
-                if (field.getText().equals(ph)) { field.setText(""); field.setForeground(COLOR_LINEA); }
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (field.getText().equals(ph)) {
+                    field.setText("");
+                    field.setForeground(COLOR_LINEA);
+                }
             }
-            @Override public void focusLost(java.awt.event.FocusEvent e) {
-                if (field.getText().isEmpty()) { field.setText(ph); field.setForeground(java.awt.Color.WHITE); }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (field.getText().isEmpty()) {
+                    field.setText(ph);
+                    field.setForeground(java.awt.Color.WHITE);
+                }
             }
         });
     }
- 
+
     /**
      * Placeholder para JPasswordField: sin máscara al mostrar el texto de ayuda,
      * activa el carácter '•' al ganar foco y lo desactiva si queda vacío.
@@ -111,40 +126,48 @@ public class InicioSesion extends javax.swing.JFrame {
         pass.setForeground(java.awt.Color.WHITE);
         pass.setEchoChar('\0');
         pass.addFocusListener(new java.awt.event.FocusAdapter() {
-            @Override public void focusGained(java.awt.event.FocusEvent e) {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
                 if (String.valueOf(pass.getPassword()).equals(ph)) {
-                    pass.setText(""); pass.setEchoChar('•'); pass.setForeground(COLOR_LINEA);
+                    pass.setText("");
+                    pass.setEchoChar('•');
+                    pass.setForeground(COLOR_LINEA);
                 }
             }
-            @Override public void focusLost(java.awt.event.FocusEvent e) {
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
                 if (pass.getPassword().length == 0) {
-                    pass.setText(ph); pass.setEchoChar('\0'); pass.setForeground(java.awt.Color.WHITE);
+                    pass.setText(ph);
+                    pass.setEchoChar('\0');
+                    pass.setForeground(java.awt.Color.WHITE);
                 }
             }
         });
     }
- 
+
     /**
      * Lógica principal de autenticación. Valida entradas, cifra con SHA-256,
-     * determina el tipo de usuario (Admin / Persona) y abre el menú correspondiente.
+     * determina el tipo de usuario (Admin / Persona) y abre el menú
+     * correspondiente.
      * Marca los campos con borde rojo si la validación falla.
      */
     public void InicioSesion() {
-        String usuario   = tx_user.getText();
+        String usuario = tx_user.getText();
         String contrasena = String.valueOf(tx_passwd.getPassword());
- 
+
         if (CapaLogicaNegocio.Helpers.HelperValidacion.validarTodo(usuario) != 0
                 || CapaLogicaNegocio.Helpers.HelperValidacion.ValidarTodoContrasenha(contrasena) != 0) {
             mostrarErrorCampos();
             return;
         }
- 
-        String cifrarusu    = HelperCifrado.CifrarSHA256(usuario);
+
+        String cifrarusu = HelperCifrado.CifrarSHA256(usuario);
         String cifrarcontra = HelperCifrado.CifrarSHA256(contrasena);
- 
-        System.out.println("usu ci inter\t"  + cifrarusu);
+
+        System.out.println("usu ci inter\t" + cifrarusu);
         System.out.println("usu con inter\t" + cifrarcontra);
- 
+
         if (usuario.equals("Admin")) {
             usuAdmin = new Administrador("1", "Admin", "12345", "1", "10");
         } else if (usuario.equals("Persona")) {
@@ -153,7 +176,7 @@ public class InicioSesion extends javax.swing.JFrame {
             mostrarErrorCampos();
             return;
         }
- 
+
         if (usuCliente instanceof Persona) {
             if (usuCliente.LogOn(cifrarusu, cifrarcontra)) {
                 JOptionPane.showMessageDialog(null, "Bienvenido Persona");
@@ -172,7 +195,7 @@ public class InicioSesion extends javax.swing.JFrame {
             }
         }
     }
- 
+
     /**
      * Muestra el mensaje de error y resalta los campos con borde rojo.
      * Centraliza la lógica repetida de error en un único punto.
@@ -180,11 +203,12 @@ public class InicioSesion extends javax.swing.JFrame {
     private void mostrarErrorCampos() {
         tx_user.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_ERROR));
         tx_passwd.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_ERROR));
-        JOptionPane.showMessageDialog(null, "Usuario o contraseña inválida");      
+        JOptionPane.showMessageDialog(null, "Usuario o contraseña inválida");
     }
- 
+
     /**
-     * Carga la imagen de fondo desde el sistema de archivos y la asigna al JLabel fondo.
+     * Carga la imagen de fondo desde el sistema de archivos y la asigna al JLabel
+     * fondo.
      */
     public void establecerFondo() {
         try {
@@ -195,9 +219,10 @@ public class InicioSesion extends javax.swing.JFrame {
             System.err.println("Error cargando fondo: " + ioexception.getMessage());
         }
     }
- 
+
     /**
-     * Carga el ícono de usuario desde el sistema de archivos y la asigna al JLabel icono_user.
+     * Carga el ícono de usuario desde el sistema de archivos y la asigna al JLabel
+     * icono_user.
      */
     public void establecerIconoUsuario() {
         try {
@@ -209,8 +234,8 @@ public class InicioSesion extends javax.swing.JFrame {
         }
     }
 
-    
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         icono_user = new javax.swing.JLabel();
@@ -257,18 +282,22 @@ public class InicioSesion extends javax.swing.JFrame {
         setBounds(0, 0, 494, 597);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tx_passwdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_passwdActionPerformed
+    private void tx_passwdActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_tx_passwdActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tx_passwdActionPerformed
+    }// GEN-LAST:event_tx_passwdActionPerformed
 
-    private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
+    private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_loginActionPerformed
         InicioSesion();
-    }//GEN-LAST:event_btn_loginActionPerformed
+    }// GEN-LAST:event_btn_loginActionPerformed
 
     public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -278,15 +307,19 @@ public class InicioSesion extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesion.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         }
-        //</editor-fold>
+        // </editor-fold>
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new InicioSesion().setVisible(true);
