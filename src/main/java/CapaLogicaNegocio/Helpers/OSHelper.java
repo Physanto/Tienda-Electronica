@@ -1,7 +1,10 @@
 package CapaLogicaNegocio.Helpers;
 
 import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
+import java.awt.Image;
 import java.io.File;
+import java.io.InputStream;
 import javax.swing.JLabel;
 import java.awt.Component;
 import java.awt.Container;
@@ -58,16 +61,35 @@ public class OSHelper {
      * @return ruta absoluta de la imagen con extensión .png
      */
     public static String getImageFilePath(String nombreBase) {
-        // Obtiene la ruta base del proyecto (directorio actual)
         String basePath = System.getProperty("user.dir");
-
-        // if(basePath.contains("Icons") || basePath.contains("Images"))
-
-        // Construye la ruta con separadores compatibles
         String ruta = basePath + File.separator + "Images" + File.separator + nombreBase + ".png";
-
-        // Ajusta separadores según el SO
         return ajustarSeparador(ruta);
+    }
+
+    /**
+     * Carga una imagen desde el classpath (funciona tanto en IDE como en JAR).
+     * La ruta debe ser relativa a la raíz del classpath, ej: "Images/Logo_Inicio.png"
+     *
+     * @param rutaEnClasspath ruta relativa dentro de resources (ej. "Images/user.png")
+     * @return Image lista para usar, o null si no se encuentra
+     */
+    public static Image cargarImagen(String rutaEnClasspath) {
+        try (InputStream is = OSHelper.class.getClassLoader().getResourceAsStream(rutaEnClasspath)) {
+            if (is == null) return null;
+            return ImageIO.read(is);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Atajo para cargar una imagen de la carpeta Images/ empaquetada en el JAR.
+     *
+     * @param nombreBase nombre del archivo sin extensión (ej. "Logo_Inicio")
+     * @return Image lista para usar, o null si no se encuentra
+     */
+    public static Image cargarImagenPng(String nombreBase) {
+        return cargarImagen("Images/" + nombreBase + ".png");
     }
 
     /**

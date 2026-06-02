@@ -20,12 +20,9 @@ import CapaLogicaNegocio.Logica_Negocio.Venta;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -987,27 +984,13 @@ public class InicioSesion extends javax.swing.JFrame {
          * fondo.
          */
         public void establecerFondo() {
-                try {
-                        String ruta = OSHelper.getImageFilePath("imgFondo2");
-                        Image img = ImageIO.read(new File(ruta));
-                        fondo.setIcon(new ImageIcon(img));
-                } catch (IOException ioexception) {
-                        System.err.println("Error cargando fondo: " + ioexception.getMessage());
-                }
+                Image img = OSHelper.cargarImagenPng("imgFondo2");
+                if (img != null) fondo.setIcon(new ImageIcon(img));
         }
 
-        /**
-         * Carga el ícono de usuario desde el sistema de archivos y la asigna al JLabel
-         * icono_user.
-         */
         public void establecerIconoUsuario() {
-                try {
-                        String ruta = OSHelper.getImageFilePath("user");
-                        Image img = ImageIO.read(new File(ruta));
-                        icono_user.setIcon(new ImageIcon(img));
-                } catch (IOException ioexception) {
-                        System.err.println("Error cargando fondo: " + ioexception.getMessage());
-                }
+                Image img = OSHelper.cargarImagenPng("user");
+                if (img != null) icono_user.setIcon(new ImageIcon(img));
         }
 
         // <editor-fold defaultstate="collapsed" desc="Generated

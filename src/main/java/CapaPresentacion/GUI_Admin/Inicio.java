@@ -2,9 +2,6 @@ package CapaPresentacion.GUI_Admin;
 
 import CapaLogicaNegocio.Helpers.OSHelper;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -23,26 +20,13 @@ public class Inicio extends javax.swing.JPanel {
      * Carga la imagen de imgFondoInicio desde la carpeta Images y la asigna al JLabel fondo.
      */
     public void establecerFondo() {
-        try {
-            String ruta = OSHelper.getImageFilePath("imgFondoInicio");
-            Image img = ImageIO.read(new File(ruta));
-            jlb_fondo.setIcon(new ImageIcon(img));
-        } catch (IOException ioexception) {
-            System.err.println("Error cargando fondo: " + ioexception.getMessage());
-        }
+        Image img = OSHelper.cargarImagenPng("imgFondoInicio");
+        if (img != null) jlb_fondo.setIcon(new ImageIcon(img));
     }
 
-    /**
-     * Carga la imagen de Logo_Inicio desde la carpeta Images y la asigna al JLabel Logo.
-     */
     public void establecerLogo() {
-        try {
-            String ruta = OSHelper.getImageFilePath("Logo_Inicio");
-            Image img = ImageIO.read(new File(ruta));
-            jlb_Logo.setIcon(new ImageIcon(img));
-        } catch (IOException ioexception) {
-            System.err.println("Error cargando logo: " + ioexception.getMessage());
-        }
+        Image img = OSHelper.cargarImagenPng("Logo_Inicio");
+        if (img != null) jlb_Logo.setIcon(new ImageIcon(img));
     }
 
 
