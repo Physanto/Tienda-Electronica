@@ -26,41 +26,15 @@ public class CategoriaControlador {
                 this.categoriaOnlineCRUD = new CategoriaOnlineCRUD();
         }
 
-        public RespuestaControlador<Boolean> crearCategorias() {
+        public RespuestaControlador<Boolean> crearCategorias(Categoria categoria) {
 
-                UUID u1 = UUID.randomUUID();
-                UUID u2 = UUID.randomUUID();
-                UUID u3 = UUID.randomUUID();
-                UUID u4 = UUID.randomUUID();
-                UUID u5 = UUID.randomUUID();
-
-                Categoria categoria = new Categoria(u1.toString(), "Telefono");
-                Categoria categoria1 = new Categoria(u2.toString(), "Computador");
-                Categoria categoria2 = new Categoria(u3.toString(), "Telefono");
-                Categoria categoria3 = new Categoria(u4.toString(), "Auriculares");
-                Categoria categoria4 = new Categoria(u5.toString(), "Consola");
-
-                HelperGestorBD.guardarRegistro(categoria, "Categoria", categoria.getId(),
+                boolean exito = HelperGestorBD.guardarRegistro(categoria, "Categoria", categoria.getId(),
                                 () -> categoriaDAO.agregar(categoria),
                                 () -> categoriaOnlineCRUD.registrarNube(categoria));
 
-                HelperGestorBD.guardarRegistro(categoria1, "Categoria", categoria1.getId(),
-                                () -> categoriaDAO.agregar(categoria1),
-                                () -> categoriaOnlineCRUD.registrarNube(categoria1));
-
-                HelperGestorBD.guardarRegistro(categoria2, "Categoria", categoria2.getId(),
-                                () -> categoriaDAO.agregar(categoria2),
-                                () -> categoriaOnlineCRUD.registrarNube(categoria2));
-
-                HelperGestorBD.guardarRegistro(categoria3, "Categoria", categoria3.getId(),
-                                () -> categoriaDAO.agregar(categoria3),
-                                () -> categoriaOnlineCRUD.registrarNube(categoria3));
-
-                HelperGestorBD.guardarRegistro(categoria4, "Categoria", categoria4.getId(),
-                                () -> categoriaDAO.agregar(categoria4),
-                                () -> categoriaOnlineCRUD.registrarNube(categoria4));
-
-                return new RespuestaControlador<>(true, "categorias creadas manualmente", null);
+                return exito
+                                ? new RespuestaControlador<>(true, "categorias creadas manualmente", null)
+                                : new RespuestaControlador<>(false, "Error en insertar categoria", null);
         }
 
         public RespuestaControlador<ArrayList<Categoria>> buscarTodos() {

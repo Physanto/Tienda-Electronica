@@ -1,8 +1,10 @@
 package CapaPresentacion.GUI_Admin;
 
+import CapaLogicaNegocio.Controlador.ClienteControlador;
 import CapaLogicaNegocio.Controlador.RespuestaControlador;
 import CapaLogicaNegocio.Controlador.VentaControlador;
 import CapaLogicaNegocio.DTOS.VentasDTO.VentaPorCategoriaDTO;
+import CapaLogicaNegocio.Logica_Negocio.Cliente;
 import CapaLogicaNegocio.Logica_Negocio.Venta;
 
 import java.awt.*;
@@ -37,18 +39,16 @@ public class Ventas extends javax.swing.JPanel {
     private static final Color COLOR_CARD_3 = new Color(0xF5, 0x9E, 0x0B); // amarillo
 
     private final VentaControlador ventaControlador = new VentaControlador();
+    private final ClienteControlador clienteControlador = new ClienteControlador();
 
     private DefaultTableModel modeloTablaVentas;
     private JTable tablaVentas;
 
     private DefaultTableModel modeloTablaCliente;
-    private JTable tablaCliente;
-
-    private JTextField txtBuscarCliente;
-    private JLabel lblTotalSesion;
-    private JLabel lblTotalCliente;
     private JLabel lblTotalIngresos;
-    private JPanel panelCategoria;
+
+    private DefaultTableModel modeloTablaCategoria;
+    private JTable tablaCategoria;
 
     private static final NumberFormat FMT_MONEDA = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
     private static final SimpleDateFormat FMT_FECHA = new SimpleDateFormat("dd/MM/yyyy");
@@ -81,18 +81,9 @@ public class Ventas extends javax.swing.JPanel {
         contenido.add(construirSeccionTablaGeneral());
         contenido.add(Box.createVerticalStrut(20));
 
-        // ── Sección búsqueda por cliente ──
-        contenido.add(construirSeccionCliente());
-        contenido.add(Box.createVerticalStrut(20));
-
         // ── Sección ventas por categoría ──
         contenido.add(construirSeccionCategoria());
         contenido.add(Box.createVerticalStrut(20));
-
-        // contenido.add(Box.createVerticalStrut(20));
-        // contenido.add(construirSeccionGraficas());
-        // poblarDatasets();
-        // iniciarTimerGraficas();
 
         JScrollPane scroll = new JScrollPane(contenido);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -103,6 +94,17 @@ public class Ventas extends javax.swing.JPanel {
         // Cargar datos al iniciar
         cargarTablaGeneral();
         actualizarKPIs();
+
+        // Cada vez que el admin entra al panel de Ventas (CardLayout lo hace visible)
+        // se refrescan la
+        // tabla y los KPIs, asi los totales se actualizan con las ventas mas recientes.
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                cargarTablaGeneral();
+                actualizarKPIs();
+            }
+        });
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -191,111 +193,32 @@ public class Ventas extends javax.swing.JPanel {
     }
 
     // ══════════════════════════════════════════════════════════════
-    // SECCIÓN 3 – BÚSQUEDA POR CLIENTE
-    // ══════════════════════════════════════════════════════════════
-
-    private JPanel construirSeccionCliente() {
-        JPanel seccion = new JPanel(new BorderLayout(0, 12));
-        seccion.setBackground(COLOR_BG);
-        seccion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 400));
-
-        JLabel lbl = new JLabel("Buscar por Cliente");
-        lbl.setFont(new Font("Segoe UI Light", Font.BOLD, 18));
-        lbl.setForeground(COLOR_TEXTO);
-        seccion.add(lbl, BorderLayout.NORTH);
-
-        // ── Barra de búsqueda ──
-        JPanel barraBusq = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        barraBusq.setBackground(COLOR_BG);
-
-        txtBuscarCliente = new JTextField(22);
-        estilizarTextField(txtBuscarCliente, "ID del cliente...");
-
-        JButton btnBuscar = crearBoton("Buscar", COLOR_ACENTO);
-        btnBuscar.addActionListener(e -> buscarPorCliente());
-
-        JButton btnLimpiar = crearBoton("Limpiar", COLOR_PANEL_SEC);
-        btnLimpiar.addActionListener(e -> limpiarBusqueda());
-
-        barraBusq.add(txtBuscarCliente);
-        barraBusq.add(Box.createHorizontalStrut(10));
-        barraBusq.add(btnBuscar);
-        barraBusq.add(Box.createHorizontalStrut(8));
-        barraBusq.add(btnLimpiar);
-        seccion.add(barraBusq, BorderLayout.BEFORE_FIRST_LINE); // north slot ya usado
-
-        // Centro: tabla resultado + totales
-        JPanel centro = new JPanel(new BorderLayout(0, 10));
-        centro.setBackground(COLOR_BG);
-
-        modeloTablaCliente = new DefaultTableModel(
-                new String[] { "Producto", "Precio Unitario", "Cantidad", "Subtotal", "Fecha Venta" }, 0) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-        };
-        tablaCliente = estilizarTabla(new JTable(modeloTablaCliente));
-
-        JScrollPane spCliente = new JScrollPane(tablaCliente);
-        estilizarScroll(spCliente);
-        centro.add(spCliente, BorderLayout.CENTER);
-
-        // Totales de cliente
-        JPanel panelTotales = new JPanel(new FlowLayout(FlowLayout.RIGHT, 24, 0));
-        panelTotales.setBackground(COLOR_PANEL_SEC);
-        panelTotales.setBorder(new EmptyBorder(8, 16, 8, 16));
-
-        lblTotalSesion = new JLabel("$0");
-        lblTotalSesion.setFont(new Font("Segoe UI Light", Font.BOLD, 16));
-        lblTotalSesion.setForeground(COLOR_ACENTO);
-
-        JLabel ltsAcu = new JLabel("Total acumulado:");
-        ltsAcu.setForeground(COLOR_TEXTO);
-        ltsAcu.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
-
-        lblTotalCliente = new JLabel("$0");
-        lblTotalCliente.setFont(new Font("Segoe UI Light", Font.BOLD, 16));
-        lblTotalCliente.setForeground(COLOR_CARD_3);
-
-        panelTotales.add(Box.createHorizontalStrut(24));
-        panelTotales.add(ltsAcu);
-        panelTotales.add(lblTotalCliente);
-
-        centro.add(panelTotales, BorderLayout.SOUTH);
-
-        // Ensamble: barra + centro dentro del seccion
-        JPanel wrapper = new JPanel(new BorderLayout(0, 10));
-        wrapper.setBackground(COLOR_BG);
-        wrapper.add(barraBusq, BorderLayout.NORTH);
-        wrapper.add(centro, BorderLayout.CENTER);
-
-        seccion.add(wrapper, BorderLayout.CENTER);
-        return seccion;
-    }
-
-    // ══════════════════════════════════════════════════════════════
     // SECCIÓN 4 – VENTAS POR CATEGORÍA
     // ══════════════════════════════════════════════════════════════
 
     private JPanel construirSeccionCategoria() {
         JPanel seccion = new JPanel(new BorderLayout(0, 12));
         seccion.setBackground(COLOR_BG);
-        seccion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
+        seccion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 320));
 
         JLabel lbl = new JLabel("Ventas por Categoría");
         lbl.setFont(new Font("Segoe UI Light", Font.BOLD, 20));
         lbl.setForeground(COLOR_TEXTO);
         seccion.add(lbl, BorderLayout.NORTH);
 
-        panelCategoria = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
-        panelCategoria.setBackground(COLOR_BG);
+        modeloTablaCategoria = new DefaultTableModel(
+                new String[] { "Categoría", "Productos Vendidos", "Total Ventas", "Primera Venta", "Última Venta" },
+                0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
 
-        JScrollPane sp = new JScrollPane(panelCategoria,
-                JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        sp.setBorder(BorderFactory.createEmptyBorder());
-        sp.getViewport().setBackground(COLOR_BG);
+        tablaCategoria = estilizarTabla(new JTable(modeloTablaCategoria));
+
+        JScrollPane sp = new JScrollPane(tablaCategoria);
+        estilizarScroll(sp);
         seccion.add(sp, BorderLayout.CENTER);
 
         return seccion;
@@ -315,22 +238,25 @@ public class Ventas extends javax.swing.JPanel {
         try {
             RespuestaControlador<ArrayList<Venta>> respuesta = ventaControlador.buscarTodos();
 
-            if (!respuesta.exito()) {
-                JOptionPane.showMessageDialog(this,
-                        respuesta.mensaje(),
-                        "Error al cargar ventas",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            /*
+             * if (!respuesta.exito()) {
+             * JOptionPane.showMessageDialog(this,
+             * respuesta.mensaje(),
+             * "Error al cargar ventas",
+             * JOptionPane.ERROR_MESSAGE);
+             * return;
+             * }
+             */
 
             ArrayList<Venta> ventas = respuesta.dato();
 
             for (Venta v : ventas) {
+                RespuestaControlador<Cliente> clienteId = clienteControlador.buscarClienteId(v.getIdCliente());
                 modeloTablaVentas.addRow(new Object[] {
                         v.getId(),
                         FMT_MONEDA.format(v.getTotalVenta()),
                         FMT_FECHA.format(v.getFechaVenta()),
-                        v.getIdCliente()
+                        clienteId.dato().getNombre()
                 });
             }
         } catch (Exception e) {
@@ -342,34 +268,48 @@ public class Ventas extends javax.swing.JPanel {
     }
 
     /**
-     * Actualiza las tarjetas KPI.
+     * Actualiza las tarjetas KPI (Total Ingresos, Ventas Realizadas y Clientes
+     * Únicos).
+     *
+     * <p>
+     * Los tres indicadores se derivan de la MISMA fuente ({@code buscarTodos()})
+     * para que sean
+     * consistentes entre si y reflejen tambien las ventas registradas por los
+     * clientes en la nube
+     * (antes ingresos/cantidad salian de la base local y quedaban en 0 mientras la
+     * tabla mostraba las
+     * ventas de la nube).
+     * </p>
      */
     private void actualizarKPIs() {
         try {
-            RespuestaControlador<Double> respuestaTotal = ventaControlador.totalVentas();
-            if (respuestaTotal.exito() && respuestaTotal.dato() != null) {
-                lblTotalIngresos.setText(FMT_MONEDA.format(respuestaTotal.dato()));
-            } else {
-                lblTotalIngresos.setText("$0");
-            }
-
-            RespuestaControlador<Long> respuestaCantidad = ventaControlador.cantidadVentas();
-            if (respuestaCantidad.exito() && respuestaCantidad.dato() != null) {
-                lblNumVentasRef.setText(String.valueOf(respuestaCantidad.dato()));
-            } else {
-                lblNumVentasRef.setText("0");
-            }
-
             RespuestaControlador<ArrayList<Venta>> respuestaVentas = ventaControlador.buscarTodos();
-            if (respuestaVentas.exito() && respuestaVentas.dato() != null) {
-                long clientesUnicos = respuestaVentas.dato().stream()
-                        .map(Venta::getIdCliente)
-                        .distinct()
-                        .count();
-                lblClientesRef.setText(String.valueOf(clientesUnicos));
-            } else {
-                lblClientesRef.setText("0");
+            ArrayList<Venta> ventas = (respuestaVentas.exito() && respuestaVentas.dato() != null)
+                    ? respuestaVentas.dato()
+                    : new ArrayList<>();
+
+            // Total ingresos = suma de los totales de cada venta.
+            double totalIngresos = 0;
+            for (Venta v : ventas) {
+                if (v.getTotalVenta() != null)
+                    totalIngresos += v.getTotalVenta();
             }
+            lblTotalIngresos.setText(FMT_MONEDA.format(totalIngresos));
+
+            // Ventas realizadas = cantidad de ventas.
+            lblNumVentasRef.setText(String.valueOf(ventas.size()));
+
+            ClienteControlador clienteControlador = new ClienteControlador();
+            RespuestaControlador<Long> total = clienteControlador.cantidadClientes();
+            lblClientesRef.setText(total.dato().toString());
+
+            // Clientes unicos = ids de cliente distintos.
+            // long clientesUnicos = ventas.stream()
+            // .map(Venta::getIdCliente)
+            // .filter(java.util.Objects::nonNull)
+            // .distinct()
+            // .count();
+            // lblClientesRef.setText(String.valueOf(clientesUnicos));
 
             cargarVentasPorCategoria();
 
@@ -382,116 +322,28 @@ public class Ventas extends javax.swing.JPanel {
     }
 
     /**
-     * Busca las ventas del cliente cuyo nombre coincide con el texto ingresado.
-     * Muestra el detalle de productos, el total de la sesión más reciente
-     * y el total acumulado histórico del cliente.
-     */
-    private void buscarPorCliente() {
-        String busqueda = txtBuscarCliente.getText().trim().toLowerCase();
-        if (busqueda.isEmpty()) {
-            return;
-        }
-
-        modeloTablaCliente.setRowCount(0);
-        lblTotalCliente.setText("$0");
-
-        try {
-            RespuestaControlador<ArrayList<Venta>> respuesta = ventaControlador.buscarTodos();
-
-            if (!respuesta.exito() || respuesta.dato() == null) {
-                JOptionPane.showMessageDialog(this, "No se pudieron cargar las ventas: " + respuesta.mensaje(),
-                        "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            ArrayList<Venta> ventasDelCliente = new ArrayList<>();
-            for (Venta v : respuesta.dato()) {
-                if (v.getIdCliente().toLowerCase().contains(busqueda)) {
-                    ventasDelCliente.add(v);
-                }
-            }
-
-            if (ventasDelCliente.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No se encontraron ventas para el cliente indicado.",
-                        "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-
-            double totalAcumulado = 0;
-
-            for (Venta v : ventasDelCliente) {
-                modeloTablaCliente.addRow(new Object[] {
-                        v.getId(),
-                        FMT_MONEDA.format(v.getTotalVenta()),
-                        "—",
-                        FMT_MONEDA.format(v.getTotalVenta()),
-                        FMT_FECHA.format(v.getFechaVenta())
-                });
-                totalAcumulado += v.getTotalVenta();
-            }
-
-            lblTotalCliente.setText(FMT_MONEDA.format(totalAcumulado));
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error inesperado en la búsqueda: " + e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /** Limpia los resultados de búsqueda por cliente. */
-    private void limpiarBusqueda() {
-        txtBuscarCliente.setText("");
-        modeloTablaCliente.setRowCount(0);
-        lblTotalSesion.setText("$0");
-        lblTotalCliente.setText("$0");
-    }
-
-    /**
-     * Carga tarjetas con el total vendido por cada categoría de productos.
+     * Carga la tabla con el total vendido agrupado por categoría.
      */
     private void cargarVentasPorCategoria() {
-        panelCategoria.removeAll();
+        modeloTablaCategoria.setRowCount(0);
 
         try {
-            // ventaControlador.ventasPorCategoria() — devuelve lista de
-            // VentaPorCategoriaDTO con nombre y total por categoría
             RespuestaControlador<ArrayList<VentaPorCategoriaDTO>> respuesta = ventaControlador.ventasPorCategoria();
 
             if (!respuesta.exito() || respuesta.dato() == null || respuesta.dato().isEmpty()) {
-                JLabel sinDatos = new JLabel("No hay datos de categorías disponibles.");
-                sinDatos.setForeground(COLOR_TEXTO_MUTED);
-                panelCategoria.add(sinDatos);
-                panelCategoria.revalidate();
-                panelCategoria.repaint();
                 return;
             }
 
-            Color[] colores = { COLOR_CARD_1, COLOR_CARD_2, COLOR_CARD_3,
-                    new Color(0xEC, 0x48, 0x99), new Color(0x8B, 0x5C, 0xF6) };
-            int i = 0;
-
             for (VentaPorCategoriaDTO dto : respuesta.dato()) {
-                Color color = colores[i % colores.length];
-
-                JPanel card = new JPanel(new BorderLayout(0, 4));
-                card.setBackground(COLOR_PANEL_SEC);
-                card.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createMatteBorder(0, 4, 0, 0, color),
-                        new EmptyBorder(12, 14, 12, 20)));
-                card.setPreferredSize(new Dimension(200, 80));
-
-                JLabel lblNom = new JLabel(dto.categoria());
-                lblNom.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
-                lblNom.setForeground(COLOR_TEXTO);
-
-                JLabel lblTotal = new JLabel(FMT_MONEDA.format(dto.totalVentas()));
-                lblTotal.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
-                lblTotal.setForeground(color);
-
-                card.add(lblNom, BorderLayout.NORTH);
-                card.add(lblTotal, BorderLayout.CENTER);
-                panelCategoria.add(card);
-                i++;
+                String primera = dto.primeraVenta() != null ? FMT_FECHA.format(dto.primeraVenta()) : "—";
+                String ultima = dto.ultimaVenta() != null ? FMT_FECHA.format(dto.ultimaVenta()) : "—";
+                modeloTablaCategoria.addRow(new Object[] {
+                        dto.categoria(),
+                        dto.productosVendidos(),
+                        FMT_MONEDA.format(dto.totalVentas()),
+                        primera,
+                        ultima
+                });
             }
 
         } catch (Exception e) {
@@ -500,9 +352,6 @@ public class Ventas extends javax.swing.JPanel {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-
-        panelCategoria.revalidate();
-        panelCategoria.repaint();
     }
 
     /**
@@ -533,6 +382,8 @@ public class Ventas extends javax.swing.JPanel {
         header.setForeground(Color.BLACK);
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
         return tabla;
     }

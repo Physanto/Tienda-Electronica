@@ -17,10 +17,6 @@ import java.sql.SQLException;
 public class Conexion {
 
     private static Firestore db;
-
-    // R1: una conexion por hilo. Antes era un unico Connection estatico compartido entre el hilo
-    // daemon de HelperMonitorRed (sincronizacion) y el EDT (CRUD de la UI); java.sql.Connection NO
-    // es thread-safe -> condicion de carrera. Con ThreadLocal cada hilo usa su propia conexion.
     private static final ThreadLocal<Connection> conexionLocal = new ThreadLocal<>();
 
     private Conexion() {
@@ -57,14 +53,12 @@ public class Conexion {
     public static Connection getConexionLocal() {
         String url = "jdbc:mysql://localhost:3306/Tienda_Electronica"
                 + "?useSSL=false"
-                + "&serverTimezone=UTC";
+                + "&serverTimezone=America/Bogota";
         String user = "init";
         String pass = "root";
 
         try {
             Connection conexion = conexionLocal.get();
-            // isValid(2) detecta conexiones muertas (p.ej. cerradas por el wait_timeout de MySQL
-            // mientras el hilo estuvo inactivo), algo que isClosed() no garantiza.
             if (conexion == null || conexion.isClosed() || !conexion.isValid(2)) {
                 conexion = DriverManager.getConnection(url, user, pass);
                 conexionLocal.set(conexion);

@@ -88,7 +88,7 @@ public class MenuAdmin extends JFrame {
 
     public MenuAdmin() {
         initComponents();
-        LinearLoadingDialog.mostrar(this, 5000);
+        LinearLoadingDialog.mostrar(this, 1500);
         construirSidebar();
         construirAreaContenido();
         ensamblarLayout();

@@ -1,6 +1,8 @@
 package CapaPresentacion.GUI_Cliente;
 
 import CapaPresentacion.GUI_Admin.InicioSesion;
+import CapaLogicaNegocio.Logica_Negocio.Carrito;
+import CapaLogicaNegocio.Logica_Negocio.SesionCliente;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,6 +15,10 @@ public class MenuCliente extends JFrame {
     private JPanel contentPanel;
     private CardLayout cardLayout;
 
+    // Carrito compartido entre el catalogo y el panel del carrito (vive en memoria
+    // durante la sesion)
+    private final transient Carrito carrito = new Carrito();
+
     // Panels
     private Productos panelProductos;
     private CarritoCompras panelCarrito;
@@ -22,7 +28,7 @@ public class MenuCliente extends JFrame {
         initComponents();
         configurarVentana();
         inicializarPanels();
-        configurarLayoutPrincipal(); 
+        configurarLayoutPrincipal();
         configurarNavegacion();
     }
 
@@ -39,17 +45,29 @@ public class MenuCliente extends JFrame {
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(new Color(0x1A, 0x1E, 0x29));
 
-        panelProductos = new Productos();
-        panelCarrito = new CarritoCompras();
+        panelProductos = new Productos(carrito);
+        panelCarrito = new CarritoCompras(carrito);
         panelPromociones = new Promociones();
+
+        // El banner de promociones del catalogo navega a la pestania de Promociones.
+        panelProductos.setOnVerPromociones(() -> {
+            cardLayout.show(contentPanel, "Promociones");
+            panelPromociones.cargarPromociones();
+        });
+
+        // Tras una compra exitosa, el stock cambio en la nube: recargar el catalogo.
+        panelCarrito.setOnCompraExitosa(() -> panelProductos.cargarCatalogo());
 
         contentPanel.add(panelProductos, "Productos");
         contentPanel.add(panelCarrito, "Carrito");
         contentPanel.add(panelPromociones, "Promociones");
 
-        cardLayout.show(contentPanel, "Productos");
+        // Apenas ingresa el cliente se muestra el panel de Promociones (con las promos vigentes
+        // recien leidas de la nube). Al pasar luego a Productos, el catalogo se recarga y refleja la
+        // promocion y su precio con descuento sin necesidad de pulsar "Actualizar".
+        cardLayout.show(contentPanel, "Promociones");
+        panelPromociones.cargarPromociones();
     }
-
 
     private void configurarLayoutPrincipal() {
         panelPrincipal = new JPanel(new BorderLayout());
@@ -84,27 +102,35 @@ public class MenuCliente extends JFrame {
         JButton btnSalir = crearBotonNav("Salir");
 
         btnProductos.addActionListener(e -> {
+            // Se recarga el catalogo para traer los descuentos vigentes desde la nube: asi cualquier
+            // promocion lanzada por el Admin se ve reflejada al instante (precio tachado + precio con
+            // descuento) sin que el cliente tenga que pulsar "Actualizar".
+            panelProductos.cargarCatalogo();
             cardLayout.show(contentPanel, "Productos");
             activarBoton(btnProductos, btnCarrito, btnPromociones, btnSalir);
         });
 
         btnCarrito.addActionListener(e -> {
+            panelCarrito.refrescar();
             cardLayout.show(contentPanel, "Carrito");
             activarBoton(btnCarrito, btnProductos, btnPromociones, btnSalir);
         });
 
         btnPromociones.addActionListener(e -> {
+            panelPromociones.cargarPromociones();
             cardLayout.show(contentPanel, "Promociones");
             activarBoton(btnPromociones, btnProductos, btnCarrito, btnSalir);
         });
 
         btnSalir.addActionListener(e -> cerrarSesion());
 
-
         opciones.add(btnProductos);
         opciones.add(btnCarrito);
         opciones.add(btnPromociones);
         opciones.add(btnSalir);
+
+        // Se inicia mostrando Promociones, asi que ese boton arranca resaltado como activo.
+        activarBoton(btnPromociones, btnProductos, btnCarrito, btnSalir);
 
         nav.add(opciones, BorderLayout.CENTER);
         return nav;
@@ -114,7 +140,7 @@ public class MenuCliente extends JFrame {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Segoe UI Light", Font.PLAIN, 20));
         btn.setForeground(Color.WHITE);
-        btn.setBackground(new Color(0x13, 0x2D, 0x46)); 
+        btn.setBackground(new Color(0x13, 0x2D, 0x46));
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -142,20 +168,25 @@ public class MenuCliente extends JFrame {
             b.setBackground(azulNormal);
         }
     }
-    
+
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Cerrar sesión?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
+            SesionCliente.cerrarSesion();
             dispose();
             new InicioSesion().setVisible(true);
         }
     }
+
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -178,16 +209,20 @@ public class MenuCliente extends JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
         }
-        //</editor-fold>
-        //</editor-fold>
+        // </editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

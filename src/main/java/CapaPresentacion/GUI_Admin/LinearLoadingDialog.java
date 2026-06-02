@@ -9,7 +9,8 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
 /**
- * Diálogo de carga personalizado con diseño de barra lineal luminosa ("Neon Glow"). Dimensión de barra estricta de 100x25 píxeles.
+ * Diálogo de carga personalizado con diseño de barra lineal luminosa ("Neon
+ * Glow"). Dimensión de barra estricta de 100x25 píxeles.
  */
 public class LinearLoadingDialog extends JDialog {
 
@@ -20,8 +21,10 @@ public class LinearLoadingDialog extends JDialog {
     /**
      * Constructor principal.
      *
-     * @param padre Ventana JFrame que actúa como propietaria (puede ser null).
-     * @param tiempoMilisegundos Duración en milisegundos antes de cerrarse automáticamente.
+     * @param padre              Ventana JFrame que actúa como propietaria (puede
+     *                           ser null).
+     * @param tiempoMilisegundos Duración en milisegundos antes de cerrarse
+     *                           automáticamente.
      */
     public LinearLoadingDialog(Frame padre, int tiempoMilisegundos) {
         super(padre, "Cargando...", true); // Modal por defecto
@@ -62,7 +65,8 @@ public class LinearLoadingDialog extends JDialog {
         // 3. Texto inferior "Loading..." estilizado
         JLabel lblTexto = new JLabel();
         lblTexto.setFont(new Font("Times New Roman", Font.ITALIC | Font.BOLD, 14));
-        lblTexto.setText("<html><span style='color: #AADCFF; text-shadow: 0px 0px 5px #0088FF;'>Loading...</span></html>");
+        lblTexto.setText(
+                "<html><span style='color: #AADCFF; text-shadow: 0px 0px 5px #0088FF;'>Loading...</span></html>");
 
         gbc.gridy = 1;
         gbc.insets = new Insets(0, 0, 0, 0);
@@ -72,8 +76,10 @@ public class LinearLoadingDialog extends JDialog {
         this.pack();
 
         // TRUCO 2: Aplicar esquinas redondeadas a la ventana completa
-        // 'RoundRectangle2D.Float' recortará el JDialog con la dimensión exacta que calculó pack()
-        // El '20, 20' del final controla qué tan redondas quieres las esquinas (puedes subirlo a 30 si quieres más arco)
+        // 'RoundRectangle2D.Float' recortará el JDialog con la dimensión exacta que
+        // calculó pack()
+        // El '20, 20' del final controla qué tan redondas quieres las esquinas (puedes
+        // subirlo a 30 si quieres más arco)
         this.setShape(new RoundRectangle2D.Float(0, 0, this.getWidth(), this.getHeight(), 20, 20));
 
         // 5. Centrar en pantalla (Siempre después de pack() y setShape())
@@ -88,21 +94,25 @@ public class LinearLoadingDialog extends JDialog {
     }
 
     /**
-     * Hace visible el diálogo e inicia automáticamente las animaciones y el temporizador.
+     * Hace visible el diálogo e inicia automáticamente las animaciones y el
+     * temporizador.
      */
     public void iniciar() {
         if (timerCierre != null && !timerCierre.isRunning()) {
             timerCierre.start();
         }
-        // SwingUtilities asegura que la interfaz se dibuje correctamente en su propio hilo de eventos
+        // SwingUtilities asegura que la interfaz se dibuje correctamente en su propio
+        // hilo de eventos
         SwingUtilities.invokeLater(() -> this.setVisible(true));
     }
 
     /**
-     * Método utilitario estático para mostrar la barra rápidamente con una sola línea de código.
+     * Método utilitario estático para mostrar la barra rápidamente con una sola
+     * línea de código.
      *
-     * @param padre Ventana JFrame actual desde donde se invoca.
-     * @param tiempoMilisegundos Tiempo que durará en pantalla (ej: 5000 para 5 segundos).
+     * @param padre              Ventana JFrame actual desde donde se invoca.
+     * @param tiempoMilisegundos Tiempo que durará en pantalla (ej: 5000 para 5
+     *                           segundos).
      */
     public static void mostrar(Frame padre, int tiempoMilisegundos) {
         LinearLoadingDialog dialogo = new LinearLoadingDialog(padre, tiempoMilisegundos);

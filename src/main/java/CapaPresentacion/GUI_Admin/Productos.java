@@ -86,6 +86,13 @@ public class Productos extends JPanel {
         construirTabla();
         construirFormPanel();
         cargarProductos();
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                cargarProductos();
+            }
+        });
     }
 
     /**
@@ -159,7 +166,7 @@ public class Productos extends JPanel {
     private void construirTabla() {
         String[] columnas = {
                 "ID", "Código", "Nombre", "Marca", "Serie",
-                "Stock", "Precio", "Vencimiento", "Categoría"
+                "Stock", "Precio", "Categoría"
         };
 
         tableModel = new DefaultTableModel(columnas, 0) {
@@ -193,6 +200,8 @@ public class Productos extends JPanel {
         header.setForeground(Color.BLACK); // títulos en negro
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
         tablaProductos.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && tablaProductos.getSelectedRow() >= 0) {
@@ -200,7 +209,7 @@ public class Productos extends JPanel {
             }
         });
 
-        int[] anchos = { 70, 90, 140, 110, 100, 60, 80, 110, 160 };
+        int[] anchos = { 70, 90, 140, 110, 100, 60, 80, 110 };
         for (int i = 0; i < anchos.length; i++) {
             tablaProductos.getColumnModel().getColumn(i).setPreferredWidth(anchos[i]);
         }
@@ -701,11 +710,6 @@ public class Productos extends JPanel {
      */
     private void agregarFilaTabla(Producto p) {
 
-        String fechaStr = "";
-        if (p.getFechaVencimiento() != null) {
-            fechaStr = new SimpleDateFormat("dd/MM/yyyy").format(p.getFechaVencimiento());
-        }
-
         String nombreCategoria = "";
         for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
 
@@ -723,7 +727,6 @@ public class Productos extends JPanel {
                 p.getSerie(),
                 p.getStock(),
                 p.getPrecioActual(),
-                fechaStr,
                 nombreCategoria
         });
     }
@@ -747,19 +750,9 @@ public class Productos extends JPanel {
         txtStock.setText(stock != null ? stock.toString() : "");
         txtPrecio.setText(precio != null ? precio.toString() : "");
 
-        /*
-         * String fechaStr = (String) tableModel.getValueAt(rowIndex, 7);
-         * if (fechaStr != null && !fechaStr.isEmpty()) {
-         * try {
-         * Date fecha = new SimpleDateFormat("dd/MM/yyyy").parse(fechaStr);
-         * spinnerFecha.setValue(fecha);
-         * } catch (Exception ex) {
-         * spinnerFecha.setValue(new Date());
-         * }
-         * }
-         */
-
-        String nombreCategoria = (String) tableModel.getValueAt(rowIndex, 8);
+        // La columna "Categoría" pasó del índice 8 al 7 tras quitar "Vencimiento" de la
+        // tabla.
+        String nombreCategoria = (String) tableModel.getValueAt(rowIndex, 7);
         for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
             if (cmbCategoria.getItemAt(i).toString().equals(nombreCategoria)) {
                 cmbCategoria.setSelectedIndex(i);
