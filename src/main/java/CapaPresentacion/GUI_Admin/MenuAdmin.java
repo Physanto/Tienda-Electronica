@@ -17,9 +17,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -183,14 +180,8 @@ public class MenuAdmin extends JFrame {
 
         // Ícono del logo
         JLabel lblLogo = new JLabel();
-        try {
-            String ruta = OSHelper.getImageFilePath("Icons/" + "Icono_Logo");
-            Image img = ImageIO.read(new File(ruta));
-            Image escalada = img.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-            lblLogo.setIcon(new ImageIcon(escalada));
-        } catch (IOException e) {
-            System.err.println("Logo no encontrado: " + e);
-        }
+        Image logoImg = OSHelper.cargarImagen("Images/Icons/Icono_Logo.png");
+        if (logoImg != null) lblLogo.setIcon(new ImageIcon(logoImg.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
         lblLogo.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
         // Panel vertical: nombre + rol
@@ -249,14 +240,8 @@ public class MenuAdmin extends JFrame {
         JButton btn = new JButton(etiqueta);
 
         // Cargar ícono
-        try {
-            String pathIcono = OSHelper.getImageFilePath("Icons/" + rutaIcono);
-            Image img = ImageIO.read(new File(pathIcono));
-            Image escalada = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            btn.setIcon(new ImageIcon(escalada));
-        } catch (IOException e) {
-            System.err.println("Icono no encontrado: " + e);
-        }
+        Image iconoImg = OSHelper.cargarImagen("Images/Icons/" + rutaIcono + ".png");
+        if (iconoImg != null) btn.setIcon(new ImageIcon(iconoImg.getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
 
         btn.setIconTextGap(10);
         btn.setFont(new Font("Segoe UI Light", Font.PLAIN, 18));
