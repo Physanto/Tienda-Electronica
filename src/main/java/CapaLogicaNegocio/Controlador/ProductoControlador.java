@@ -95,7 +95,7 @@ public class ProductoControlador {
         Long f = System.currentTimeMillis();
         HelperTiempo.RetornarTiempo(f, i);
         return exito
-                ? new RespuestaControlador<>(true, "Producto agregado correctamente", null)
+                ? new RespuestaControlador<>(true, "Producto agregado correctamente", producto)
                 : new RespuestaControlador<>(false, "Producto no fue agregado como se esperaba", null);
 
     }

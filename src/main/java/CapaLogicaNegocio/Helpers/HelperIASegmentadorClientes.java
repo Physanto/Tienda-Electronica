@@ -9,9 +9,12 @@ import weka.core.ManhattanDistance;
 import java.util.ArrayList;
 
 /**
- * Clase que desarrolla un modelo no supervisado para hacer un analisis de clientes
- * dependiendo su comportamiento en el sistema para brindar promociones personalizas
- * esta hace uso de la libreria Weka para toda la matematica asociada ya que se usa
+ * Clase que desarrolla un modelo no supervisado para hacer un analisis de
+ * clientes
+ * dependiendo su comportamiento en el sistema para brindar promociones
+ * personalizas
+ * esta hace uso de la libreria Weka para toda la matematica asociada ya que se
+ * usa
  * Kmeans para la solucion
  *
  * @author Manuel Figueroa (Physanto)
@@ -68,7 +71,7 @@ public class HelperIASegmentadorClientes {
                 lista.get(i).setCluster(asignaciones[i]);
             }
 
-            //calcularCentroides();
+            // calcularCentroides();
             analizarYEtiquetarClusters();
 
         } catch (Exception e) {
@@ -88,7 +91,7 @@ public class HelperIASegmentadorClientes {
             Instances centroides = kmeans.getClusterCentroids();
             int totalClusters = kmeans.getNumClusters();
 
-            //Extraer los datos de los centroides de Weka
+            // Extraer los datos de los centroides de Weka
             for (int i = 0; i < totalClusters; i++) {
                 double promRecencia = centroides.instance(i).value(0);
                 double promFrecuencia = centroides.instance(i).value(1);
@@ -104,31 +107,28 @@ public class HelperIASegmentadorClientes {
                 AnalisisCliente cluster = listaPerfiles.get(posicion);
 
                 if (posicion == 0) {
-                    if (cluster.getUltDiaCompra()> 45) {
+                    if (cluster.getUltDiaCompra() > 45) {
                         cluster.setEtiquetaNegocio("VIP-CRITICO");
                         cluster.setDescuentoRecomendado("30");
-                    }
-                    else {
+                    } else {
                         cluster.setEtiquetaNegocio("VIP-FIEL");
                         cluster.setDescuentoRecomendado("0");
                     }
-                }
-                else if (posicion == 1) {
+                } else if (posicion == 1) {
                     if (cluster.getUltDiaCompra() > 45) {
                         cluster.setEtiquetaNegocio("REGULAR-CRITICO");
                         cluster.setDescuentoRecomendado("15");
-                    }
-                    else {
+                    } else {
                         cluster.setEtiquetaNegocio("REGULAR-ACTIVO");
                         cluster.setDescuentoRecomendado("10");
                     }
-                }
-                else {
+                } else {
                     cluster.setEtiquetaNegocio("NUEVO");
                     cluster.setDescuentoRecomendado("5");
                 }
                 System.out.printf("Weka ID [%d] -> %s | Gasto Prom.: $%.2f | Inactividad: %.1f días -> Acción: %s%n",
-                        cluster.getCluster(), cluster.getEtiquetaNegocio(), cluster.getDineroGastado(), cluster.getUltDiaCompra(), cluster.getDescuentoRecomendado());
+                        cluster.getCluster(), cluster.getEtiquetaNegocio(), cluster.getDineroGastado(),
+                        cluster.getUltDiaCompra(), cluster.getDescuentoRecomendado());
             }
 
         } catch (Exception e) {
@@ -158,7 +158,7 @@ public class HelperIASegmentadorClientes {
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         ArrayList<AnalisisCliente> lista = new ArrayList<>();
 
@@ -193,7 +193,7 @@ public class HelperIASegmentadorClientes {
         lista.add(new AnalisisCliente("c29", 5.0, 9.0, 95.0, -1, "", ""));
         lista.add(new AnalisisCliente("c30", 149.0, 116.0, 3480.0, -1, "", ""));
 
-        //analizarMetodoDelCodo(lista,10);
+        // analizarMetodoDelCodo(lista,10);
 
         System.out.println("\n\n\n agrupacion");
         agruparClientes(lista);

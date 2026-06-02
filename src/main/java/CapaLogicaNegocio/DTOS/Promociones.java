@@ -11,6 +11,8 @@ public class Promociones {
     private Date fechaInicio;
     private Date fechaFin;
     private TipoPromocion tipo;
+    private String idProducto;
+    private String idCliente;
 
     public Promociones() {}
 
@@ -69,5 +71,21 @@ public class Promociones {
 
     public void setTipo(TipoPromocion tipo) {
         this.tipo = tipo;
+    }
+
+    public String getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(String idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public String getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 }

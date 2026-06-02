@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.UUID;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -81,6 +82,13 @@ public class Clientes extends javax.swing.JPanel {
         construirTabla();
         construirFormPanel();
         cargarClientes();
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                cargarClientes();
+            }
+        });
     }
 
     /**
@@ -103,6 +111,7 @@ public class Clientes extends javax.swing.JPanel {
 
         toolbar.add(Box.createHorizontalStrut(24));
 
+        toolbar.add(crearBotonAccion("Registrar Cliente", "REGISTRAR"));
         toolbar.add(crearBotonAccion("Buscar Cliente", "BUSCAR"));
         toolbar.add(crearBotonAccion("Actualizar Cliente", "ACTUALIZAR"));
         toolbar.add(crearBotonAccion("Eliminar Cliente", "ELIMINAR"));
@@ -167,7 +176,7 @@ public class Clientes extends javax.swing.JPanel {
 
         tablaClientes = new JTable(tableModel);
         tablaClientes.setBackground(COLOR_TABLE_BG);
-        tablaClientes.setForeground(COLOR_TEXTO); 
+        tablaClientes.setForeground(COLOR_TEXTO);
         tablaClientes.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
         tablaClientes.setRowHeight(36);
         tablaClientes.setShowHorizontalLines(true);
@@ -179,7 +188,7 @@ public class Clientes extends javax.swing.JPanel {
         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
         cellRenderer.setHorizontalAlignment(JLabel.CENTER);
         cellRenderer.setForeground(Color.WHITE);
-        cellRenderer.setBackground(COLOR_TABLE_BG); 
+        cellRenderer.setBackground(COLOR_TABLE_BG);
         for (int col = 0; col < tablaClientes.getColumnCount(); col++) {
             tablaClientes.getColumnModel().getColumn(col).setCellRenderer(cellRenderer);
         }
@@ -190,6 +199,8 @@ public class Clientes extends javax.swing.JPanel {
         header.setForeground(COLOR_TEXTO);
         header.setFont(new Font("Segoe UI Light", Font.BOLD, 14));
         header.setReorderingAllowed(false);
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
         // Al seleccionar una fila → cargar datos en el formulario
         tablaClientes.getSelectionModel().addListSelectionListener(e -> {
@@ -360,6 +371,14 @@ public class Clientes extends javax.swing.JPanel {
 
         switch (modo) {
 
+            case "REGISTRAR" -> {
+                lblTituloForm.setText("Registrar Cliente");
+                btnConfirmar.setText("Registrar");
+                habilitarCampos(true);
+                txtId.setEnabled(false);
+                txtId.setText(UUID.randomUUID().toString());
+            }
+
             case "BUSCAR" -> {
                 lblTituloForm.setText("Buscar Cliente");
                 btnConfirmar.setText("Buscar");
@@ -420,11 +439,43 @@ public class Clientes extends javax.swing.JPanel {
      */
     private void ejecutarOperacion() {
         switch (modoActual) {
+            case "REGISTRAR" -> registrarCliente();
             case "BUSCAR" -> buscarCliente();
             case "ACTUALIZAR" -> actualizarCliente();
             case "ELIMINAR" -> eliminarCliente();
             default -> {
             }
+        }
+    }
+
+    private void registrarCliente() {
+        try {
+            String id = txtId.getText().trim();
+            if (id.isEmpty()) {
+                id = UUID.randomUUID().toString();
+            }
+
+            CapaLogicaNegocio.DTOS.ClientesDTO.ClienteDTO dto = new CapaLogicaNegocio.DTOS.ClientesDTO.ClienteDTO(
+                    id,
+                    txtNombre.getText().trim(),
+                    txtApellido.getText().trim(),
+                    txtCedula.getText().trim(),
+                    txtDireccion.getText().trim());
+
+            RespuestaControlador<Cliente> respuesta = clienteControlador.agregarCliente(dto);
+
+            if (respuesta.exito()) {
+                JOptionPane.showMessageDialog(this, respuesta.mensaje(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                cargarClientes();
+                ocultarFormulario();
+            } else {
+                JOptionPane.showMessageDialog(this, respuesta.mensaje(), "Error de validación",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error inesperado al registrar cliente: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

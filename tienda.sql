@@ -1,6 +1,7 @@
 DROP DATABASE IF EXISTS Tienda_Electronica;
 
 CREATE DATABASE Tienda_Electronica;
+
 USE Tienda_Electronica;
 
 ------------------------- Modulo de ventas
@@ -20,7 +21,7 @@ CREATE TABLE Persona (
     contrasenha VARCHAR(255) NOT NULL,
     estado VARCHAR(2) NOT NULL,
     clienteId VARCHAR(50) NOT NULL,
-    FOREIGN KEY(clienteId) REFERENCES Cliente(id)
+    FOREIGN KEY (clienteId) REFERENCES Cliente (id)
 );
 
 CREATE TABLE Categoria (
@@ -39,16 +40,16 @@ CREATE TABLE Producto (
     fechaVencimiento TIMESTAMP NOT NULL,
     urlImg VARCHAR(200),
     idCategoria VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idCategoria) REFERENCES Categoria(id)
+    FOREIGN KEY (idCategoria) REFERENCES Categoria (id)
 );
 
 CREATE TABLE Venta (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     fechaVenta TIMESTAMP NOT NULL,
-    totalVenta DOUBLE NOT NULL, 
-    metodoPago ENUM("EFECTIVO", "TARJETA") NOT NULL,
+    totalVenta DOUBLE NOT NULL,
+    metodoPago ENUM("TARJETA", "PSE", "EFECTY") NOT NULL,
     idCliente VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idCliente) REFERENCES Cliente(id)
+    FOREIGN KEY (idCliente) REFERENCES Cliente (id)
 );
 
 CREATE TABLE DetalleVenta (
@@ -58,8 +59,8 @@ CREATE TABLE DetalleVenta (
     precioVenta DOUBLE NOT NULL,
     idProducto VARCHAR(50) NOT NULL,
     idVenta VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idProducto) REFERENCES Producto(id),
-    FOREIGN KEY(idVenta) REFERENCES Venta(id)
+    FOREIGN KEY (idProducto) REFERENCES Producto (id),
+    FOREIGN KEY (idVenta) REFERENCES Venta (id)
 );
 
 CREATE TABLE Promocion (
@@ -71,27 +72,27 @@ CREATE TABLE Promocion (
     tipo ENUM('GENERAL', 'ESPECIFICA') NOT NULL
 );
 
-CREATE TABLE PromocionCliente(
+CREATE TABLE PromocionCliente (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     idPromocion VARCHAR(50) NOT NULL,
     idCliente VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idPromocion) REFERENCES Promocion(id),
-    FOREIGN KEY(idCliente) REFERENCES Cliente(id)
+    FOREIGN KEY (idPromocion) REFERENCES Promocion (id),
+    FOREIGN KEY (idCliente) REFERENCES Cliente (id)
 );
 
-CREATE TABLE PromocionProducto(
+CREATE TABLE PromocionProducto (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     idPromocion VARCHAR(50) NOT NULL,
     idProducto VARCHAR(50) NOT NULL,
-    FOREIGN KEY(idPromocion) REFERENCES Promocion(id),
-    FOREIGN KEY(idProducto) REFERENCES Producto(id)
+    FOREIGN KEY (idPromocion) REFERENCES Promocion (id),
+    FOREIGN KEY (idProducto) REFERENCES Producto (id)
 );
 ----------------------------------------------------------
 
 --------- tabla encargada del registro de la sincronizacion
 
-CREATE TABLE ColaSincronizadora(
-    secuencia BIGINT NOT NULL AUTO_INCREMENT, -- T1: orden de reproduccion (replay) garantizado
+CREATE TABLE ColaSincronizadora (
+    secuencia BIGINT NOT NULL AUTO_INCREMENT,
     id VARCHAR(50) NOT NULL,
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,
     tablaAfectada VARCHAR(50) NOT NULL,
@@ -99,7 +100,6 @@ CREATE TABLE ColaSincronizadora(
     registroJson TEXT NOT NULL,
     estado VARCHAR(2) NOT NULL,
     PRIMARY KEY (secuencia),
-    UNIQUE KEY uq_id (id),       -- id sigue siendo unico (lo usan actualizar/eliminar por id)
-    INDEX idx_estado (estado)    -- T2: evita escanear toda la tabla en el vaciado (WHERE estado=0)
+    UNIQUE KEY uq_id (id),
+    INDEX idx_estado (estado)
 );
-

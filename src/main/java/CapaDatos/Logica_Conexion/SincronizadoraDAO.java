@@ -180,7 +180,8 @@ public class SincronizadoraDAO implements ILocalDAO<Sincronizadora> {
     public ArrayList<Sincronizadora> obtenerNoSincronizados(String estado){
         // O1: ORDER BY secuencia => se reproducen en el mismo orden en que se encolaron (FIFO).
         // Evita que un INSERT replayado despues de un DELETE "resucite" el registro en la nube.
-        String query = "SELECT * FROM ColaSincronizadora WHERE estado = ? ORDER BY secuencia ASC";
+        String query = "SELECT id, accion, tablaAfectada, idRegistroAfectado, registroJson, estado " +
+                "FROM ColaSincronizadora WHERE estado = ? ORDER BY secuencia ASC";
         ArrayList<Sincronizadora> listaNoSincronizados = new ArrayList<>();
 
         Connection conexion = Conexion.getConexionLocal();

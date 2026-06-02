@@ -10,7 +10,25 @@ import java.util.Date;
  */
 public class Venta {
 
-    public enum MetodoPago { EFECTIVO, TARJETA };
+    // Metodos de pago de la tienda online. Se quito EFECTIVO (no aplica para una tienda en linea) y
+    // se agregaron PSE y EFECTY, los medios usados en Colombia.
+    public enum MetodoPago { TARJETA, PSE, EFECTY };
+
+    /**
+     * Convierte un texto a {@link MetodoPago} de forma tolerante. Si el valor no corresponde a un
+     * metodo valido (por ejemplo "EFECTIVO" de datos antiguos), devuelve {@link MetodoPago#TARJETA}
+     * en lugar de lanzar excepcion, para no romper la carga de ventas existentes.
+     * @param valor texto del metodo de pago (puede venir de la BD local o de la nube)
+     * @return el MetodoPago correspondiente, o TARJETA si no se reconoce
+     */
+    public static MetodoPago metodoPagoDesde(String valor) {
+        if (valor == null) return MetodoPago.TARJETA;
+        try {
+            return MetodoPago.valueOf(valor.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return MetodoPago.TARJETA;
+        }
+    }
 
     private String id;
     private Date fechaVenta;

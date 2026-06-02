@@ -24,8 +24,11 @@ public class HelperRed {
 
         long inicio = System.currentTimeMillis();
 
+        // Se conecta a firestore.googleapis.com:443 en lugar de 8.8.8.8:53 para que
+        // el check incluya resolucion DNS — si DNS falla, Firestore tampoco funcionara
+        // y usandoNube quedaria en true causando errores UNAVAILABLE en gRPC.
         try(Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress("8.8.8.8", 53), tiempoMaxEspera);
+            socket.connect(new InetSocketAddress("firestore.googleapis.com", 443), tiempoMaxEspera);
             long fin = System.currentTimeMillis();
             long latencia = fin - inicio;
 

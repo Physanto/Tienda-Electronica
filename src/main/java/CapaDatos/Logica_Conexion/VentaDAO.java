@@ -22,14 +22,15 @@ public class VentaDAO implements ILocalDAO<Venta> {
     @Override
     public boolean agregar(Venta venta) {
 
-        String query =
-                "INSERT INTO Venta (id,fechaVenta,totalVenta,metodoPago,idCliente) "
+        String query = "INSERT INTO Venta (id,fechaVenta,totalVenta,metodoPago,idCliente) "
                 + "VALUES (?, ?, ?, ?, ?)";
 
         Connection con = Conexion.getConexionLocal();
-        if(con == null) { return false; }
+        if (con == null) {
+            return false;
+        }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
 
             preparedStatement.setString(1, venta.getId());
             preparedStatement.setTimestamp(2, new Timestamp(venta.getFechaVenta().getTime()));
@@ -39,8 +40,7 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
             return preparedStatement.executeUpdate() >= 1;
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
@@ -54,15 +54,16 @@ public class VentaDAO implements ILocalDAO<Venta> {
         String query = "DELETE FROM Venta WHERE id = ?";
 
         Connection con = Conexion.getConexionLocal();
-        if(con == null) { return false; }
+        if (con == null) {
+            return false;
+        }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, id);
 
             return preparedStatement.executeUpdate() >= 1;
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
@@ -78,25 +79,25 @@ public class VentaDAO implements ILocalDAO<Venta> {
         Venta venta = null;
 
         Connection con = Conexion.getConexionLocal();
-        if(con == null) { return null; }
+        if (con == null) {
+            return null;
+        }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, id);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-                while(resultSet.next()) {
+                while (resultSet.next()) {
                     venta = new Venta(
                             resultSet.getString("id"),
                             resultSet.getDate("fechaVenta"),
                             resultSet.getDouble("totalVenta"),
-                            Venta.MetodoPago.valueOf(resultSet.getString("metodoPago").toUpperCase()),
-                            resultSet.getString("idCliente")
-                    );
+                            Venta.metodoPagoDesde(resultSet.getString("metodoPago")),
+                            resultSet.getString("idCliente"));
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return venta;
@@ -113,21 +114,21 @@ public class VentaDAO implements ILocalDAO<Venta> {
         ArrayList<Venta> listaVentas = new ArrayList<>();
 
         Connection con = Conexion.getConexionLocal();
-        if(con == null) { return listaVentas; }
+        if (con == null) {
+            return listaVentas;
+        }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try (PreparedStatement preparedStatement = con.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Venta venta = new Venta(resultSet.getString("id"), resultSet.getTimestamp("fechaVenta"),
                         resultSet.getDouble("totalVenta"),
-                        Venta.MetodoPago.valueOf(resultSet.getString("metodoPago").toUpperCase()), resultSet.getString("idCliente")
-                );
+                        Venta.metodoPagoDesde(resultSet.getString("metodoPago")), resultSet.getString("idCliente"));
                 listaVentas.add(venta);
             }
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return listaVentas;
@@ -142,9 +143,11 @@ public class VentaDAO implements ILocalDAO<Venta> {
                 + "WHERE id=?";
 
         Connection con = Conexion.getConexionLocal();
-        if(con == null) { return false; }
+        if (con == null) {
+            return false;
+        }
 
-        try(PreparedStatement preparedStatement = con.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
 
             preparedStatement.setTimestamp(1, new Timestamp(venta.getFechaVenta().getTime()));
             preparedStatement.setDouble(2, venta.getTotalVenta());
@@ -153,14 +156,13 @@ public class VentaDAO implements ILocalDAO<Venta> {
             preparedStatement.setString(5, venta.getId());
 
             return preparedStatement.executeUpdate() >= 1;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
         return false;
     }
 
-    public Double totalVentas(){
+    public Double totalVentas() {
 
         String query = "SELECT SUM(totalVenta) AS total FROM Venta";
 
@@ -168,25 +170,26 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
         Connection conexion = Conexion.getConexionLocal();
 
-        if(conexion == null) return 0.0;
+        if (conexion == null)
+            return 0.0;
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 total = resultSet.getDouble("total");
 
-                if(resultSet.wasNull()) return 0.0;
+                if (resultSet.wasNull())
+                    return 0.0;
             }
             return total;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error en la obtencion de ventas");
         }
         return 0.0;
     }
 
-    public Long cantidadVentas(){
+    public Long cantidadVentas() {
 
         String query = "SELECT COUNT(id) AS cantidad FROM Venta";
 
@@ -194,25 +197,26 @@ public class VentaDAO implements ILocalDAO<Venta> {
 
         Connection conexion = Conexion.getConexionLocal();
 
-        if(conexion == null) return 0l;
+        if (conexion == null)
+            return 0l;
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 total = resultSet.getLong("cantidad");
 
-                if(resultSet.wasNull()) return 0l;
+                if (resultSet.wasNull())
+                    return 0l;
             }
             return total;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error en obtener la cantidad de registros de ventas");
         }
         return 0l;
     }
 
-    public ArrayList<VentasDTO.VentaPorCategoriaDTO> ventasPorCategoria(){
+    public ArrayList<VentasDTO.VentaPorCategoriaDTO> ventasPorCategoria() {
 
         String query = "SELECT c.nombre AS categoria, " +
                 "    SUM(dt.cantidad) AS productosVendidos, " +
@@ -220,31 +224,31 @@ public class VentaDAO implements ILocalDAO<Venta> {
                 "    MIN(v.fechaVenta) AS primeraVenta, " +
                 "    MAX(v.fechaVenta) AS ultimaVenta " +
                 " FROM Categoria c " +
-                "JOIN Producto p ON p.idCategoria = c.id" +
-                "JOIN DetalleVenta dt ON dt.idProducto = p.id" +
-                "JOIN Venta v ON v.id = dt.idVenta" +
-                "GROUP BY c.id, c.nombre;";
+                "JOIN Producto p ON p.idCategoria = c.id " +
+                "JOIN DetalleVenta dt ON dt.idProducto = p.id " +
+                "JOIN Venta v ON v.id = dt.idVenta " +
+                "GROUP BY c.nombre;";
 
         ArrayList<VentasDTO.VentaPorCategoriaDTO> listaVentas = new ArrayList<>();
         Connection conexion = Conexion.getConexionLocal();
 
-        if(conexion == null) return listaVentas;
+        if (conexion == null)
+            return listaVentas;
 
-        try(PreparedStatement preparedStatement = conexion.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery()){
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
             VentasDTO.VentaPorCategoriaDTO ventaPorCategoriaDTO;
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 ventaPorCategoriaDTO = new VentasDTO.VentaPorCategoriaDTO(resultSet.getString("categoria"),
                         resultSet.getLong("productosVendidos"), resultSet.getDouble("totalVentas"),
                         resultSet.getTimestamp("primeraVenta"), resultSet.getTimestamp("ultimaVenta"));
                 listaVentas.add(ventaPorCategoriaDTO);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("no se pudo ejecutar ventas por categoria");
         }
-		return listaVentas;
+        return listaVentas;
     }
 }
