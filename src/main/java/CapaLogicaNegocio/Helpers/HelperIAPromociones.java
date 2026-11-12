@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class HelperIAPromociones {
 
-    private static SimpleKMeans kmeans;
+    private static final ThreadLocal<SimpleKMeans> modelos = new ThreadLocal<>();
 
     private static Instances convertirDatosAWeka(ArrayList<Promocion> listaPromocion) {
         if (listaPromocion == null || listaPromocion.isEmpty()) {
@@ -43,12 +43,15 @@ public class HelperIAPromociones {
     }
 
     public static ArrayList<Promocion> agruparProductos(ArrayList<Promocion> lista) {
+        modelos.remove();
+        if (lista == null || lista.isEmpty()) return new ArrayList<>();
         try {
             Instances dataset = convertirDatosAWeka(lista);
 
-            int numeroClusters = 3;
+            int numeroClusters = Math.min(3, lista.size());
 
-            kmeans = new SimpleKMeans();
+            SimpleKMeans kmeans = new SimpleKMeans();
+            modelos.set(kmeans);
             kmeans.setNumClusters(numeroClusters);
 
             ManhattanDistance manhattan = new ManhattanDistance();
@@ -65,7 +68,8 @@ public class HelperIAPromociones {
             }
         }
         catch (Exception e) {
-            System.out.println("Error ejecutando K-Means: " + e.getMessage());
+            modelos.remove();
+            throw new IllegalStateException("No se pudo calcular la segmentación", e);
         }
         return lista;
     }
@@ -73,6 +77,7 @@ public class HelperIAPromociones {
     public static ArrayList<Promocion> clasificarInventario() {
         ArrayList<Promocion> listaPerfiles = new ArrayList<>();
 
+        SimpleKMeans kmeans = modelos.get();
         if (kmeans == null) {
             System.out.println("Error: Ejecuta el K-Means primero.");
             return listaPerfiles;

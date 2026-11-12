@@ -1,12 +1,10 @@
-DROP DATABASE IF EXISTS Tienda_Electronica;
-
-CREATE DATABASE Tienda_Electronica;
+CREATE DATABASE IF NOT EXISTS Tienda_Electronica CHARACTER SET utf8mb4;
 
 USE Tienda_Electronica;
 
-------------------------- Modulo de ventas
+-- Modulo de ventas
 
-CREATE TABLE Cliente (
+CREATE TABLE IF NOT EXISTS Cliente (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
@@ -15,7 +13,7 @@ CREATE TABLE Cliente (
     urlImg VARCHAR(200)
 );
 
-CREATE TABLE Persona (
+CREATE TABLE IF NOT EXISTS Persona (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     contrasenha VARCHAR(255) NOT NULL,
@@ -24,12 +22,12 @@ CREATE TABLE Persona (
     FOREIGN KEY (clienteId) REFERENCES Cliente (id)
 );
 
-CREATE TABLE Categoria (
+CREATE TABLE IF NOT EXISTS Categoria (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Producto (
+CREATE TABLE IF NOT EXISTS Producto (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     codigo VARCHAR(50) NOT NULL UNIQUE,
     nombre VARCHAR(50) NOT NULL,
@@ -43,7 +41,7 @@ CREATE TABLE Producto (
     FOREIGN KEY (idCategoria) REFERENCES Categoria (id)
 );
 
-CREATE TABLE Venta (
+CREATE TABLE IF NOT EXISTS Venta (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     fechaVenta TIMESTAMP NOT NULL,
     totalVenta DOUBLE NOT NULL,
@@ -52,7 +50,7 @@ CREATE TABLE Venta (
     FOREIGN KEY (idCliente) REFERENCES Cliente (id)
 );
 
-CREATE TABLE DetalleVenta (
+CREATE TABLE IF NOT EXISTS DetalleVenta (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     cantidad BIGINT NOT NULL,
     subtotal DOUBLE NOT NULL,
@@ -63,7 +61,7 @@ CREATE TABLE DetalleVenta (
     FOREIGN KEY (idVenta) REFERENCES Venta (id)
 );
 
-CREATE TABLE Promocion (
+CREATE TABLE IF NOT EXISTS Promocion (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     descuento DOUBLE NOT NULL,
@@ -72,7 +70,7 @@ CREATE TABLE Promocion (
     tipo ENUM('GENERAL', 'ESPECIFICA') NOT NULL
 );
 
-CREATE TABLE PromocionCliente (
+CREATE TABLE IF NOT EXISTS PromocionCliente (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     idPromocion VARCHAR(50) NOT NULL,
     idCliente VARCHAR(50) NOT NULL,
@@ -80,18 +78,18 @@ CREATE TABLE PromocionCliente (
     FOREIGN KEY (idCliente) REFERENCES Cliente (id)
 );
 
-CREATE TABLE PromocionProducto (
+CREATE TABLE IF NOT EXISTS PromocionProducto (
     id VARCHAR(50) PRIMARY KEY NOT NULL,
     idPromocion VARCHAR(50) NOT NULL,
     idProducto VARCHAR(50) NOT NULL,
     FOREIGN KEY (idPromocion) REFERENCES Promocion (id),
     FOREIGN KEY (idProducto) REFERENCES Producto (id)
 );
-----------------------------------------------------------
+--
 
---------- tabla encargada del registro de la sincronizacion
+-- tabla encargada del registro de la sincronizacion
 
-CREATE TABLE ColaSincronizadora (
+CREATE TABLE IF NOT EXISTS ColaSincronizadora (
     secuencia BIGINT NOT NULL AUTO_INCREMENT,
     id VARCHAR(50) NOT NULL,
     accion ENUM("INSERT", "UPDATE", "DELETE") NOT NULL,

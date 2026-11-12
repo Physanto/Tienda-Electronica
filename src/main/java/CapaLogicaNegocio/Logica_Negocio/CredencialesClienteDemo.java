@@ -32,7 +32,9 @@ public final class CredencialesClienteDemo {
     static {
         for (String nombre : new String[] {
                 "juan", "pedro", "matias", "jordan", "lucas",
-                "luis", "lian", "francisco", "luisa", "andrea" }) {
+                "luis", "lian", "francisco", "luisa", "andrea",
+                "ana", "carlos", "lucía", "diego", "sofía", "mateo",
+                "valentina", "samuel", "isabel", "daniel" }) {
             // Para la demo el usuario y la contrasenha son iguales al nombre del cliente.
             CREDENCIALES.put(nombre, nombre);
         }
@@ -45,7 +47,7 @@ public final class CredencialesClienteDemo {
      * Indica si el usuario corresponde a uno de los clientes de demostracion (sin
      * importar
      * mayusculas/minusculas).
-     * 
+     *
      * @param usuario nombre de usuario ingresado en el login
      * @return true si el usuario es un cliente de demo
      */
@@ -58,7 +60,7 @@ public final class CredencialesClienteDemo {
     /**
      * Valida que el par usuario/contrasenha coincida con una credencial de
      * demostracion.
-     * 
+     *
      * @param usuario     nombre de usuario ingresado
      * @param contrasenha contrasenha ingresada
      * @return true si las credenciales son validas

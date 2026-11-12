@@ -22,7 +22,7 @@ public class Promocion {
         this.stockActual = stockActual;
         this.diasSinVender = diasSinVender;
         this.totalVendido = totalVendido;
-        puntajeRiesgo = stockActual * diasSinVender;
+        puntajeRiesgo = stockActual * diasSinVender / (1.0 + totalVendido);
     }
 
     public Promocion(String id, Double stockActual, Double diasSinVender, Double totalVendido) {

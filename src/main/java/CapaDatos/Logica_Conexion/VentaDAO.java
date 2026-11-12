@@ -91,7 +91,7 @@ public class VentaDAO implements ILocalDAO<Venta> {
                 while (resultSet.next()) {
                     venta = new Venta(
                             resultSet.getString("id"),
-                            resultSet.getDate("fechaVenta"),
+                            resultSet.getTimestamp("fechaVenta"),
                             resultSet.getDouble("totalVenta"),
                             Venta.metodoPagoDesde(resultSet.getString("metodoPago")),
                             resultSet.getString("idCliente"));

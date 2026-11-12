@@ -32,7 +32,8 @@ public class HelperMonitorRed extends Thread {
             HelperSincronizador.SincronizarLocalANube();
         }
 
-        while (true) {
+        try {
+        while (!isInterrupted()) {
             try {
                 Thread.sleep(5000);
 
@@ -57,14 +58,20 @@ public class HelperMonitorRed extends Thread {
                     HelperSincronizador.SincronizarLocalANube();
                 }
             } catch (InterruptedException e) {
+                interrupt();
                 break;
+            } catch (RuntimeException e) {
+                System.err.println("No se pudo sincronizar: " + e.getMessage());
             }
+        }
+        } finally {
+            CapaDatos.Logica_Conexion.Conexion.cerrarConexionLocal();
         }
     }
 
     /**
      * Metodo estatico que retorna si hay conexion o no.
-     * 
+     *
      * @return true si hay conexion estable de internet, de lo contrario retorna
      *         false
      */

@@ -43,8 +43,10 @@ public class HelperSincronizador {
      * este metodo te hace toda la sincronizacion independientemente de si
      * insertas, eliminas o actualizas un registro
      */
-    public static void SincronizarLocalANube() {
+    public static synchronized void SincronizarLocalANube() {
         System.out.println("Iniciando vaciado de cola local hacia la nube...");
+
+        if (CapaDatos.Logica_Conexion.Conexion.getConexionLocal() == null) return;
 
         Gson gson = gsonSync();
         SincronizadoraDAO sincronizadoraDAO = new SincronizadoraDAO();
@@ -70,7 +72,7 @@ public class HelperSincronizador {
                 if (datos != null)
                     convertirCadenasFechaADate(datos);
 
-                boolean subidoExitosamente;
+                boolean subidoExitosamente = false;
                 switch (sincronizadora.getAccion().name()) {
                     case "INSERT":
                         subidoExitosamente = GeneralOnlineProviderCRUD.guardar(tablaAfectada, idRegistro, datos);
@@ -84,22 +86,25 @@ public class HelperSincronizador {
                     default:
                         System.out
                                 .println("Accion desconocida, se omite el registro con id: " + sincronizadora.getId());
-                        continue;
+                        break;
                 }
 
                 if (!subidoExitosamente) {
                     System.out.println(
                             "Fallo la subida del registro con id: " + idRegistro + ", queda pendiente para reintento");
-                    continue;
+                    break;
                 }
 
                 System.out.println("Registro con id: " + idRegistro + " faltante fue sincronizado correctamente ");
                 if (sincronizadoraDAO.actualizarSincronizados(sincronizadora.getId())) {
                     System.out.println("Cambio el estado del registro a 1, sincronizado correctamente");
+                } else {
+                    break;
                 }
             } catch (Exception e) {
                 System.out.println(
                         "Error sincronizando el registro con id: " + sincronizadora.getId() + " - " + e.getMessage());
+                break;
             }
         }
     }

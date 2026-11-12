@@ -33,26 +33,9 @@ public class HelperGestorBD {
     // metodo especifico para guardar un cliente en la nube, se va reemplazar por el
     // generico guardarNube
     public static void GuardarPersonaGeneral(Cliente cliente) {
-
-        boolean online = HelperMonitorRed.estaUsandoNube();
-
-        try {
-            if (!new ClienteDAO().agregar(cliente)) {
-                guardarRedundancia(cliente);
-                return;
-            }
-            if (!online) {
-                String registroJson = HelperSincronizador.gsonSync().toJson(cliente);
-                new SincronizadoraDAO().agregar(new Sincronizadora(String.valueOf((int) (Math.random() * 100000)),
-                        Sincronizadora.Accion.INSERT, "Cliente", cliente.getId(), registroJson, "0"));
-            } else if (new ClienteOnlineCRUD().registrarNube(cliente)) {
-                System.out.println("Guardado exitoso en Local y Nube.");
-            } else {
-                System.out.println("Modo Offline activo. Guardado solo en Local (Estado 0).");
-            }
-        } catch (Exception e) {
-            System.out.println("Error faltal en la insercion de datos " + e.getMessage());
-        }
+        guardarRegistro(cliente, "Cliente", cliente.getId(),
+                () -> new ClienteDAO().agregar(cliente),
+                () -> new ClienteOnlineCRUD().registrarNube(cliente));
     }
 
     /**
@@ -60,7 +43,7 @@ public class HelperGestorBD {
      * base de datos que se encuentra disponible y funcionando en el momento
      * este metodo es generico por ende se pide especificamente el registro, id y
      * coleccion aunque suene redundante
-     * 
+     *
      * @param object             representa el registro que se desea guardar en la
      *                           base de datos (Cliente, Producto...)
      * @param coleccion          representa la coleccion y/o tabla de la base de
@@ -72,7 +55,7 @@ public class HelperGestorBD {
      * @param metodoGuardarNube  es el metodo para guardar un registro en la base de
      *                           datos de la nube
      * @example Ejemplo de como usar el metodo
-     * 
+     *
      *          <pre>{@code
      * guardarNube(object, // es el registro que se quiere almacenar
      * coleccion, // es la coleccion donde se va a almacenar el registro en la base de datos de la nube
@@ -88,57 +71,13 @@ public class HelperGestorBD {
     // ya que aqui hay code smell
     public static <T> boolean guardarRegistro(T object, String coleccion, String id,
             Supplier<Boolean> metodoGuardarLocal, Supplier<Boolean> metodoGuardarNube) {
-        boolean exitoLocal = false;
-        boolean subidoExitosamente = false;
-        boolean online = HelperMonitorRed.estaUsandoNube();
-
-        Connection conexion = Conexion.getConexionLocal();
-        if (conexion == null) {
-            guardarRedundancia(object);
-            return false;
-        }
-
-        try {
-            exitoLocal = metodoGuardarLocal.get();
-        } catch (Exception e) {
-            System.err.println("Fallo el guardado local. Causa: " + e.getMessage());
-            guardarRedundancia(object);
-        }
-
-        if (online && exitoLocal) {
-            try {
-                subidoExitosamente = metodoGuardarNube.get();
-                if (subidoExitosamente) {
-                    System.out.println("Guardado exitoso en Local y Nube.");
-                }
-            } catch (Exception e) {
-                System.err.println("Fallo el guardado en la nube. Causa: " + e.getMessage());
-                subidoExitosamente = false;
-            }
-        }
-
-        // solo se encola hacia la nube si el registro EXISTE en local.
-        if (exitoLocal && (!online || !subidoExitosamente)) {
-            try {
-                String registroJson = HelperSincronizador.gsonSync().toJson(object);
-                String idSync = java.util.UUID.randomUUID().toString();
-
-                new SincronizadoraDAO().agregar(new Sincronizadora(idSync, Sincronizadora.Accion.INSERT,
-                        coleccion, id, registroJson, "0"));
-
-                System.out.println("Registro enviado a la cola de sincronización (INSERT).");
-            } catch (Exception e) {
-                System.err.println("Fallo la cola de sincronización. Causa: " + e.getMessage());
-                throw new RuntimeException("Error fatal: No se pudo respaldar la información.", e);
-            }
-        }
-        return exitoLocal;
+        return modificarYEncolar(object, coleccion, id, Sincronizadora.Accion.INSERT, metodoGuardarLocal);
     }
 
     /**
      * Metodo que se encarga de cargar todos los registros de la base de datos que
      * este disponible y en operacion en ese momento
-     * 
+     *
      * @param metodoCargarLocal es el metodo para cargar todos registros de la base
      *                          de datos local
      * @param metodoCargarNube  es el metodo para cargar todos registros de la base
@@ -146,7 +85,7 @@ public class HelperGestorBD {
      * @return una lista la cual contiene los registros consultados a una de la base
      *         de datos
      * @example Ejemplo de como usar el metodo
-     * 
+     *
      *          <pre>{@code
      * cargarRegistros(() -> new ClienteDAO().obteners(), // es cualquier metodo para cargar registros de la bd local
      * () -> new ClienteOnlineCRUD().obtenersNube(Cliente.class)); // es cualquier metodo para cargar registros de la bd nube
@@ -155,69 +94,64 @@ public class HelperGestorBD {
      */
     public static <T> ArrayList<T> cargarRegistros(Supplier<ArrayList<T>> metodoCargarLocal,
             Supplier<ArrayList<T>> metodoCargarNube) {
-        boolean online = HelperMonitorRed.estaUsandoNube();
-
-        ArrayList<T> listaRegistros = new ArrayList<>();
         try {
-            listaRegistros = metodoCargarLocal.get();
-
-            if (!listaRegistros.isEmpty()) {
-                System.out.println("Listando desde local");
-                return listaRegistros;
-            }
-            if (online) {
-                System.out.println("Listando desde la nube");
-                listaRegistros = metodoCargarNube.get();
-            }
+            ArrayList<T> locales = metodoCargarLocal.get();
+            if (locales != null && !locales.isEmpty()) return locales;
+            // Una tabla local vacía es autoritativa: evita resucitar borrados pendientes.
+            if (Conexion.getConexionLocal() != null) return new ArrayList<>();
         } catch (Exception e) {
-            System.out.println("Error ex faltal listando los datos " + e.getMessage());
+            System.err.println("No se pudo consultar MySQL: " + e.getMessage());
         }
-        return listaRegistros;
+        if (HelperMonitorRed.estaUsandoNube()) {
+            try {
+                ArrayList<T> nube = metodoCargarNube.get();
+                if (nube != null) return nube;
+            } catch (Exception e) {
+                System.err.println("No se pudo consultar Firestore: " + e.getMessage());
+            }
+        }
+        return new ArrayList<>();
     }
 
     /**
      * Metodo que se encarga de cargar el registro con id especificado por argumento
      * de la base de datos que este disponible y en operacion en ese momento
-     * 
+     *
      * @param metodoCargarLocal es el metodo para cargar el registro de la base de
      *                          datos local
      * @param metodoCargarNube  es el metodo para cargar el registro de la base de
      *                          datos de la nube
      * @example Ejemplo de como usar el metodo
-     * 
+     *
      *          <pre>{@code
      * cargarRegistro(() -> new ClienteDAO().obtener(id), // es cualquier metodo para cargar un registro de la bd local
      * () -> new ClienteOnlineCRUD().obtenerNube(Cliente.class, id)); // es cualquier metodo para cargar un registro de la bd nube
      * }
      * </pre>
-     * 
+     *
      * @return el objeto con el id asignado
      */
     public static <T> T cargarRegistro(Supplier<T> metodoCargarLocal, Supplier<T> metodoCargarNube) {
-        boolean online = HelperMonitorRed.estaUsandoNube();
-        T object = null;
-
         try {
-            object = metodoCargarLocal.get();
-
-            if (object != null) {
-                System.out.println("Listando desde local");
-                return object;
-            }
-            if (online) {
-                System.out.println("Listando desde la nube");
-                object = metodoCargarNube.get();
-            }
+            T local = metodoCargarLocal.get();
+            if (local != null || Conexion.getConexionLocal() != null) return local;
         } catch (Exception e) {
-            System.out.println("Error Ex faltal listando los datos " + e.getMessage());
+            System.err.println("No se pudo consultar MySQL: " + e.getMessage());
         }
-        return object;
+        if (HelperMonitorRed.estaUsandoNube()) {
+            try {
+                return metodoCargarNube.get();
+            } catch (Exception e) {
+                System.err.println("No se pudo consultar Firestore: " + e.getMessage());
+            }
+        }
+        return null;
     }
 
     /**
      * Metodo que se encarga de eliminar el registro especificado por id de la base
      * de datos que se encuentra disponible y funcionando en el momento
-     * 
+     *
      * @param id                  es el id del registro a eliminar
      * @param coleccion           representa la coleccion y/o tabla de la base de
      *                            datos
@@ -226,7 +160,7 @@ public class HelperGestorBD {
      * @param metodoEliminarNube  es el metodo para eliminar un registro de la base
      *                            de datos de la nube
      * @example Ejemplo de como usar el metodo
-     * 
+     *
      *          <pre>{@code
      * eliminarRegistro(id, // es el id del registro que se quiere eliminar
      * coleccion, // es la coleccion y/o tabla de la base de datos
@@ -237,42 +171,14 @@ public class HelperGestorBD {
      */
     public static boolean eliminarRegistro(String id, String coleccion, Supplier<Boolean> metodoEliminarLocal,
             Supplier<Boolean> metodoEliminarNube) {
-        boolean exito = false;
-        boolean online = HelperMonitorRed.estaUsandoNube();
-
-        try {
-            if (metodoEliminarLocal.get()) {
-                System.out.println("Eliminado desde local");
-                exito = true;
-            } else {
-                // esto se hace porque no estamos manejando sincronizacion bidireccional
-                return false;
-            }
-            boolean subidoExitosamente = false;
-            if (online) {
-                subidoExitosamente = metodoEliminarNube.get();
-                if (subidoExitosamente) {
-                    System.out.println("Registro eliminado correctamente en las dos bases de datos");
-                }
-            }
-            if (!online || !subidoExitosamente) {
-                String idSync = java.util.UUID.randomUUID().toString();
-                new SincronizadoraDAO().agregar(new Sincronizadora(idSync, Sincronizadora.Accion.DELETE,
-                        coleccion, id, "{}", "0"));
-                System.out.println("Registro enviado a la cola de sincronización (DELETE).");
-            }
-        } catch (Exception e) {
-            System.out.println("Error eliminando los datos " + e.getMessage());
-        }
-
-        return exito;
+        return modificarYEncolar(null, coleccion, id, Sincronizadora.Accion.DELETE, metodoEliminarLocal);
     }
 
     /**
      * Metodo que se encarga de actualizar el registro especificado por argumento en
      * la base de datos que se encuentre disponible
      * y funcionando en ese momento.
-     * 
+     *
      * @param object                representa el registro que se desea actualizar
      *                              (Cliente, Producto...)
      * @param coleccion             representa la coleccion y/o tabla de la base de
@@ -283,7 +189,7 @@ public class HelperGestorBD {
      * @param metodoActualizarNube  es el metodo para actualizar un registro en la
      *                              base de datos de la nube
      * @example Ejemplo de como usar el metodo
-     * 
+     *
      *          <pre>{@code
      * guardarNube(object, // es el registro que se quiere actualizar
      * coleccion, // es la coleccion y/o tabla donde se va a actualizar el registro en la base de datos disponible
@@ -295,43 +201,58 @@ public class HelperGestorBD {
      */
     public static <T> boolean actualizarRegistro(T object, String coleccion, String id,
             Supplier<Boolean> metodoActualizarLocal, Supplier<Boolean> metodoActualizarNube) {
-        boolean exito = false;
-        boolean online = HelperMonitorRed.estaUsandoNube();
+        return modificarYEncolar(object, coleccion, id, Sincronizadora.Accion.UPDATE, metodoActualizarLocal);
+    }
 
-        try {
-            if (metodoActualizarLocal.get()) {
-                System.out.println("Actualizado desde local");
-                exito = true;
-            } else {
-                System.out.println("ERROR DE CONSULTAR AQUI");
+    /** El dato y su evento se confirman juntos; nunca se informa éxito sin respaldo. */
+    private static <T> boolean modificarYEncolar(T object, String coleccion, String id,
+            Sincronizadora.Accion accion, Supplier<Boolean> modificacion) {
+        return guardarOperacion(modificacion, new CambioPendiente(object, coleccion, id, accion));
+    }
+
+    public record CambioPendiente(Object registro, String coleccion, String id, Sincronizadora.Accion accion) { }
+
+    /** Confirma varias escrituras relacionadas y todos sus eventos en una transacción. */
+    public static boolean guardarOperacion(Supplier<Boolean> modificacion, CambioPendiente... cambios) {
+        synchronized (HelperSincronizador.class) {
+            Connection conexion = Conexion.getConexionLocal();
+            if (conexion == null || cambios.length == 0) return false;
+            try {
+                if (!conexion.getAutoCommit()) return false;
+            } catch (SQLException e) {
                 return false;
             }
-
-            boolean subidoExitosamente = false;
-            if (online) {
-                subidoExitosamente = metodoActualizarNube.get();
-                if (subidoExitosamente) {
-                    System.out.println("Se actualizó desde la nube");
+            try {
+                conexion.setAutoCommit(false);
+                if (!Boolean.TRUE.equals(modificacion.get())) {
+                    conexion.rollback();
+                    return false;
                 }
+                for (CambioPendiente cambio : cambios) {
+                    String json = cambio.registro() == null ? "{}" : HelperSincronizador.gsonSync().toJson(cambio.registro());
+                    Sincronizadora evento = new Sincronizadora(java.util.UUID.randomUUID().toString(),
+                            cambio.accion(), cambio.coleccion(), cambio.id(), json, "0");
+                    if (!new SincronizadoraDAO().agregar(evento)) {
+                        throw new SQLException("No se pudo guardar la cola de sincronización");
+                    }
+                }
+                conexion.commit();
+            } catch (Exception e) {
+                try { conexion.rollback(); } catch (SQLException error) { e.addSuppressed(error); }
+                System.err.println("No se guardó el cambio local: " + e.getMessage());
+                return false;
+            } finally {
+                try { conexion.setAutoCommit(true); } catch (SQLException e) { Conexion.cerrarConexionLocal(); }
             }
-
-            if (!online || !subidoExitosamente) {
-                String registroActualizar = HelperSincronizador.gsonSync().toJson(object);
-                String idSync = java.util.UUID.randomUUID().toString();
-                new SincronizadoraDAO().agregar(new Sincronizadora(idSync, Sincronizadora.Accion.UPDATE,
-                        coleccion, id, registroActualizar, "0"));
-                System.out.println("Registro enviado a la cola de sincronización (UPDATE).");
-            }
-        } catch (Exception e) {
-            System.out.println("Error actualizando los datos " + e.getMessage());
+            if (HelperMonitorRed.estaUsandoNube()) HelperSincronizador.SincronizarLocalANube();
+            return true;
         }
-        return exito;
     }
 
     /**
      * Metodo encargado de guardar el registro que falto sincronizar en las dos
      * bases de datos
-     * 
+     *
      * @param object es el registro que falto sincronizar en las dos bases de datos
      */
     public static <T> void guardarRedundancia(T object) {
@@ -346,7 +267,7 @@ public class HelperGestorBD {
     /**
      * Implementacion de eliminacion cuando se quiera hacer una sincronizacion
      * bidireccional, esto para futuras mejoras
-     * 
+     *
      * @param id
      * @param coleccion
      * @param metodoEliminarLocal

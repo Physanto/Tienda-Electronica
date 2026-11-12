@@ -12,15 +12,11 @@ import java.net.Socket;
 public class HelperRed {
 
     /**
-     * Verifica si hay conexion a internet, haciendo ping y verificando que la velocidad
-     * sea suficiente para la conexion a la base de datos en la nube
-     * por medio de un socket hace un ping a www.google.com y toma el tiempo que tarda esa conexion
-     * entre el inicio y fin del tiempo tomado para hacer el ping
-     * si ese tiempo es menor a 2 seg entonces el internet es optimo para usar la base de datos.
+     * Comprueba DNS y acceso TCP a Firestore. Una conexión lenta sigue siendo válida;
+     * los permisos y la disponibilidad de la base se comprueban en las operaciones.
     */
     public static boolean verificarConexion(){
         int tiempoMaxEspera = 2000;
-        long limLatencia = 500;
 
         long inicio = System.currentTimeMillis();
 
@@ -33,7 +29,7 @@ public class HelperRed {
             long latencia = fin - inicio;
 
             System.out.println("Conexion Exitosa. Latencia: " + latencia + " ms");
-            return latencia < limLatencia;
+            return true;
 
         } catch (IOException e) {
             System.out.println("No hay conexion a internet o fallo el intento");

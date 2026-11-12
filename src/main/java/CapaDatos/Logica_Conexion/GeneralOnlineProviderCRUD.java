@@ -5,6 +5,7 @@ import com.google.firebase.cloud.FirestoreClient;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /* LEER ESTO ANTES DE ANALIZAR EL CODIGO CON EL FIN DE PODER ENTENDERLO MEJOR:
 
@@ -44,8 +45,9 @@ public class GeneralOnlineProviderCRUD {
     public static boolean guardar(String coleccion, String documento, Map<String, Object> registro) {
         try {
             Firestore db = Conexion.getConexionNube();
+            if (db == null) throw new IllegalStateException("Firestore no está configurado; revise las credenciales");
             DocumentReference docRef = db.collection(coleccion).document(documento);
-            WriteResult result = docRef.set(registro).get(); // tener cuidado: operacion asincrona sin get()
+            WriteResult result = docRef.set(registro).get(10, TimeUnit.SECONDS); // tener cuidado: operacion asincrona sin get()
             System.out.println("Guardado Correctamente");
             return true;
         } catch (Exception e) {
@@ -65,8 +67,9 @@ public class GeneralOnlineProviderCRUD {
     private static QuerySnapshot cargarDatos(String coleccion) {
         try {
             Firestore db = Conexion.getConexionNube();
+            if (db == null) throw new IllegalStateException("Firestore no está configurado; revise las credenciales");
             CollectionReference clienteFirestore = db.collection(coleccion);
-            return clienteFirestore.get().get(); // tener cuidado: operacion asincrona sin get()
+            return clienteFirestore.get().get(10, TimeUnit.SECONDS); // tener cuidado: operacion asincrona sin get()
         } catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
         }
@@ -93,7 +96,8 @@ public class GeneralOnlineProviderCRUD {
         // por lo que el id de documento coincide con el identificador del registro.
         try {
             Firestore db = Conexion.getConexionNube();
-            DocumentSnapshot documentSnapshot = db.collection(coleccion).document(documento).get().get();
+            if (db == null) throw new IllegalStateException("Firestore no está configurado; revise las credenciales");
+            DocumentSnapshot documentSnapshot = db.collection(coleccion).document(documento).get().get(10, TimeUnit.SECONDS);
             if (documentSnapshot.exists()) {
                 return documentSnapshot.toObject(clase);
             }
@@ -161,12 +165,13 @@ public class GeneralOnlineProviderCRUD {
     public static boolean eliminar(String coleccion, String documento) {
         try {
             Firestore db = Conexion.getConexionNube();
+            if (db == null) throw new IllegalStateException("Firestore no está configurado; revise las credenciales");
             DocumentReference docref = db.collection(coleccion).document(documento);
-            WriteResult result = docref.delete().get(); // tener cuidado: operacion asincrona sin get()
+            WriteResult result = docref.delete().get(10, TimeUnit.SECONDS); // tener cuidado: operacion asincrona sin get()
             System.out.println("Eliminado exitosamente");
             return true;
         } catch (Exception e) {
-            System.out.println("Persona no encontrado");
+            System.err.println("No se pudo eliminar en Firestore: " + e.getMessage());
         }
         return false;
     }
@@ -201,8 +206,9 @@ public class GeneralOnlineProviderCRUD {
     public static boolean actualizar(String coleccion, String documento, Map<String, Object> registro) {
         try {
             Firestore db = Conexion.getConexionNube();
+            if (db == null) throw new IllegalStateException("Firestore no está configurado; revise las credenciales");
             DocumentReference documentReference = db.collection(coleccion).document(documento);
-            WriteResult result = documentReference.set(registro).get(); // upsert por id: actualiza si existe, crea si
+            WriteResult result = documentReference.set(registro).get(10, TimeUnit.SECONDS); // upsert por id: actualiza si existe, crea si
                                                                         // no, sin duplicar
             return true;
         } catch (Exception e) {
