@@ -282,7 +282,7 @@ public class VentaControlador {
 
         return !listaVentas.isEmpty()
                 ? new RespuestaControlador<>(true, "Imprimiendo todas las ventas", listaVentas)
-                : new RespuestaControlador<>(false, "Error en la consulta de todas de las ventas", null); // se podria
+                : new RespuestaControlador<>(false, "No hay ventas registradas", listaVentas); // se podria
                                                                                                           // retornar la
                                                                                                           // lista vacia
                                                                                                           // en vez de
@@ -317,7 +317,7 @@ public class VentaControlador {
         }
 
         // Fallback: agregar desde la nube cuando la BD local no tiene DetalleVentael
-        if (HelperMonitorRed.estaUsandoNube()) {
+        if (Conexion.getConexionLocal() == null && HelperMonitorRed.estaUsandoNube()) {
             ArrayList<VentasDTO.VentaPorCategoriaDTO> cloudData = ventasPorCategoriaDesdeNube();
             if (!cloudData.isEmpty()) {
                 return new RespuestaControlador<>(true, "datos cargados desde la nube", cloudData);

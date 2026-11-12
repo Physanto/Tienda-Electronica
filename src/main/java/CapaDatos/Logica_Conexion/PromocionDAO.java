@@ -12,7 +12,7 @@ public class PromocionDAO {
 
     public ArrayList<Promocion> getDataset() {
         String query = "SELECT p.id, p.stock, " +
-                "DATEDIFF(CURDATE(), MAX(v.fechaVenta)) AS diasSinVender, " +
+                "COALESCE(GREATEST(0, TIMESTAMPDIFF(DAY, CAST(MAX(v.fechaVenta) AS DATE), CURDATE())), 999) AS diasSinVender, " +
                 "COALESCE(SUM(dv.cantidad), 0) AS totalVendido " +
                 "FROM Producto p " +
                 "LEFT JOIN DetalleVenta dv ON p.id = dv.idProducto " +
@@ -23,9 +23,7 @@ public class PromocionDAO {
 
         Connection conexion = Conexion.getConexionLocal();
 
-        if (conexion == null) {
-            return listaPromocion;
-        }
+        if (conexion == null) throw new IllegalStateException("No se pudo abrir la base local");
 
         try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -37,27 +35,25 @@ public class PromocionDAO {
                 listaPromocion.add(promocion);
             }
         } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
+            throw new IllegalStateException("No se pudieron consultar los datos de promociones", ex);
         }
         return listaPromocion;
     }
 
     public ArrayList<PromocionesDTO.PromocionAplicadaDTO> datosPromociones() {
         String query = "SELECT p.id, p.nombre, p.marca, p.stock, p.precioActual, " +
-                "DATEDIFF(CURDATE(), MAX(v.fechaVenta)) AS diasSinVender, " +
+                "COALESCE(GREATEST(0, TIMESTAMPDIFF(DAY, CAST(MAX(v.fechaVenta) AS DATE), CURDATE())), 999) AS diasSinVender, " +
                 "COALESCE(SUM(dv.cantidad), 0) AS totalVendido " +
                 "FROM Producto p " +
                 "LEFT JOIN DetalleVenta dv ON p.id = dv.idProducto " +
                 "LEFT JOIN Venta v ON dv.idVenta = v.id " +
-                "GROUP BY p.nombre, p.stock";
+                "GROUP BY p.id, p.nombre, p.marca, p.stock, p.precioActual";
 
         ArrayList<PromocionesDTO.PromocionAplicadaDTO> listaPromocion = new ArrayList<>();
 
         Connection conexion = Conexion.getConexionLocal();
 
-        if (conexion == null) {
-            return listaPromocion;
-        }
+        if (conexion == null) throw new IllegalStateException("No se pudo abrir la base local");
 
         try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -73,7 +69,7 @@ public class PromocionDAO {
                 listaPromocion.add(promocion);
             }
         } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
+            throw new IllegalStateException("No se pudieron consultar los datos de promociones", ex);
         }
         return listaPromocion;
     }
@@ -103,13 +99,14 @@ public class PromocionDAO {
     }
 
     public ArrayList<Promociones> obtenerPromocionesPersonalizadas() {
-        String query = "SELECT * FROM Promocion";
+        String query = "SELECT p.*, pp.idProducto, pc.idCliente FROM Promocion p "
+                + "LEFT JOIN PromocionProducto pp ON pp.idPromocion=p.id "
+                + "LEFT JOIN PromocionCliente pc ON pc.idPromocion=p.id ORDER BY p.fechaInicio, p.id";
 
         ArrayList<Promociones> listaPromociones = new ArrayList<>();
 
         Connection conexion = Conexion.getConexionLocal();
-        if (conexion == null)
-            return listaPromociones;
+        if (conexion == null) throw new IllegalStateException("No se pudo abrir la base local");
 
         try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -120,10 +117,12 @@ public class PromocionDAO {
                         resultSet.getDouble("descuento"), resultSet.getTimestamp("fechaInicio"),
                         resultSet.getTimestamp("fechaFin"),
                         Promociones.TipoPromocion.valueOf(resultSet.getString("tipo").toUpperCase()));
+                promociones.setIdProducto(resultSet.getString("idProducto"));
+                promociones.setIdCliente(resultSet.getString("idCliente"));
                 listaPromociones.add(promociones);
             }
         } catch (Exception e) {
-            System.out.println("Error consulta PromocionDAO, obtener" + e.getMessage());
+            throw new IllegalStateException("No se pudieron consultar los datos de promociones", e);
         }
         return listaPromociones;
     }
@@ -171,7 +170,7 @@ public class PromocionDAO {
     public ArrayList<PromocionesDTO.PromocioPersonalizadaCliente> obtenerResumeComprasCliente() {
         String query = "SELECT c.id, c.nombre, c.apellido, c.cedula, " +
                 "COALESCE(SUM(v.totalVenta), 0) AS totalComprado, " +
-                "COALESCE(DATEDIFF(CURDATE(), MAX(v.fechaVenta)), 0) AS ultimaCompra " +
+                "TIMESTAMPDIFF(DAY, CAST(MAX(v.fechaVenta) AS DATE), CURDATE()) AS ultimaCompra " +
                 "FROM Cliente c " +
                 "LEFT JOIN Venta v ON v.idCliente = c.id " +
                 "GROUP BY c.id, c.nombre, c.apellido, c.cedula";
@@ -179,8 +178,7 @@ public class PromocionDAO {
         ArrayList<PromocionesDTO.PromocioPersonalizadaCliente> listaPromociones = new ArrayList<>();
 
         Connection conexion = Conexion.getConexionLocal();
-        if (conexion == null)
-            return listaPromociones;
+        if (conexion == null) throw new IllegalStateException("No se pudo abrir la base local");
 
         try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -194,7 +192,7 @@ public class PromocionDAO {
                 listaPromociones.add(promociones);
             }
         } catch (Exception e) {
-            System.out.println("Error consulta PromocionDAO, obtener" + e.getMessage());
+            throw new IllegalStateException("No se pudieron consultar los datos de promociones", e);
         }
         return listaPromociones;
     }
@@ -222,16 +220,15 @@ public class PromocionDAO {
 
     public ArrayList<AnalisisCliente> getDatasetClientes() {
         String query = "SELECT c.id, " +
-                " COALESCE(DATEDIFF(NOW(), MAX(v.fechaVenta)), 999) AS recencia, " +
+                " COALESCE(TIMESTAMPDIFF(DAY, CAST(MAX(v.fechaVenta) AS DATE), CURDATE()), 999) AS recencia, " +
                 " COUNT(v.id) AS frecuencia, " +
                 " COALESCE(SUM(v.totalVenta), 0) AS monetario FROM Cliente c " +
                 " LEFT JOIN Venta v ON c.id = v.idCliente" +
-                " GROUP BY c.id;";
+                " GROUP BY c.id ORDER BY c.id;";
         ArrayList<AnalisisCliente> listaPromociones = new ArrayList<>();
 
         Connection conexion = Conexion.getConexionLocal();
-        if (conexion == null)
-            return listaPromociones;
+        if (conexion == null) throw new IllegalStateException("No se pudo abrir la base local");
 
         try (PreparedStatement preparedStatement = conexion.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -244,8 +241,30 @@ public class PromocionDAO {
                 listaPromociones.add(analisisCliente);
             }
         } catch (Exception e) {
-            System.out.println("Error consulta PromocionDAO, obtener" + e.getMessage());
+            throw new IllegalStateException("No se pudieron consultar los datos de promociones", e);
         }
         return listaPromociones;
+    }
+    /** Bloquea el destino para serializar promociones concurrentes en la misma base. */
+    public boolean destinoDisponible(String id, boolean cliente, java.util.Date inicio, java.util.Date fin) {
+        Connection conexion = Conexion.getConexionLocal();
+        if (conexion == null) return false;
+        String tabla = cliente ? "Cliente" : "Producto";
+        String relacion = cliente ? "PromocionCliente" : "PromocionProducto";
+        String campo = cliente ? "idCliente" : "idProducto";
+        try (PreparedStatement bloqueo = conexion.prepareStatement("SELECT id FROM " + tabla + " WHERE id=? FOR UPDATE")) {
+            bloqueo.setString(1, id);
+            try (ResultSet datos = bloqueo.executeQuery()) { if (!datos.next()) return false; }
+            try (PreparedStatement consulta = conexion.prepareStatement("SELECT p.id FROM Promocion p JOIN "
+                    + relacion + " r ON r.idPromocion=p.id WHERE r." + campo
+                    + "=? AND p.fechaInicio < ? AND p.fechaFin > ? AND p.fechaFin > CURRENT_TIMESTAMP")) {
+                consulta.setString(1, id);
+                consulta.setTimestamp(2, new Timestamp(fin.getTime()));
+                consulta.setTimestamp(3, new Timestamp(inicio.getTime()));
+                try (ResultSet datos = consulta.executeQuery()) { return !datos.next(); }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("No se pudo verificar el destino de la promoción", e);
+        }
     }
 }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class HelperIASegmentadorClientes {
 
-    private static SimpleKMeans kmeans;
+    private static final ThreadLocal<SimpleKMeans> modelos = new ThreadLocal<>();
 
     private static Instances convertirDatosAWeka(ArrayList<AnalisisCliente> listaClientes) {
 
@@ -48,13 +48,16 @@ public class HelperIASegmentadorClientes {
     }
 
     public static ArrayList<AnalisisCliente> agruparClientes(ArrayList<AnalisisCliente> lista) {
+        modelos.remove();
+        if (lista == null || lista.isEmpty()) return new ArrayList<>();
         try {
             Instances dataset = convertirDatosAWeka(lista);
 
             // se asignan 3 cluster por reglas del negocio
-            int numeroClusters = 3;
+            int numeroClusters = Math.min(3, lista.size());
 
-            kmeans = new SimpleKMeans();
+            SimpleKMeans kmeans = new SimpleKMeans();
+            modelos.set(kmeans);
             kmeans.setNumClusters(numeroClusters);
 
             // Nota: SimpleKMeans de Weka normaliza los datos automáticamente por defecto,
@@ -75,7 +78,8 @@ public class HelperIASegmentadorClientes {
             analizarYEtiquetarClusters();
 
         } catch (Exception e) {
-            System.out.println("Error ejecutando K-Means: " + e.getMessage());
+            modelos.remove();
+            throw new IllegalStateException("No se pudo calcular la segmentación", e);
         }
         return lista;
     }
@@ -83,6 +87,7 @@ public class HelperIASegmentadorClientes {
     public static ArrayList<AnalisisCliente> analizarYEtiquetarClusters() {
         ArrayList<AnalisisCliente> listaPerfiles = new ArrayList<>();
 
+        SimpleKMeans kmeans = modelos.get();
         if (kmeans == null) {
             System.out.println("Error: K-Means no ha sido ejecutado.");
             return listaPerfiles;

@@ -38,7 +38,7 @@ import javax.swing.SwingConstants;
  * <li>El {@code JPanel} derecho ({@code contentPanel}) usa {@link CardLayout}
  * para intercambiar los sub-paneles sin abrir nuevas ventanas.</li>
  * </ul>
- * 
+ *
  * @author Marlon Vargas
  */
 public class MenuAdmin extends JFrame {
@@ -82,6 +82,7 @@ public class MenuAdmin extends JFrame {
     private JButton btnSettings;
 
     private JButton botonActivo;
+    private final java.util.Set<String> panelesCargados = new java.util.HashSet<>();
 
     public MenuAdmin() {
         initComponents();
@@ -146,7 +147,7 @@ public class MenuAdmin extends JFrame {
         btnProductos = crearBotonSidebar("Productos", CARD_PRODUCTOS, "Productos");
         btnClientes = crearBotonSidebar("Clientes", CARD_CLIENTES, "Clientes");
         btnVentas = crearBotonSidebar("Ventas", CARD_VENTAS, "Ventas");
-        btnPromociones = crearBotonSidebar("️Promociones", CARD_PROMOCIONES, "Promos");
+        btnPromociones = crearBotonSidebar("Promociones", CARD_PROMOCIONES, "Promos");
 
         sidebarPanel.add(btnProductos);
         sidebarPanel.add(btnClientes);
@@ -293,12 +294,7 @@ public class MenuAdmin extends JFrame {
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(COLOR_CONTENIDO_BG);
 
-        // Registrar cada sub-panel con su clave única
-        contentPanel.add(new Productos(), CARD_PRODUCTOS);
-        contentPanel.add(new Clientes(), CARD_CLIENTES);
-        contentPanel.add(new Ventas(), CARD_VENTAS);
-        contentPanel.add(new Promociones(), CARD_PROMOCIONES);
-        contentPanel.add(new Settings(), CARD_SETTINGS);
+        // Los módulos se crean al abrirlos para que las consultas no bloqueen la portada.
     }
 
     /**
@@ -323,6 +319,18 @@ public class MenuAdmin extends JFrame {
      * @param boton     botón de la sidebar que disparó la navegación
      */
     private void mostrarPanel(String cardClave, JButton boton) {
+        if (!panelesCargados.contains(cardClave)) {
+            JPanel panel = switch (cardClave) {
+                case CARD_PRODUCTOS -> new Productos();
+                case CARD_CLIENTES -> new Clientes();
+                case CARD_VENTAS -> new Ventas();
+                case CARD_PROMOCIONES -> new Promociones();
+                case CARD_SETTINGS -> new Settings();
+                default -> throw new IllegalArgumentException("Módulo desconocido: " + cardClave);
+            };
+            contentPanel.add(panel, cardClave);
+            panelesCargados.add(cardClave);
+        }
         // 1. Desactivar botón anterior
         if (botonActivo != null) {
             botonActivo.setBackground(COLOR_BTN_NORMAL);

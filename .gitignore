@@ -5,6 +5,12 @@
 # Credenciales de Firebase
 tienda-electronica.json
 tienda-electronica-v2.json
+*-firebase-adminsdk-*.json
+config.local.properties
+dist/
+data/
+*.mv.db
+*.trace.db
 
 # ruido
 target/
