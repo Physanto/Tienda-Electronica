@@ -12,17 +12,17 @@ public class Inicio extends javax.swing.JPanel {
 
     public Inicio() {
         initComponents();
-        establecerFondo();
+        //establecerFondo();
         establecerLogo();
     }
     
     /**
      * Carga la imagen de imgFondoInicio desde la carpeta Images y la asigna al JLabel fondo.
      */
-    public void establecerFondo() {
-        Image img = OSHelper.cargarImagenPng("imgFondoInicio");
-        if (img != null) jlb_fondo.setIcon(new ImageIcon(img));
-    }
+//    public void establecerFondo() {
+//        Image img = OSHelper.cargarImagenPng("imgFondoInicio");
+//        if (img != null) jlb_fondo.setIcon(new ImageIcon(img));
+//    }
 
     public void establecerLogo() {
         Image img = OSHelper.cargarImagenPng("Logo_Inicio");
@@ -38,16 +38,16 @@ public class Inicio extends javax.swing.JPanel {
     private void initComponents() {
 
         jlb_Logo = new javax.swing.JLabel();
-        jlb_fondo = new javax.swing.JLabel();
 
+        setMaximumSize(new java.awt.Dimension(1800, 1200));
+        setMinimumSize(new java.awt.Dimension(1800, 1200));
+        setPreferredSize(new java.awt.Dimension(1800, 1200));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        add(jlb_Logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 130, 810, 490));
-        add(jlb_fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1300, 880));
+        add(jlb_Logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 220, 1000, 700));
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jlb_Logo;
-    private javax.swing.JLabel jlb_fondo;
     // End of variables declaration//GEN-END:variables
 }

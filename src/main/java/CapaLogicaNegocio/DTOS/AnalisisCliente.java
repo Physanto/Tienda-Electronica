@@ -23,7 +23,7 @@ public class AnalisisCliente {
         this.cantCompras = cantCompras;
         this.dineroGastado = dineroGastado;
     }
-
+    
     public AnalisisCliente(int cluster, Double ultDiaCompra, Double cantCompras, Double dineroGastado) {
         this.cluster = cluster;
         this.ultDiaCompra = ultDiaCompra;

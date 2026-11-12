@@ -327,9 +327,7 @@ public class Promociones extends javax.swing.JPanel {
                         cliente.id(),
                         cliente.nombre(),
                         cliente.apellido(),
-                        cliente.cedula(),
-                        cliente.totalCompras(),
-                        cliente.ultCompra()
+                        cliente.cedula()
                 });
             }
 
@@ -486,9 +484,9 @@ public class Promociones extends javax.swing.JPanel {
         }
 
         if (aplicadas > 0) {
-            lblEstado.setText(aplicadas + " promoción(es) aplicada(s) correctamente.");
-            lblEstado.setForeground(COLOR_ACENTO);
-            txtNombrePromo.setText("");
+            //lblEstado.setText(aplicadas + " promoción(es) aplicada(s) correctamente.");
+            //lblEstado.setForeground(COLOR_ACENTO);
+            //txtNombrePromo.setText("");
         }
     }
 
@@ -828,8 +826,7 @@ public class Promociones extends javax.swing.JPanel {
         seccion.add(encabezado, BorderLayout.NORTH);
 
         modeloClientes = new DefaultTableModel(
-                new String[] { "ID", "Nombre", "Apellido", "Cédula",
-                        "Total Compras", "Días últ. compra" },
+                new String[] { "ID", "Nombre", "Apellido", "Cédula"},
                 0) {
             @Override
             public boolean isCellEditable(int r, int c) {

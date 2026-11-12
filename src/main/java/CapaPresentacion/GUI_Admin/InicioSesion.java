@@ -1,5 +1,6 @@
 package CapaPresentacion.GUI_Admin;
 
+import CapaDatos.Logica_Conexion.CategoriaDAO;
 import CapaDatos.Logica_Conexion.Conexion;
 import CapaPresentacion.GUI_Cliente.MenuCliente;
 import CapaLogicaNegocio.Controlador.CategoriaControlador;
@@ -29,7 +30,8 @@ import javax.swing.JOptionPane;
 
 import CapaLogicaNegocio.DTOS.ProductoDTO;
 import CapaLogicaNegocio.DTOS.VentasDTO.VentaDTO;
-import CapaLogicaNegocio.DTOS.ClientesDTO.ClienteDTO;;
+import CapaLogicaNegocio.DTOS.ClientesDTO.ClienteDTO;
+import CapaDatos.Logica_Conexion.*;
 
 /**
  * Formulario de inicio de sesión.
@@ -47,7 +49,7 @@ public class InicioSesion extends javax.swing.JFrame {
 
         public InicioSesion() {
                 initComponents();
-                // cargarDatosIniciales();
+                //cargarDatosIniciales();
                 setLocationRelativeTo(null);
                 aplicarEstilosCampos();
                 aplicarEstiloBoton();
@@ -68,21 +70,40 @@ public class InicioSesion extends javax.swing.JFrame {
                 // base local.
         }
 
+//        public void cargarDatosSoloLocal(){
+//
+//                String idCliente1 = UUID.randomUUID().toString();
+//                String idCliente2 = UUID.randomUUID().toString();
+//                String idCliente3 = UUID.randomUUID().toString();
+//                String idCliente4 = UUID.randomUUID().toString();
+//                String idCliente5 = UUID.randomUUID().toString();
+//                String idCliente6 = UUID.randomUUID().toString();
+//                String idCliente7 = UUID.randomUUID().toString();
+//                String idCliente8 = UUID.randomUUID().toString();
+//                String idCliente9 = UUID.randomUUID().toString();
+//                String idCliente10 = UUID.randomUUID().toString();
+//                String idCliente11 = UUID.randomUUID().toString();
+//
+//                new ClienteDAO().agregar(new Cliente(
+//                        idCliente1, "juan", "perez", "1234", "cra 4b"));
+//
+//
+//        }
+
         public void cargarDatosIniciales() {
 
                 ClienteControlador clienteControlador = new ClienteControlador();
-
-                String idCliente1 = UUID.randomUUID().toString();
-                String idCliente2 = UUID.randomUUID().toString();
-                String idCliente3 = UUID.randomUUID().toString();
-                String idCliente4 = UUID.randomUUID().toString();
-                String idCliente5 = UUID.randomUUID().toString();
-                String idCliente6 = UUID.randomUUID().toString();
-                String idCliente7 = UUID.randomUUID().toString();
-                String idCliente8 = UUID.randomUUID().toString();
-                String idCliente9 = UUID.randomUUID().toString();
-                String idCliente10 = UUID.randomUUID().toString();
-                String idCliente11 = UUID.randomUUID().toString();
+                String idCliente1 = "d2f7a841-5c93-4e16-b820-7a4d9c1e3f52";
+                String idCliente2 = "8b4e1d73-a629-4f80-9c15-2d7a5e8f3b64";
+                String idCliente3 = "3c9f5a12-d784-4b61-a230-8e1d7c4f9b53";
+                String idCliente4 = "f1a8d642-7c35-4e90-b714-5d2f8a3c6e91";
+                String idCliente5 = "6e3b9c15-2d74-4f82-a961-c5a7d1e8b430";
+                String idCliente6 = "a7d2f481-9c63-4b05-8e14-3f6a7d2c5b98";
+                String idCliente7 = "4f8c1a57-d239-4e60-b825-9a3d7c1f6e42";
+                String idCliente8 = "c9a5e713-6d84-4f21-8b90-1e7d3c5a2f64";
+                String idCliente9 = "1d7f4a82-b635-4c90-ae21-6f3d8c5b7a49";
+                String idCliente10 = "b5c2e971-4a83-4f60-9d12-7a8c3e1f5d64";
+                String idCliente11 = "7a1e5c34-f892-4b67-8d20-c4f9a3e7d152";
 
                 RespuestaControlador<Cliente> cliente = clienteControlador.agregarCliente(new ClienteDTO(
                                 idCliente1, "juan", "perez", "1234", "cra 4b"));
@@ -119,10 +140,10 @@ public class InicioSesion extends javax.swing.JFrame {
 
                 CategoriaControlador categoriaControlador = new CategoriaControlador();
 
-                String idCategoria1 = UUID.randomUUID().toString();
-                String idCategoria2 = UUID.randomUUID().toString();
-                String idCategoria3 = UUID.randomUUID().toString();
-                String idCategoria4 = UUID.randomUUID().toString();
+                String idCategoria1 = "91d4e7a2-3c68-4f15-b920-5a7d8c1e2f43";
+                String idCategoria2 = "2b8f5d31-a764-4c90-9e27-d1f6a3c8b452";
+                String idCategoria3 = "7e1c9a54-d283-4f67-b105-8c2d5a7e9f31";
+                String idCategoria4 = "c4a7f182-5d39-4b60-8e91-3f7c2d5a8b64";
 
                 RespuestaControlador<Boolean> categoria = categoriaControlador.crearCategorias(new Categoria(
                                 idCategoria1, "Telefono"));
@@ -135,26 +156,27 @@ public class InicioSesion extends javax.swing.JFrame {
 
                 ProductoControlador productoControlador = new ProductoControlador();
 
-                String idProducto1 = UUID.randomUUID().toString();
-                String idProducto2 = UUID.randomUUID().toString();
-                String idProducto3 = UUID.randomUUID().toString();
-                String idProducto4 = UUID.randomUUID().toString();
+                String idProducto1 = "2f6d8a91-3c47-4e52-9b10-7a4c5d8e1f23";
+                String idProducto2 = "81b3c9d4-6e25-4f78-a912-3d5e7f8a9b01";
+                String idProducto3 = "4c7e1a92-b583-4d6f-8a21-c9e7f3d5b610";
+                String idProducto4 = "9d2f4a76-1b83-4c95-a7e2-5f8d3c1b6049";
 
-                String idProducto5 = UUID.randomUUID().toString();
-                String idProducto6 = UUID.randomUUID().toString();
-                String idProducto7 = UUID.randomUUID().toString();
-                String idProducto8 = UUID.randomUUID().toString();
+                String idProducto5 = "6a8c1d34-f257-4b90-9e73-2c5d7a8f1b46";
+                String idProducto6 = "b4e9c210-7d65-4a83-8f12-6c9d3e7a5b48";
+                String idProducto7 = "3f7b1c85-2d94-4e60-a3f8-1c6d9b2e7450";
+                String idProducto8 = "d8a5f241-6c73-4b19-9e04-7b2d5c8f1a63";
 
-                String idProducto9 = UUID.randomUUID().toString();
-                String idProducto10 = UUID.randomUUID().toString();
-                String idProducto11 = UUID.randomUUID().toString();
-                String idProducto12 = UUID.randomUUID().toString();
+                String idProducto9 = "5e2c7a90-1d84-4f36-b8c1-9a5d2e7f3c64";
+                String idProducto10 = "a1d7e583-4c29-4b76-8f35-2e9c6a1d7b50";
+                String idProducto11 = "7c4f9a21-b685-4d03-a2e7-5d8c1f3b9642";
+                String idProducto12 = "e3b8d750-2f91-4c64-9a12-8d5e7b3c1f49";
 
-                String idProducto13 = UUID.randomUUID().toString();
-                String idProducto14 = UUID.randomUUID().toString();
-                String idProducto15 = UUID.randomUUID().toString();
-                String idProducto16 = UUID.randomUUID().toString();
-                String idProducto17 = UUID.randomUUID().toString();
+                String idProducto13 = "1a5e7c93-d248-4f81-b607-3c9d2e5a7f14";
+                String idProducto14 = "8f2b6d14-5c73-4a90-9e61-d3c7a5b2f849";
+                String idProducto15 = "c7d1a852-9e34-4f65-b120-6a3d8c5e7f91";
+                String idProducto16 = "4b9e2f73-1c85-4d60-a947-2f6c8d1b5e30";
+                String idProducto17 = "f5a3c861-7d24-4b98-8e15-9c2f7a4d6b03";
+
 
                 // ==================== CATEGORÍA 1: Telefono ====================
 
@@ -956,6 +978,7 @@ public class InicioSesion extends javax.swing.JFrame {
                                 .iniciarSesionCliente(usuario, contrasena);
 
                 if (!respuesta.exito() || respuesta.dato() == null) {
+                        JOptionPane.showMessageDialog(this, "No hay internet");
                         JOptionPane.showMessageDialog(null,
                                         respuesta.mensaje() != null ? respuesta.mensaje()
                                                         : "Usuario o contraseña inválida");

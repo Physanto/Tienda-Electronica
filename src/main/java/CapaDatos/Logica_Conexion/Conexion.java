@@ -54,7 +54,7 @@ public class Conexion {
         String url = "jdbc:mysql://localhost:3306/Tienda_Electronica"
                 + "?useSSL=false"
                 + "&serverTimezone=America/Bogota";
-        String user = "init";
+        String user = "root";
         String pass = "root";
 
         try {
