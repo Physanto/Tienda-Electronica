@@ -2,6 +2,11 @@ package CapaPresentacion.GUI_Admin;
 
 import CapaLogicaNegocio.Helpers.OSHelper;
 import java.awt.Image;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 
 /**
@@ -10,12 +15,16 @@ import javax.swing.ImageIcon;
  */
 public class Inicio extends javax.swing.JPanel {
 
+    private Image logoOriginal;
+
     public Inicio() {
         initComponents();
-        //establecerFondo();
         establecerLogo();
+        jlb_Logo.addComponentListener(new ComponentAdapter() {
+            @Override public void componentResized(ComponentEvent e) { ajustarLogo(); }
+        });
     }
-    
+
     /**
      * Carga la imagen de imgFondoInicio desde la carpeta Images y la asigna al JLabel fondo.
      */
@@ -25,8 +34,19 @@ public class Inicio extends javax.swing.JPanel {
 //    }
 
     public void establecerLogo() {
-        Image img = OSHelper.cargarImagenPng("Logo_Inicio");
-        if (img != null) jlb_Logo.setIcon(new ImageIcon(img));
+        logoOriginal = OSHelper.cargarImagenPng("Logo_Inicio");
+        ajustarLogo();
+    }
+
+    private void ajustarLogo() {
+        if (logoOriginal == null) return;
+        int disponibleAncho = Math.min(1000, Math.max(1, jlb_Logo.getWidth() - 64));
+        int disponibleAlto = Math.min(700, Math.max(1, jlb_Logo.getHeight() - 64));
+        double escala = Math.min((double) disponibleAncho / logoOriginal.getWidth(null),
+                (double) disponibleAlto / logoOriginal.getHeight(null));
+        int ancho = Math.max(1, (int) Math.round(logoOriginal.getWidth(null) * escala));
+        int alto = Math.max(1, (int) Math.round(logoOriginal.getHeight(null) * escala));
+        jlb_Logo.setIcon(new ImageIcon(logoOriginal.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH)));
     }
 
 
@@ -39,11 +59,14 @@ public class Inicio extends javax.swing.JPanel {
 
         jlb_Logo = new javax.swing.JLabel();
 
-        setMaximumSize(new java.awt.Dimension(1800, 1200));
-        setMinimumSize(new java.awt.Dimension(1800, 1200));
-        setPreferredSize(new java.awt.Dimension(1800, 1200));
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        add(jlb_Logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 220, 1000, 700));
+        setBackground(new java.awt.Color(0x1A, 0x1E, 0x29));
+        setMinimumSize(new Dimension(0, 0));
+        setPreferredSize(new Dimension(900, 600));
+        setLayout(new BorderLayout());
+        jlb_Logo.setHorizontalAlignment(SwingConstants.CENTER);
+        jlb_Logo.setVerticalAlignment(SwingConstants.CENTER);
+        jlb_Logo.setPreferredSize(new Dimension(0, 0));
+        add(jlb_Logo, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
